@@ -1,0 +1,5 @@
+set(lmw_package_install_dir      @lmw_package_install_dir@)
+set(lmw_info_plist_template      @lmw_installed_info_plist_template@)
+
+include(${CMAKE_CURRENT_LIST_DIR}/lmw_export.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/lmw.cmake)

@@ -1,0 +1,3 @@
+[submodule "c74/max-api"]
+	path = c74/max-api
+	url = https://github.com/Cycling74/max-api
