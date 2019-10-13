@@ -8,6 +8,8 @@ set(lmw_version_major           0)
 set(lmw_version_minor           0)
 set(lmw_version_patch           1)
 
+set(lmw_version                 ${lmw_version_major}.${lmw_version_minor}.${lmw_version_patch})
+
 set(lmw_wrapper_target_name     lmw)
 set(lmw_max_api_target_name     maxapi)
 set(lmw_export_namespace        lmw::)
@@ -19,8 +21,6 @@ set(C74_MAX_API_SCRIPT_DIR      ${C74_MAX_API_DIR}/script)
 
 set(lmw_max_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/max-linker-flags.txt)
 set(lmw_msp_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/msp-linker-flags.txt)
-
-set(lmw_version                 ${lmw_version_major}.${lmw_version_minor}.${lmw_version_patch})
 
 set(lmw_root_install_dir        ${CMAKE_INSTALL_PREFIX})
 set(lmw_package_install_dir     ${lmw_root_install_dir}/lib/cmake/${lmw_wrapper_target_name}-${lmw_version})
