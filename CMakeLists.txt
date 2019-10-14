@@ -106,12 +106,12 @@ file(
 
 file(
     GLOB lmw_max_api_header_files 
-    ${lmw_max_api_include_dir}/*.h
+    "${lmw_max_api_include_dir}/*.h"
 )
 
 file(
     GLOB lmw_wrapper_header_files 
-    ${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/*.h
+    "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/*.h"
 )
 
 configure_file(${lmw_config_file_template} ${lmw_cmake_config_file} @ONLY)
@@ -135,6 +135,21 @@ target_include_directories(
     $<BUILD_INTERFACE:${lmw_max_api_include_dir}> 
     $<INSTALL_INTERFACE:${lmw_max_api_install_dir}>
 )
+
+if(${CMAKE_GENERATOR} MATCHES "(^Visual\\sStudio|^Xcode|^XCode).*")
+
+    add_library(
+        lmw_header_files
+        STATIC
+        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw.cc"
+        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw_2.cc"
+        ${lmw_wrapper_header_files}
+    )
+
+    set_target_properties(lmw_header_files PROPERTIES LINKER_LANGUAGE CXX)
+    target_link_libraries(lmw_header_files PUBLIC ${lmw_wrapper_target_name})
+
+endif()
 
 install(
     FILES               ${lmw_wrapper_header_files}
