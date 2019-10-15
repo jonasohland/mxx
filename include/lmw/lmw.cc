@@ -1,17 +1,12 @@
 #include "lmw.h"
 
-using namespace lmw;
-
-void func(const symbol& sym)
-{
-    c74::max::object_post(nullptr, sym);
+namespace my_namespace {
+    class test_external {
+      public:
+        void process(double** in, double** out, long ins, long outs)
+        {
+        }
+    };
 }
 
-void c74func(c74::max::t_object* me, c74::max::t_atom* argv, long argc)
-{
-    auto args = lmw::detail::to_atom_vector(argv, argc);
-}
-
-int ext_main()
-{
-}
+LMW_EXTERNAL(my_namespace::test_external)
