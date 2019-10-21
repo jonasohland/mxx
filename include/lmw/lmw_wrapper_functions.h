@@ -14,22 +14,26 @@ namespace lmw {
 
         LMW_CREATE_ADVANCED_MEMBER_CHECK(has_list_handler, handle_list,
                                          lmw::atom_span);
-    
+
         LMW_CREATE_ADVANCED_MEMBER_CHECK(has_dsp_handler, process, double**,
                                          double**, long, long);
+
+        template <typename user_class>
+        std::integral_constant<bool, has_dsp_handler_impl<user_class>::value>
+            is_dsp_class;
     }
 
     template <typename user_class>
     void wrapper_handle_bang_impl(c74::max::t_object* obj)
     {
-        if constexpr(type_traits::has_bang_handler<user_class>::value)
+        if constexpr(type_traits::has_bang_handler<user_class>())
         {
             reinterpret_cast<object_wrapper<user_class>*>(obj)
                 ->object.handle_bang();
         }
 #ifdef LMW_REQUIRE_BANG_HANDLER
         static_assert(
-            type_traits::has_bang_handler<user_class>::value,
+            type_traits::has_bang_handler<user_class>(),
             "Missing required bang_handler function on external class");
 #endif
     }
@@ -37,13 +41,13 @@ namespace lmw {
     template <typename user_class>
     void wrapper_handle_int_impl(c74::max::t_object* obj, long n)
     {
-        if constexpr(type_traits::has_int_handler<user_class>::value)
+        if constexpr(type_traits::has_int_handler<user_class>())
         {
             reinterpret_cast<object_wrapper<user_class>*>(obj)
                 ->object.handle_int(n);
         }
 #ifdef LMW_REQUIRE_INT_HANDLER
-        static_assert(lmw::type_traits::has_int_handler<user_class>::value,
+        static_assert(lmw::type_traits::has_int_handler<user_class>(),
                       "Missing required int_handler function on external class");
 #endif
     }
@@ -55,14 +59,14 @@ namespace lmw {
                                     long sampleframes, long flags,
                                     void* userparam)
     {
-        if constexpr(lmw::type_traits::has_dsp_handler<user_class>::value)
+        if constexpr(lmw::type_traits::has_dsp_handler<user_class>())
         {
             reinterpret_cast<object_wrapper<user_class>*>(x)
                 ->object.process(ins, outs, numins, numouts);
         }
 
 #ifdef LMW_REQUIRE_PROCESS_FUNCTION
-        static_assert(type_traits::has_dsp_handler<user_class>::value,
+        static_assert(type_traits::has_dsp_handler<user_class>(),
                       "Missing required perform function on external class");
 #endif
     }

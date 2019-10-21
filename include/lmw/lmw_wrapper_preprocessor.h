@@ -102,7 +102,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
  */
 #define LMW_CREATE_BASIC_MEMBER_CHECK(sname, fname)                            \
     template <class T>                                                         \
-    struct sname {                                                             \
+    struct sname##_impl {                                                      \
         template <typename C>                                                  \
         static constexpr decltype(std::declval<C>().fname(), bool()) test(int) \
         {                                                                      \
@@ -116,11 +116,13 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
         }                                                                      \
                                                                                \
         static constexpr bool value = test<T>(int());                          \
-    }
+    };                                                                         \
+    template <typename user_class>                                             \
+    std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
 #define LMW_CREATE_ADVANCED_MEMBER_CHECK(sname, fname, ...)                    \
     template <class T>                                                         \
-    struct sname {                                                             \
+    struct sname##_impl {                                                             \
         template <typename C>                                                  \
         static constexpr decltype(                                             \
             std::declval<C>().fname(LMW_FOREACH_APPLY_DECLVAL(__VA_ARGS__)),   \
@@ -137,7 +139,9 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
         }                                                                      \
                                                                                \
         static constexpr bool value = test<T>(int());                          \
-    }
+    };                                                                         \
+    template <typename user_class>                                             \
+    std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
 /* -------------------------------------------------------------------------- */
 /*               MESSAGE HANDLER FUNCTION NAME GENERATORS                     */
@@ -251,7 +255,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 
 #define LMW_ADDMETHOD_FUNCTION_STATIC_CHECK(classname, static_check)           \
     if                                                                         \
-    constexpr(static_check<classname>::value)
+    constexpr(static_check<classname>())
 
 #define LMW_ADDMETHOD_CREATE_CHECKED_CALL(classname, class_ptr, static_check,  \
                                           method, str)                    \
