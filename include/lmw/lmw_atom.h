@@ -14,11 +14,11 @@ namespace lmw {
 
       public:
         enum class types {
-            NOTHING = 0, ///< no type, thus no atom
-            LONG,  ///< integer (32-bit on 32-bit arch, 64-bit on 64-bit arch)
-            FLOAT, ///< decimal (float on 32-bit arch, double on 64-bit arch)
-            SYM,   ///< symbol
-            OBJ,   ///< object
+            NOTHING = 0,    ///< no type, thus no atom
+            LONG,           ///< integer (32-bit on 32-bit arch, 64-bit on 64-bit arch)
+            FLOAT,          ///< decimal (float on 32-bit arch, double on 64-bit arch)
+            SYM,            ///< symbol
+            OBJ,            ///< object
         };
 
         atom() noexcept
