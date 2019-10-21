@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #define lmw_external_main ext_main
@@ -6,8 +8,8 @@
 /*               General purpose preprocessor utilities                       */
 /* -------------------------------------------------------------------------- */
 
-#define LMW_PASTE(a,b) a ## b
-#define LMW_XPASTE(a,b) LMW_PASTE(a,b)
+#define LMW_PASTE(a, b) a##b
+#define LMW_XPASTE(a, b) LMW_PASTE(a, b)
 
 /*
  * The PP_NARG macro evaluates to the number of arguments that have been
@@ -32,7 +34,6 @@
         45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29,    \
         28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12,    \
         11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-
 
 /* APPLYXn variadic X-Macro by M Joshua Ryan      */
 /* Free for all uses. Don't be a jerk.            */
@@ -63,7 +64,7 @@
 
 #define LMW_APPLYXDECLVAL_(M, ...) M(__VA_ARGS__)
 
-#define LMW_FOREACH_APPLY_DECLVAL(...)                                                \
+#define LMW_FOREACH_APPLY_DECLVAL(...)                                         \
     LMW_APPLYXDECLVAL_(                                                        \
         LMW_XPASTE(LMW_APPLYXDECLVAL, LMW_PP_NARG(__VA_ARGS__)), __VA_ARGS__)
 
@@ -89,14 +90,15 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     LMW_PREPROCESSOR_CAT_3_IMPL(one, two, three)
 
 /**
- Generate a type trait to check for the existence of a member function on a class
+ Generate a type trait to check for the existence of a member function on a
+ class
  \code
  LMW_CREATE_BASIC_MEMBER_CHECK(has_member_function_serialize, serialize);
- 
+
  struct myclass {
     void serialize();
  };
- 
+
  static_assert(has_member_function_serialize<myclass>::value, "error!");
  \endcode
  */
@@ -122,7 +124,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 
 #define LMW_CREATE_ADVANCED_MEMBER_CHECK(sname, fname, ...)                    \
     template <class T>                                                         \
-    struct sname##_impl {                                                             \
+    struct sname##_impl {                                                      \
         template <typename C>                                                  \
         static constexpr decltype(                                             \
             std::declval<C>().fname(LMW_FOREACH_APPLY_DECLVAL(__VA_ARGS__)),   \
@@ -248,8 +250,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 #define LMW_ADDMETHOD_FUNCTION_NAME(ident)                                     \
     LMW_PREPROCESSOR_CAT(lmw_ext_addmethod_impl_, ident)
 
-#define LMW_ADDMETHOD_FUNCTION_DECL(ident, template_name,                      \
-                                    class_ptr)                                 \
+#define LMW_ADDMETHOD_FUNCTION_DECL(ident, template_name, class_ptr)           \
     template <typename template_name>                                          \
     void LMW_ADDMETHOD_FUNCTION_NAME(ident)(c74::max::t_class * class_ptr)
 
@@ -258,11 +259,10 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     constexpr(static_check<classname>())
 
 #define LMW_ADDMETHOD_CREATE_CHECKED_CALL(classname, class_ptr, static_check,  \
-                                          method, str)                    \
+                                          method, str)                         \
     LMW_ADDMETHOD_FUNCTION_STATIC_CHECK(classname, static_check)               \
     {                                                                          \
-        LMW_CLASS_ADD_STATIC_HANDLER(                                          \
-            method, classname, class_ptr, str)                    \
+        LMW_CLASS_ADD_STATIC_HANDLER(method, classname, class_ptr, str)        \
     }
 
 #define LMW_ADDMETHOD_CREATE_CHECKED_CALL_VAR(classname, class_ptr,            \
