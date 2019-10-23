@@ -1,3 +1,6 @@
+ 
+        
+    
 
 
 #pragma once
@@ -146,6 +149,13 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
 /* -------------------------------------------------------------------------- */
+/*                         NAME DECORATORS AND STUFF                          */
+/* -------------------------------------------------------------------------- */
+
+#define LMW_MAX_METHOD(methodname)                                             \
+    reinterpret_cast<c74::max::method>(&methodname)
+
+/* -------------------------------------------------------------------------- */
 /*               MESSAGE HANDLER FUNCTION NAME GENERATORS                     */
 /*                                                                            */
 /*  These macros generate function names for common methods that are passed   */
@@ -178,8 +188,11 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 #define LMW_WRAPPER_FUNCTION_LIST(identifier)                                  \
     LMW_WRAPPER_FUNCTION(_list, identifier)
 
-#define LMW_WRAPPER_FUNCTION_OBJECT_NEW(identifier)                            \
-    LMW_WRAPPER_FUNCTION(_object_new, identifier)
+#define LMW_WRAPPER_FUNCTION_NAMED_METHOD(identifier)                          \
+    LMW_WRAPPER_FUNCTION(_named_method, identifier)
+
+#define LMW_WRAPPER_FUNCTION_CLASS_NEW(identifier)                             \
+    LMW_WRAPPER_FUNCTION(_class_new, identifier)
 
 /* -------------------------------------------------------------------------- */
 /*                   MESSAGE HANDLER FUNCTION GENERATORS                      */
@@ -194,6 +207,13 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 #define LMW_CREATE_INT_HANDLER_FUNCTION(identifier, classname)                 \
     void LMW_WRAPPER_FUNCTION_INT(identifier)(                                 \
         c74::max::t_object * obj, long n)                                      \
+    {                                                                          \
+        lmw::wrapper_handle_int_impl<classname>(obj, n);                       \
+    }
+
+#define LMW_CREATE_FLOAT_HANDLER_FUNCTION(identifier, classname)               \
+    void LMW_WRAPPER_FUNCTION_FLOAT(identifier)(                               \
+        c74::max::t_object * obj, double n)                                    \
     {                                                                          \
         lmw::wrapper_handle_int_impl<classname>(obj, n);                       \
     }
@@ -220,83 +240,83 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
                 LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)));              \
     }
 
-#define LMW_CREATE_CLASS_NEW_FUNCTION(identifier, classname)                   \
-    void* LMW_WRAPPER_FUNCTION_OBJECT_NEW(identifier)()                        \
+#define LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                \
+    void LMW_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(                        \
+        c74::max::t_object * o, c74::max::t_symbol * s, long ac,               \
+        c74::max::t_atom* av)                                                  \
     {                                                                          \
-        return lmw::wrapper_object_new<classname>();                           \
+        lmw::wrapper_msg_call<classname>(o, s, ac, av);                        \
     }
 
-#define LMW_CREATE_EXT_HANDLER_FUNCTIONS(identifier, classname)                \
+#define LMW_EXT_HANDLER_FUNCTIONS(identifier, classname)                       \
     LMW_CREATE_BANG_HANDLER_FUNCTION(identifier, classname)                    \
     LMW_CREATE_INT_HANDLER_FUNCTION(identifier, classname)                     \
+    LMW_CREATE_FLOAT_HANDLER_FUNCTION(identifier, classname)                   \
     LMW_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                     \
     LMW_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                      \
-    LMW_CREATE_CLASS_NEW_FUNCTION(identifier, classname)
+    LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)
 
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 
-#define LMW_CLASS_ADD_STATIC_HANDLER(cfunc, classname, class_ptr, str)         \
-    c74::max::class_addmethod(                                                 \
-        class_ptr, reinterpret_cast<c74::max::method>(cfunc), #str);
+#define LMW_USER_CLASS_MAXCLASS_SYMBOL(ident)                                  \
+    LMW_PREPROCESSOR_CAT(lmw_ext_maxclass_, ident)
 
-#define LMW_CLASS_ADD_STATIC_HANDLER_VAR(cfunc, classname, class_ptr, str,     \
-                                         ...)                                  \
-    c74::max::class_addmethod(class_ptr,                                       \
-                              reinterpret_cast<c74::max::method>(cfunc), #str, \
-                              __VA_ARGS__);
+#define LMW_USER_CLASS_MAXCLASS_DECL(ident)                                    \
+    c74::max::t_class* LMW_USER_CLASS_MAXCLASS_SYMBOL(ident);
 
-#define LMW_ADDMETHOD_FUNCTION_NAME(ident)                                     \
-    LMW_PREPROCESSOR_CAT(lmw_ext_addmethod_impl_, ident)
+#define LMW_NEW_INSTANCE_FUNCTION_NAME(ident)                                  \
+    LMW_PREPROCESSOR_CAT(lmw_ext_newinstance_impl_, ident)
 
-#define LMW_ADDMETHOD_FUNCTION_DECL(ident, template_name, class_ptr)           \
-    template <typename template_name>                                          \
-    void LMW_ADDMETHOD_FUNCTION_NAME(ident)(c74::max::t_class * class_ptr)
+#define LMW_NEW_INSTANCE_FUNCTION_DECL(ident, name, ac, av)                    \
+    void* LMW_NEW_INSTANCE_FUNCTION_NAME(ident)(                               \
+        c74::max::t_symbol * name, long ac, c74::max::t_atom* av)
 
-#define LMW_ADDMETHOD_FUNCTION_STATIC_CHECK(classname, static_check)           \
-    if                                                                         \
-    constexpr(static_check<classname>())
-
-#define LMW_ADDMETHOD_CREATE_CHECKED_CALL(classname, class_ptr, static_check,  \
-                                          method, str)                         \
-    LMW_ADDMETHOD_FUNCTION_STATIC_CHECK(classname, static_check)               \
+#define LMW_NEW_INSTANCE_FUNCTION(ident, user_class)                           \
+    LMW_NEW_INSTANCE_FUNCTION_DECL(ident, ext_name, ext_ac, ext_av)            \
     {                                                                          \
-        LMW_CLASS_ADD_STATIC_HANDLER(method, classname, class_ptr, str)        \
+        return lmw::wrapper_object_new<user_class>(                            \
+            LMW_USER_CLASS_MAXCLASS_SYMBOL(ident), ext_name, ext_ac, ext_av);  \
     }
 
-#define LMW_ADDMETHOD_CREATE_CHECKED_CALL_VAR(classname, class_ptr,            \
-                                              static_check, method, str, ...)  \
-    LMW_ADDMETHOD_FUNCTION_STATIC_CHECK(classname, static_check)               \
+#define LMW_FREE_INSTANCE_FUNCTION_NAME(ident)                                 \
+    LMW_PREPROCESSOR_CAT(lmw_ext_freeinstance_impl_, ident)
+
+#define LMW_FREE_INSTANCE_FUNCTION_DECL(ident, obj)                            \
+    void LMW_FREE_INSTANCE_FUNCTION_NAME(ident)(c74::max::t_object * obj)
+
+#define LMW_FREE_INSTANCE_FUNCTION(ident, user_class)                          \
+    LMW_FREE_INSTANCE_FUNCTION_DECL(ident, ext_obj)                            \
     {                                                                          \
-        LMW_CLASS_ADD_STATIC_HANDLER_VAR(                                      \
-            method, classname, class_ptr, str, __VA_ARGS__)                    \
+        lmw::wrapper_object_free<user_class>(ext_obj);                         \
     }
 
-#define LMW_ADDMETHOD_CREATE_FUNCTION(identifier)                              \
-    LMW_ADDMETHOD_FUNCTION_DECL(identifier, user_class, c)                     \
-    {                                                                          \
-        LMW_ADDMETHOD_CREATE_CHECKED_CALL(                                     \
-            user_class, c, lmw::type_traits::has_bang_handler,                 \
-            LMW_WRAPPER_FUNCTION_BANG(identifier), bang)                       \
+#define LMW_MAXCLASS_DEF_IMPL(ident, class)                                    \
                                                                                \
-        LMW_ADDMETHOD_CREATE_CHECKED_CALL(                                     \
-            user_class, c, lmw::type_traits::has_int_handler,                  \
-            LMW_WRAPPER_FUNCTION_INT(identifier), int)                         \
+    LMW_USER_CLASS_MAXCLASS_SYMBOL(ident) = lmw::wrapper_class_new<class>(     \
+        LMW_USER_CLASS_MAXCLASS_SYMBOL(ident),                                 \
+        LMW_MAX_METHOD(LMW_NEW_INSTANCE_FUNCTION_NAME(ident)),                 \
+        LMW_MAX_METHOD(LMW_FREE_INSTANCE_FUNCTION_NAME(ident)),                \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_NAMED_METHOD(ident)),              \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_INT(ident)),                       \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_BANG(ident)),                      \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_FLOAT(ident)),                     \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_DSP64_METHOD(ident)));             \
                                                                                \
-        LMW_ADDMETHOD_CREATE_CHECKED_CALL_VAR(                                 \
-            user_class, c, lmw::type_traits::has_dsp_handler,                  \
-            LMW_WRAPPER_FUNCTION_DSP64_METHOD(identifier), dsp64,              \
-            c74::max::e_max_atomtypes::A_CANT, 0)                              \
-    }
+    c74::max::class_register(                                                  \
+        c74::max::CLASS_BOX, LMW_USER_CLASS_MAXCLASS_SYMBOL(ident));
 
 /* -------------------------------------------------------------------------- */
 //                            THE MAGIC WRAPPER
 /* -------------------------------------------------------------------------- */
 
 #define LMW_EXTERNAL(class)                                                    \
-    LMW_CREATE_EXT_HANDLER_FUNCTIONS(default, class)                           \
-    LMW_ADDMETHOD_CREATE_FUNCTION(default)                                     \
+    LMW_USER_CLASS_MAXCLASS_DECL(default)                                      \
+    LMW_NEW_INSTANCE_FUNCTION(default, class)                                  \
+    LMW_FREE_INSTANCE_FUNCTION(default, class)                                 \
+    LMW_EXT_HANDLER_FUNCTIONS(default, class)                                  \
     void lmw_external_main()                                                   \
     {                                                                          \
+        LMW_MAXCLASS_DEF_IMPL(default, class)                                  \
     }
