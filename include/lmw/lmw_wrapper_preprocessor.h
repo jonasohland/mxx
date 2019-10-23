@@ -264,7 +264,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     LMW_PREPROCESSOR_CAT(lmw_ext_maxclass_, ident)
 
 #define LMW_USER_CLASS_MAXCLASS_DECL(ident)                                    \
-    c74::max::t_class* LMW_USER_CLASS_MAXCLASS_SYMBOL(ident);
+    static c74::max::t_class* LMW_USER_CLASS_MAXCLASS_SYMBOL(ident);
 
 #define LMW_NEW_INSTANCE_FUNCTION_NAME(ident)                                  \
     LMW_PREPROCESSOR_CAT(lmw_ext_newinstance_impl_, ident)
@@ -316,7 +316,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     LMW_NEW_INSTANCE_FUNCTION(default, class)                                  \
     LMW_FREE_INSTANCE_FUNCTION(default, class)                                 \
     LMW_EXT_HANDLER_FUNCTIONS(default, class)                                  \
-    void lmw_external_main()                                                   \
+    void lmw_external_main(void*)                                              \
     {                                                                          \
         LMW_MAXCLASS_DEF_IMPL(default, class)                                  \
     }

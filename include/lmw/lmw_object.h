@@ -2,6 +2,7 @@
 
 #include <c74_max.h>
 #include <unordered_map>
+#include <iostream>
 #include "lmw_message.h"
 
 namespace lmw {
@@ -40,6 +41,11 @@ namespace lmw {
             else
                 return {};
         }
+        
+        c74::max::t_object* max_object()
+        {
+            return t_obj_instance_ptr;
+        }
 
       private:
         c74::max::t_object* t_obj_instance_ptr = nullptr;
@@ -65,7 +71,7 @@ namespace lmw {
     template <typename user_class>
     class object : public object_base {
       public:
-        ~object()
+        virtual ~object()
         {
         }
 

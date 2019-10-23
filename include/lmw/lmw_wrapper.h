@@ -49,7 +49,7 @@ namespace lmw {
         c74::max::method dsp64h)
     {
         class_ptr = c74::max::class_new(
-            "test", new_instance, nullptr, sizeof(std::ptrdiff_t), nullptr, 0);
+            "testexternal", new_instance, free_instance, sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
 
         // clang-format off
         
@@ -91,6 +91,8 @@ namespace lmw {
     {
         static_assert(std::is_constructible<user_class>(),
                       "External class must be constructible without arguments");
+        
+        long args_offset = c74::max::attr_args_offset(ac, av);
 
         auto* obj = c74::max::object_alloc(class_ptr);
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(obj);
@@ -115,8 +117,6 @@ namespace lmw {
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(instance);
 
         wrapper->object.~user_class();
-
-        c74::max::object_free(instance);
     }
 
     template <typename user_class>
