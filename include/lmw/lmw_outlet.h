@@ -59,6 +59,11 @@ namespace lmw {
         friend class object_base;
 
       public:
+        outlet(const char* msg_name, const char* description)
+            : m_msg_name(msg_name), m_msg_description(description)
+        {
+        }
+
         ~outlet()
         {
             if(m_outlet)
@@ -81,43 +86,72 @@ namespace lmw {
         void send(Arg&& arg)
         {
             append_to_output(arg);
-            send_output();
+            send_buffer();
         }
         
         c74::max::t_outlet* native_handle() const
         {
             return m_outlet;
         }
+        
+        void name(const symbol& n) noexcept
+        {
+            m_msg_name = n;
+        }
+        
+        void description(const symbol& d) noexcept
+        {
+            m_msg_description = d;
+        }
+        
+        symbol name() const noexcept
+        {
+            return m_msg_name;
+        }
+        
+        symbol description() const noexcept
+        {
+            return m_msg_description;
+        }
+
+        [[nodiscard]] bool any() const noexcept
+        {
+            static symbol any("any");
+            static symbol anything("anything");
+            
+            return m_msg_name == any || m_msg_name == anything;
+        }
 
       private:
         template <typename Arg>
         void append_to_output(const Arg& arg)
         {
-            detail::outlet_output_accm(output, arg);
+            detail::outlet_output_accm(buffer, arg);
         }
 
-        void send_output()
+        void send_buffer()
         {
-            if (!m_outlet) return;
+            if (!m_outlet || buffer.empty()) return;
 
-            detail::outlet_do_send(native_handle(), output);
+            detail::outlet_do_send(native_handle(), buffer);
 
-            output.clear();
+            buffer.clear();
         }
 
         void lmw_internal_create(c74::max::t_object* obj)
         {
-            m_outlet = static_cast<c74::max::t_outlet*>(
-                c74::max::outlet_new(obj, "anything"));
-            
+            m_outlet = static_cast<c74::max::t_outlet*>(c74::max::outlet_new(
+                obj, any() ? nullptr : static_cast<const char*>(name())));
+
             m_owner = obj;
         }
-        
-        atom_vector output;
+
+        atom_vector buffer;
 
         c74::max::t_outlet* m_outlet = nullptr;
         c74::max::t_object* m_owner = nullptr;
+        
+        symbol m_msg_name;
+        symbol m_msg_description;
     };
-
-    using outlet_ptr = std::shared_ptr<outlet>;
 }

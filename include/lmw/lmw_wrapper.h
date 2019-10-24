@@ -20,7 +20,7 @@ namespace lmw {
             return &object_header.maxobj_header;
         }
 
-        bool init(t_atom_span args, long attr_offset)
+        bool lmw_internal_init(t_atom_span args, long attr_offset)
         {
             // clang-format off
 
@@ -34,7 +34,7 @@ namespace lmw {
                 }
             }
             
-            object.lmw_finalize();
+            object.lmw_internal_finalize();
 
             // clang-format on
 
@@ -107,12 +107,12 @@ namespace lmw {
             return nullptr;
         };
         
-        wrapper->object.prepare(static_cast<c74::max::t_object*>(obj));
+        wrapper->object.lmw_internal_prepare(static_cast<c74::max::t_object*>(obj));
         
         static symbol tsym("__lmw_test_symbol__");
         
         if (static_cast<c74::max::t_symbol*>(tsym))
-            wrapper->init(detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
+            wrapper->lmw_internal_init(detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
 
         return obj;
     }
@@ -129,8 +129,10 @@ namespace lmw {
     void wrapper_msg_call(c74::max::t_object* o, c74::max::t_symbol* s, long ac,
                           c74::max::t_atom* av)
     {
+        auto args = t_atom_span(av, ac);
+        
         reinterpret_cast<object_wrapper<user_class>*>(o)->object.call(
-            s->s_name, detail::to_atom_vector(av, ac));
+            s->s_name, std::make_shared<atom_vector>(args.begin(), args.end()));
     }
 
 } // namespace lmw

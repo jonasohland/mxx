@@ -338,14 +338,6 @@ namespace lmw {
         index_type m_count;
     };
 
-    using atom_vector = std::vector<atom>;
-
-    template <size_t Size>
-    using atom_array = std::array<atom, Size>;
-
-    using t_atom_span = span<c74::max::t_atom>;
-    using atom_span = span<atom>;
-
     namespace detail {
 
         t_atom_span to_span(c74::max::t_atom* argv, long argc) noexcept

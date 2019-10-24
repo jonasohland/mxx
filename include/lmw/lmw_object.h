@@ -34,23 +34,24 @@ namespace lmw {
             return m_messages.find(name) != m_messages.end();
         }
 
-        atom_vector call(const char* name, atom_vector args)
+        atom_vector call(const char* name, std::shared_ptr<atom_vector>&& args)
         {
-            auto func = m_messages.find(name);
-
-            if (func != m_messages.end())
-                return func->second->m_handler(args, 0);
-            else
-                return {};
+            if (auto func = m_messages.find(name); func != m_messages.end())
+                func->second->call(
+                    std::forward<std::shared_ptr<atom_vector>>(args), 0);
+            
+            return {};
         }
-        
+
         inline c74::max::t_object* native_handle() const noexcept
         {
+            assert(static_cast<bool>(t_obj_instance_ptr));
+            
             return t_obj_instance_ptr;
         }
 
         template <typename... Args>
-        std::shared_ptr<outlet> new_outlet(Args&&... args)
+        std::shared_ptr<outlet> make_outlet(Args&&... args)
         {
             auto n_outlet = std::make_shared<outlet>(std::forward<Args>(args)...);
             
@@ -60,7 +61,7 @@ namespace lmw {
         }
         
         template <typename... Args>
-        std::shared_ptr<inlet> new_inlet(Args&&... args)
+        std::shared_ptr<inlet> make_inlet(Args&&... args)
         {
             auto n_inlet = std::make_shared<inlet>(std::forward<Args>(args)...);
             
@@ -69,7 +70,7 @@ namespace lmw {
             return n_inlet;
         }
         
-        void lmw_finalize()
+        void lmw_internal_finalize()
         {
             auto let_creator = [&](const auto& let) {
                 let->lmw_internal_create(t_obj_instance_ptr);
@@ -78,15 +79,33 @@ namespace lmw {
             std::for_each(m_inlets.begin(), m_inlets.end(), let_creator);
             std::for_each(m_outlets.begin(), m_outlets.end(), let_creator);
         }
+        
+        template<typename... Args>
+        void post(const char* msg, Args... args)
+        {
+            c74::max::object_post(native_handle(), msg, args...);
+        }
+        
+        template<typename... Args>
+        void error(const char* msg, Args... args)
+        {
+            c74::max::object_error(native_handle(), msg, args...);
+        }
+        
+        template<typename... Args>
+        void warn(const char* msg, Args... args)
+        {
+            c74::max::object_warn(native_handle(), msg, args...);
+        }
 
       private:
         
-        void assign(message* msg)
+        void lmw_internal_assign(message* msg)
         {
             m_messages.insert({msg->name(), msg});
         }
         
-        void prepare(c74::max::t_object* instance_ptr)
+        void lmw_internal_prepare(c74::max::t_object* instance_ptr)
         {
             t_obj_instance_ptr = instance_ptr;
         }

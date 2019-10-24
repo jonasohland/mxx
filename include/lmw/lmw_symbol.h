@@ -56,6 +56,21 @@ namespace lmw {
             m_sym = c74::max::gensym(str.c_str());
         }
         
+        inline bool operator==(const symbol& other)
+        {
+            return m_sym == other.m_sym;
+        }
+        
+        inline bool operator==(const char* other)
+        {
+            return symbol(other) == *this;
+        }
+        
+        inline bool operator==(const std::string& other)
+        {
+            return symbol(other) == *this;
+        }
+        
         inline operator const char*() const noexcept
         {
             return m_sym->s_name;
