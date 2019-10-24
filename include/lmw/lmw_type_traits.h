@@ -16,7 +16,7 @@ namespace lmw::type_traits {
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_dsp_handler, process, double**,
                                      double**, long, long);
     
-    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_init_function, init, lmw::atom_vector);
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_construct_function, construct, lmw::atom_vector);
 
     template <typename user_class>
     std::integral_constant<bool, has_dsp_handler_impl<user_class>::value>

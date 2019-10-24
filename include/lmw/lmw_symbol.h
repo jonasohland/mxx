@@ -65,6 +65,10 @@ namespace lmw {
         {
             return std::string(m_sym->s_name);
         }
+        
+        inline operator c74::max::t_symbol*() {
+            return m_sym;
+        }
 
         static inline symbol make_unique() noexcept
         {

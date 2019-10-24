@@ -4,6 +4,12 @@ namespace lmw {
 
     class object_base;
 
+    template <typename ExtMember, typename user_class>
+    decltype(auto) bind(ExtMember func, user_class* obj)
+    {
+        return std::bind(func, obj, std::placeholders::_1, std::placeholders::_2);
+    }
+
     class message {
 
         using handler = std::function<atom_vector(const atom_vector&, long)>;
@@ -18,7 +24,7 @@ namespace lmw {
         
         c74::max::e_max_atomtypes type()
         {
-            return c74::max::A_CANT;
+            return c74::max::A_GIMME;
         }
         
         friend class object_base;

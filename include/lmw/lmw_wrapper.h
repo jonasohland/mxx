@@ -20,20 +20,24 @@ namespace lmw {
             return &object_header.maxobj_header;
         }
 
-        bool init(t_atom_span args)
+        bool init(t_atom_span args, long attr_offset)
         {
             // clang-format off
 
-            if constexpr(type_traits::has_init_function<user_class>()){
+            if constexpr(type_traits::has_construct_function<user_class>()){
                 try {
-                    object.init(atom_vector(args.begin(), args.end()));
-                } catch (std::runtime_error ex) {
+                    object.construct(atom_vector(
+                        args.begin() + attr_offset, args.end()));
+                }
+                catch (std::runtime_error ex) {
                     return false;
                 }
             }
             
-            //clang-format on
-            
+            object.lmw_finalize();
+
+            // clang-format on
+
             return true;
         }
 
@@ -78,7 +82,7 @@ namespace lmw {
             auto[name, handler] = msg;
             
             c74::max::class_addmethod(
-                class_ptr, named_meth_wrapper, name, handler->type(), 0);
+                class_ptr, named_meth_wrapper, name.c_str(), handler->type(), 0);
         }
 
         return class_ptr;
@@ -91,8 +95,7 @@ namespace lmw {
     {
         static_assert(std::is_constructible<user_class>(),
                       "External class must be constructible without arguments");
-        
-        long args_offset = c74::max::attr_args_offset(ac, av);
+    
 
         auto* obj = c74::max::object_alloc(class_ptr);
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(obj);
@@ -106,7 +109,10 @@ namespace lmw {
         
         wrapper->object.prepare(static_cast<c74::max::t_object*>(obj));
         
-        wrapper->init(detail::to_span(av, ac));
+        static symbol tsym("__lmw_test_symbol__");
+        
+        if (static_cast<c74::max::t_symbol*>(tsym))
+            wrapper->init(detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
 
         return obj;
     }
@@ -123,10 +129,8 @@ namespace lmw {
     void wrapper_msg_call(c74::max::t_object* o, c74::max::t_symbol* s, long ac,
                           c74::max::t_atom* av)
     {
-        auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(o);
-        
-        if(wrapper->object.has_method(s->s_name))
-            wrapper->object.call(s->s_name, detail::to_atom_vector(av, ac));
+        reinterpret_cast<object_wrapper<user_class>*>(o)->object.call(
+            s->s_name, detail::to_atom_vector(av, ac));
     }
 
 } // namespace lmw
