@@ -24,7 +24,7 @@ namespace lmw {
 
         void call(std::shared_ptr<atom_vector> args, long inlet)
         {
-            executor.post(std::forward<std::shared_ptr<atom_vector>>(args));
+            executor.post(std::forward<std::shared_ptr<atom_vector>>(args), inlet);
         }
 
         const char* name()

@@ -27,10 +27,10 @@ namespace lmw {
         symbol(c74::max::t_symbol* sym) : m_sym(sym)
         {
         }
-        
+
         symbol(const c74::max::t_atom& atm)
         {
-            if(atm.a_type == c74::max::e_max_atomtypes::A_SYM)
+            if (LMW_LIKELY(atm.a_type == c74::max::e_max_atomtypes::A_SYM))
                 m_sym = c74::max::atom_getsym(&atm);
             else
                 m_sym = detail::empty_t_symbol;

@@ -23,11 +23,13 @@ namespace lmw {
         bool lmw_internal_init(t_atom_span args, long attr_offset)
         {
             // clang-format off
+            
+            assert(args.size() >= attr_offset);
 
             if constexpr(type_traits::has_construct_function<user_class>()){
                 try {
                     object.construct(atom_vector(
-                        args.begin() + attr_offset, args.end()));
+                        args.begin(), args.begin() + attr_offset));
                 }
                 catch (std::runtime_error ex) {
                     return false;
@@ -35,6 +37,8 @@ namespace lmw {
             }
             
             object.lmw_internal_finalize();
+            
+            c74::max::attr_args_process(&object_header, args.size(), args.begin());
 
             // clang-format on
 
@@ -95,7 +99,6 @@ namespace lmw {
     {
         static_assert(std::is_constructible<user_class>(),
                       "External class must be constructible without arguments");
-    
 
         auto* obj = c74::max::object_alloc(class_ptr);
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(obj);
@@ -106,13 +109,15 @@ namespace lmw {
         catch (std::exception ex) {
             return nullptr;
         };
-        
-        wrapper->object.lmw_internal_prepare(static_cast<c74::max::t_object*>(obj));
-        
+
+        wrapper->object.lmw_internal_prepare(
+            static_cast<c74::max::t_object*>(obj));
+
         static symbol tsym("__lmw_test_symbol__");
-        
+
         if (static_cast<c74::max::t_symbol*>(tsym))
-            wrapper->lmw_internal_init(detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
+            wrapper->lmw_internal_init(
+                detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
 
         return obj;
     }
@@ -126,11 +131,12 @@ namespace lmw {
     }
 
     template <typename user_class>
-    void wrapper_msg_call(c74::max::t_object* o, c74::max::t_symbol* s, long ac,
-                          c74::max::t_atom* av)
+    LMW_ALWAYS_INLINE void wrapper_msg_call(c74::max::t_object* o,
+                                            c74::max::t_symbol* s, long ac,
+                                            c74::max::t_atom* av)
     {
         auto args = t_atom_span(av, ac);
-        
+
         reinterpret_cast<object_wrapper<user_class>*>(o)->object.call(
             s->s_name, std::make_shared<atom_vector>(args.begin(), args.end()));
     }

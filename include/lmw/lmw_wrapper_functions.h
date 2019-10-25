@@ -5,7 +5,7 @@
 namespace lmw {
 
     template <typename user_class>
-    void wrapper_handle_bang_impl(c74::max::t_object* obj)
+    LMW_ALWAYS_INLINE void wrapper_handle_bang_impl(c74::max::t_object* obj)
     {
         if constexpr(type_traits::has_bang_handler<user_class>())
         {
@@ -20,7 +20,8 @@ namespace lmw {
     }
 
     template <typename user_class>
-    void wrapper_handle_int_impl(c74::max::t_object* obj, long n)
+    LMW_ALWAYS_INLINE void wrapper_handle_int_impl(c74::max::t_object* obj,
+                                                   long n)
     {
         if constexpr(type_traits::has_int_handler<user_class>())
         {
@@ -34,11 +35,11 @@ namespace lmw {
     }
 
     template <typename user_class>
-    void wrapper_dsp64_perform_impl(c74::max::t_object* x,
-                                    c74::max::t_object* dsp64, double** ins,
-                                    long numins, double** outs, long numouts,
-                                    long sampleframes, long flags,
-                                    void* userparam)
+    LMW_ALWAYS_INLINE void
+    wrapper_dsp64_perform_impl(c74::max::t_object* x, c74::max::t_object* dsp64,
+                               double** ins, long numins, double** outs,
+                               long numouts, long sampleframes, long flags,
+                               void* userparam)
     {
         if constexpr(lmw::type_traits::has_dsp_handler<user_class>())
         {
