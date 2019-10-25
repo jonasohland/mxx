@@ -4,17 +4,20 @@
 
 namespace lmw::type_traits {
 
-    LMW_CREATE_BASIC_MEMBER_CHECK(has_bang_handler, handle_bang);
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_bang_handler, handle_bang, long);
 
-    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_int_handler, handle_int, long);
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_int_handler, handle_int, long, long);
 
-    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_float_handler, handle_float, double);
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_float_handler, handle_float, double, long);
 
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_list_handler, handle_list,
-                                     lmw::atom_span);
+                                     ::lmw::atom_vector, long);
+
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_raw_list_handler, handle_raw_list,
+                                     ::lmw::t_atom_span, long);
 
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_dsp_handler, process, double**,
-                                     double**, long, long);
+                                     double**, long, long, long);
     
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_construct_function, construct, lmw::atom_vector);
 

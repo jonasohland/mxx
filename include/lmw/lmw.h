@@ -23,7 +23,23 @@
 
 #endif
 
+#include <string>
+#include <sstream>
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <numeric>
+
+#include <c74_max.h>
+
 // clang-format off
+
+#include "lmw_symbol.h"
+
+namespace lmw::sym {
+    symbol signal              = c74::max::gensym("signal");
+    symbol multichannelsignal  = c74::max::gensym("multichannelsignal");
+}
 
 #include "lmw_types.h"
 #include "lmw_atom.h"

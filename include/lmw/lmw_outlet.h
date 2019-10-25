@@ -94,6 +94,46 @@ namespace lmw {
             append_to_output(arg);
             send_buffer();
         }
+        
+        template <>
+        void send<lmw::t_atom_span>(t_atom_span&& span)
+        {
+            if(LMW_UNLIKELY(!span.size()))
+                return;
+            
+            if (span[0].a_type == c74::max::A_LONG||
+                span[0].a_type == c74::max::A_LONG)
+                c74::max::outlet_list(m_outlet, nullptr, span.size(), span.data());
+            else {
+                if (span.size() > 1)
+                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, span.size() - 1, span.data() + 1);
+                else
+                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, 0, nullptr);
+            }
+        }
+        
+        template <>
+        void send<c74::max::t_atom*>(c74::max::t_atom*&& atom)
+        {
+            switch (atom->a_type) {
+                case c74::max::A_LONG:
+                    c74::max::outlet_int(m_outlet, atom->a_w.w_long);
+                    break;
+                case c74::max::A_FLOAT:
+                    c74::max::outlet_float(m_outlet, atom->a_w.w_float);
+                    break;
+                case c74::max::A_SYM:
+                    c74::max::outlet_anything(m_outlet, atom->a_w.w_sym, 0, nullptr);
+                default:
+                    break;
+            }
+        }
+        
+        template <>
+        void send<atom>(atom&& atom)
+        {
+            send(static_cast<c74::max::t_atom*>(&atom));
+        }
 
         c74::max::t_outlet* native_handle() const
         {

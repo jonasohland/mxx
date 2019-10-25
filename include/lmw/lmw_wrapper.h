@@ -54,39 +54,61 @@ namespace lmw {
         c74::max::t_class* class_ptr, c74::max::method new_instance,
         c74::max::method free_instance, c74::max::method named_meth_wrapper,
         c74::max::method inth, c74::max::method bangh, c74::max::method floath,
-        c74::max::method dsp64h)
+        c74::max::method listh, c74::max::method assisth,
+        c74::max::method inletinfoh, c74::max::method dsp64h)
     {
         class_ptr = c74::max::class_new(
-            "testexternal", new_instance, free_instance, sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
+            "testexternal~", new_instance, free_instance,
+            sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
 
         // clang-format off
+        
+        if constexpr(type_traits::is_dsp_class<user_class>()){
+            c74::max::class_dspinit(class_ptr);
+        }
         
         if constexpr(type_traits::has_bang_handler<user_class>()){
             c74::max::class_addmethod(class_ptr, bangh, "bang");
         }
-        
-        if constexpr(type_traits::has_int_handler<user_class>()){
-            c74::max::class_addmethod(class_ptr, inth, "int");
+
+        if constexpr(type_traits::has_int_handler<user_class>())
+        {
+            c74::max::class_addmethod(
+                class_ptr, inth, "int", c74::max::A_LONG, 0);
         }
-        
-        if constexpr(type_traits::has_float_handler<user_class>()){
-            c74::max::class_addmethod(class_ptr, floath, "float");
+
+        if constexpr(type_traits::has_float_handler<user_class>())
+        {
+            c74::max::class_addmethod(
+                class_ptr, floath, "float", c74::max::A_FLOAT, 0);
         }
-        
+
+        if constexpr(type_traits::has_list_handler<user_class>() ||
+                     type_traits::has_raw_list_handler<user_class>())
+        {
+            c74::max::class_addmethod(
+                class_ptr, listh, "list", c74::max::A_GIMME, 0);
+        }
+
         if constexpr(type_traits::has_dsp_handler<user_class>()){
             c74::max::class_addmethod(class_ptr, dsp64h, "dsp64");
         }
         
         // clang-format on
-        
+
+        c74::max::class_addmethod(
+            class_ptr, assisth, "assist", c74::max::A_CANT, 0);
+        c74::max::class_addmethod(
+            class_ptr, inletinfoh, "inletinfo", c74::max::A_CANT, 0);
+
         user_class dummy;
 
         for (const auto& msg : dummy.messages()) {
-            
+
             auto[name, handler] = msg;
-            
-            c74::max::class_addmethod(
-                class_ptr, named_meth_wrapper, name.c_str(), handler->type(), 0);
+
+            c74::max::class_addmethod(class_ptr, named_meth_wrapper,
+                                      name.c_str(), handler->type(), 0);
         }
 
         return class_ptr;
@@ -118,6 +140,10 @@ namespace lmw {
         if (static_cast<c74::max::t_symbol*>(tsym))
             wrapper->lmw_internal_init(
                 detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
+        
+        if constexpr(type_traits::is_dsp_class<user_class>()){
+            c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj), wrapper->object.signals_count());
+        }
 
         return obj;
     }

@@ -34,7 +34,7 @@ inline void lmw::outlet::lmw_internal_create(object_base* obj, long index,
     lmw_internal_set_owner(obj->native_handle());
 
     m_outlet = static_cast<c74::max::t_outlet*>(c74::max::outlet_new(
-        owner(), any() ? nullptr : static_cast<const char*>(name())));
+        owner(), any() ? nullptr : static_cast<const char*>(type())));
 }
 
 inline void lmw::inlet::lmw_internal_create(object_base* obj, long index,
@@ -42,5 +42,12 @@ inline void lmw::inlet::lmw_internal_create(object_base* obj, long index,
 {
     lmw_internal_set_owner(obj->native_handle());
 
-    m_inlet_proxy = c74::max::proxy_new(owner(), total - index, nullptr);
+    if (!(type() == sym::signal) && !(type() == sym::multichannelsignal)) {
+
+        if (index == 0) return;
+
+        m_inlet_proxy = c74::max::proxy_new(owner(), total - index, nullptr);
+    }
+    else
+        m_inlet = c74::max::inlet_new(owner(), type());
 }

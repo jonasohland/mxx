@@ -1,22 +1,15 @@
+#define LMW_REQUIRE_PROCESS_FUNCTION
 
 #include "lmw.h"
 
-struct test_external : public lmw::object<test_external> {
-
-    void handle_bang()
+struct test_external : lmw::object<test_external> {
+    
+    lmw::outlet_ptr out = make_signal_outlet("hello", "world");
+    
+    void process(double**, double**, long, long, long)
     {
-        console << "Hello!" << lmw::endl;
-        console_warn << "Oh No!" << lmw::endl;
-        console_error << "bruuuuuuuh" << lmw::endl;
+        
     }
-
-    void handle_int(long num)
-    {
-        post("Hello %s!", num);
-    }
-
-    lmw::outlet_ptr outlet = make_outlet("int", "an outlet");
-    lmw::inlet_ptr inlet = make_inlet();
 };
 
 LMW_EXTERNAL(test_external)

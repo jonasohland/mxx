@@ -1,3 +1,4 @@
+#pragma once
 #include <c74_max.h>
 
 namespace lmw {

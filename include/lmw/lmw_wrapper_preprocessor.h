@@ -176,6 +176,12 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 #define LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)                         \
     LMW_WRAPPER_FUNCTION(_dsp64_perform, identifier)
 
+#define LMW_WRAPPER_FUNCTION_ASSIST(identifier)                                \
+    LMW_WRAPPER_FUNCTION(_assist, identifier)
+
+#define LMW_WRAPPER_FUNCTION_INLETINFO(identifier)                             \
+    LMW_WRAPPER_FUNCTION(_inletinfo, identifier)
+
 #define LMW_WRAPPER_FUNCTION_BANG(identifier)                                  \
     LMW_WRAPPER_FUNCTION(_bang, identifier)
 
@@ -215,7 +221,29 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     void LMW_WRAPPER_FUNCTION_FLOAT(identifier)(                               \
         c74::max::t_object * obj, double n)                                    \
     {                                                                          \
-        lmw::wrapper_handle_int_impl<classname>(obj, n);                       \
+        lmw::wrapper_handle_float_impl<classname>(obj, n);                     \
+    }
+
+#define LMW_CREATE_LIST_HANDLER_FUNCTION(identifier, classname)                \
+    void LMW_WRAPPER_FUNCTION_LIST(identifier)(                                \
+        c74::max::t_object * obj, c74::max::t_symbol * s, long argc,           \
+        c74::max::t_atom* argv)                                                \
+    {                                                                          \
+        lmw::wrapper_handle_list_impl<classname>(obj, s, argc, argv);          \
+    }
+
+#define LMW_CREATE_ASSIST_FUNCTION(identifier, classname)                      \
+    void LMW_WRAPPER_FUNCTION_ASSIST(identifier)(                              \
+        c74::max::t_object * x, void* b, long io, long index, char* s)         \
+    {                                                                          \
+        lmw::wrapper_assist_impl<classname>(x, b, io, index, s);               \
+    }
+
+#define LMW_CREATE_INLETINFO_FUNCTION(identifier, classname)                   \
+    void LMW_WRAPPER_FUNCTION_INLETINFO(identifier)(                           \
+        c74::max::t_object * x, void* b, long index, char* t)                  \
+    {                                                                          \
+        lmw::wrapper_inletinfo_impl<classname>(x, b, index, t);                \
     }
 
 #define LMW_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                 \
@@ -234,6 +262,9 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
         c74::max::t_object * x, c74::max::t_object * dsp64, short* count,      \
         double samplerate, long maxvectorsize, long flags)                     \
     {                                                                          \
+        lmw::wrapper_dsp64_setup<classname>(                                   \
+            x, dsp64, count, samplerate, maxvectorsize, flags);                \
+                                                                               \
         c74::max::object_method(                                               \
             dsp64, c74::max::gensym("dsp_add64"), x,                           \
             reinterpret_cast<void*>(                                           \
@@ -252,8 +283,11 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     LMW_CREATE_BANG_HANDLER_FUNCTION(identifier, classname)                    \
     LMW_CREATE_INT_HANDLER_FUNCTION(identifier, classname)                     \
     LMW_CREATE_FLOAT_HANDLER_FUNCTION(identifier, classname)                   \
+    LMW_CREATE_LIST_HANDLER_FUNCTION(identifier, classname)                    \
     LMW_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                     \
     LMW_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                      \
+    LMW_CREATE_ASSIST_FUNCTION(identifier, classname)                          \
+    LMW_CREATE_INLETINFO_FUNCTION(identifier, classname)                       \
     LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)
 
 /* -------------------------------------------------------------------------- */
@@ -302,6 +336,9 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_INT(ident)),                       \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_BANG(ident)),                      \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_FLOAT(ident)),                     \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_LIST(ident)),                      \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_ASSIST(ident)),                    \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_INLETINFO(ident)),                 \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_DSP64_METHOD(ident)));             \
                                                                                \
     c74::max::class_register(                                                  \
