@@ -70,9 +70,9 @@
 #define LMW_PREPROCESSOR_CAT_IMPL(lhs, rhs) lhs##rhs
 
 /** concat 2 tokens
- \code
+ @code
  LMW_PREPROCESSOR_CAT(Hello, World) // will expand to: HelloWorld
- \endcode
+ @endcode
  */
 #define LMW_PREPROCESSOR_CAT(lhs, rhs) LMW_PREPROCESSOR_CAT_IMPL(lhs, rhs)
 
@@ -80,9 +80,9 @@
 #define LMW_PREPROCESSOR_CAT_3_IMPL(one, two, three) one##two##three
 
 /** concat 2 tokens
-\code
+@code
 LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
-\endcode
+@endcode
 */
 #define LMW_PREPROCESSOR_CAT_3(one, two, three)                                \
     LMW_PREPROCESSOR_CAT_3_IMPL(one, two, three)
@@ -90,7 +90,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 /**
  Generate a type trait to check for the existence of a member function on a
  class
- \code
+ @code
  LMW_CREATE_BASIC_MEMBER_CHECK(has_member_function_serialize, serialize);
 
  struct myclass {
@@ -98,7 +98,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
  };
 
  static_assert(has_member_function_serialize<myclass>::value, "error!");
- \endcode
+ @endcode
  */
 #define LMW_CREATE_BASIC_MEMBER_CHECK(sname, fname)                            \
     template <class T>                                                         \
