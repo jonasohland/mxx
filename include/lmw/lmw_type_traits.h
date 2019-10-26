@@ -19,6 +19,8 @@ namespace lmw::type_traits {
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_dsp_handler, process, double**,
                                      double**, long, long, long);
     
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_prepare_function, prepare, double, long);
+    
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_construct_function, construct, lmw::atom_vector);
 
     template <typename user_class>

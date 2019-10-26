@@ -15,10 +15,14 @@ namespace lmw {
     LMW_ALWAYS_INLINE void wrapper_handle_bang_impl(c74::max::t_object* obj)
     {
         if constexpr(type_traits::has_bang_handler<user_class>())
-        {
-            reinterpret_cast<object_wrapper<user_class>*>(obj)
+            get_wrapper<user_class>(obj)
                 ->object.handle_bang(c74::max::proxy_getinlet(obj));
-        }
+
+#ifdef LMW_ENABLE_CTTI_DEBUG
+        LMW_STATIC_WARNING(!type_traits::has_bang_handler<user_class>(),
+                           "CTTI Debug: bang handler enabled");
+#endif
+
 #ifdef LMW_REQUIRE_BANG_HANDLER
         static_assert(
             type_traits::has_bang_handler<user_class>(),
@@ -31,10 +35,14 @@ namespace lmw {
                                                    long n)
     {
         if constexpr(type_traits::has_int_handler<user_class>())
-        {
-            reinterpret_cast<object_wrapper<user_class>*>(obj)
+            get_wrapper<user_class>(obj)
                 ->object.handle_int(n, c74::max::proxy_getinlet(obj));
-        }
+
+#ifdef LMW_ENABLE_CTTI_DEBUG
+        LMW_STATIC_WARNING(!type_traits::has_int_handler<user_class>(),
+                           "CTTI Debug: bang handler enabled");
+#endif
+
 #ifdef LMW_REQUIRE_INT_HANDLER
         static_assert(lmw::type_traits::has_int_handler<user_class>(),
                       "Missing required handle_int function on external class");
@@ -45,10 +53,15 @@ namespace lmw {
     LMW_ALWAYS_INLINE void wrapper_handle_float_impl(c74::max::t_object* obj,
                                                      double n)
     {
-        if constexpr(type_traits::has_float_handler<user_class>()){
-                reinterpret_cast<object_wrapper<user_class>*>(obj)
-                    ->object.handle_float(n, c74::max::proxy_getinlet(obj));
-        }
+        if constexpr(type_traits::has_float_handler<user_class>())
+            get_wrapper<user_class>(obj)
+                ->object.handle_float(n, c74::max::proxy_getinlet(obj));
+
+#ifdef LMW_ENABLE_CTTI_DEBUG
+        LMW_STATIC_WARNING(!type_traits::has_float_handler<user_class>(),
+                           "CTTI Debug: float handler enabled");
+#endif
+
 #ifdef LMW_REQUIRE_FLOAT_HANDLER
         static_assert(
             lmw::type_traits::has_float_handler<user_class>(),
@@ -62,18 +75,21 @@ namespace lmw {
                              long ac, c74::max::t_atom* av)
     {
         if constexpr(type_traits::has_list_handler<user_class>())
-        {
-            reinterpret_cast<object_wrapper<user_class>*>(obj)
+            get_wrapper<user_class>(obj)
                 ->object.handle_list(
                     detail::to_atom_vector(av, ac), c74::max::proxy_getinlet(obj));
-        }
         
         if constexpr(type_traits::has_raw_list_handler<user_class>())
-        {
-            reinterpret_cast<object_wrapper<user_class>*>(obj)
+            get_wrapper<user_class>(obj)
                 ->object.handle_raw_list(
                     detail::to_span(av, ac), c74::max::proxy_getinlet(obj));
-        }
+#ifdef LMW_ENABLE_CTTI_DEBUG
+        LMW_STATIC_WARNING(!type_traits::has_list_handler<user_class>(),
+                           "CTTI Debug: list handler enabled");
+        LMW_STATIC_WARNING(!type_traits::has_raw_list_handler<user_class>(),
+                           "CTTI Debug: raw list handler enabled");
+#endif
+        
 #ifdef LMW_REQUIRE_LIST_HANDLER
         static_assert(
             type_traits::has_list_handler<user_class>(),
@@ -106,8 +122,6 @@ namespace lmw {
         
         if(!wrapper->object.inlet_is_hot(index))
             *t = 1;
-        
-        
     }
 
     template <typename user_class>
@@ -116,6 +130,8 @@ namespace lmw {
                         short* count, double srate, long vsize, long flags)
     {
         c74::max::object_post(nullptr, "dsp_compile");
+        
+        get_wrapper<user_class>(x)->object.prepare(srate, vsize);
     }
 
     template <typename user_class>
@@ -126,10 +142,13 @@ namespace lmw {
                                void* userparam)
     {
         if constexpr(lmw::type_traits::has_dsp_handler<user_class>())
-        {
-            reinterpret_cast<object_wrapper<user_class>*>(x)
+            get_wrapper<user_class>(x)
                 ->object.process(ins, outs, numins, numouts, frames);
-        }
+        
+#ifdef LMW_ENABLE_CTTI_DEBUG
+        LMW_STATIC_WARNING(!type_traits::has_dsp_handler<user_class>(),
+                           "CTTI Debug: DSP perform routine enabled");
+#endif
 
 #ifdef LMW_REQUIRE_PROCESS_FUNCTION
         static_assert(type_traits::has_dsp_handler<user_class>(),
@@ -137,5 +156,3 @@ namespace lmw {
 #endif
     }
 }
-
-

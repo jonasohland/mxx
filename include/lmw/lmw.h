@@ -34,6 +34,7 @@
 
 // clang-format off
 
+#include "lmw_wrapper_preprocessor.h"
 #include "lmw_symbol.h"
 
 namespace lmw::sym {

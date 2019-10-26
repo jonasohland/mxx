@@ -1,8 +1,3 @@
- 
-        
-    
-
-
 #pragma once
 
 #define lmw_external_main ext_main
@@ -147,6 +142,50 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     };                                                                         \
     template <typename user_class>                                             \
     std::integral_constant<bool, sname##_impl<user_class>::value> sname;
+
+/* -------------------------------------------------------------------------- */
+/*                      PRINT WARNINGS AT COMPILE TIME                        */
+/*                              taken from:                                   */
+/*    stackoverflow.com/questions/8936063/does-there-exist-a-static-warning   */
+/* -------------------------------------------------------------------------- */
+
+
+#if defined(__GNUC__) || defined(__clang__)
+#define LMW_DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
+#elif defined(_MSC_VER)
+#define LMW_DEPRECATE(foo, msg) __declspec(deprecated(msg)) foo
+#else
+#error This compiler is not supported
+#endif
+
+#define LMW_PP_CAT(x, y) LMW_PP_CAT1(x, y)
+#define LMW_PP_CAT1(x, y) x##y
+
+namespace lmw::detail {
+    struct true_type {
+    };
+    struct false_type {
+    };
+    template <int test>
+    struct converter : public true_type {
+    };
+    template <>
+    struct converter<0> : public false_type {
+    };
+}
+
+#define LMW_STATIC_WARNING(cond, msg)                                          \
+    struct LMW_PP_CAT(static_warning, __LINE__) {                              \
+        LMW_DEPRECATE(void _(::lmw::detail::false_type const&), msg){};        \
+        void _(::lmw::detail::true_type const&){};                             \
+        LMW_PP_CAT(static_warning, __LINE__)()                                 \
+        {                                                                      \
+            _(::lmw::detail::converter<(cond)>());                             \
+        }                                                                      \
+    }
+
+#define LMW_STATIC_WARNING_TEMPLATE(token, cond, msg) \
+    LMW_STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 /* -------------------------------------------------------------------------- */
 /*                         NAME DECORATORS AND STUFF                          */
