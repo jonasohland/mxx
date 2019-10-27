@@ -7,12 +7,13 @@ namespace lmw {
     class inlet : public port {
 
         friend class max_class_base;
-        
+
         template <typename user_class>
-        friend void
-        wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                            short* count, double srate, long vsize, long flags);
-        
+        friend void wrapper_dsp64_setup(c74::max::t_object* x,
+                                        c74::max::t_object* dspman,
+                                        short* count, double srate, long vsize,
+                                        long flags, c74::max::t_perfroutine64);
+
         template <typename user_class>
         friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 

@@ -38,8 +38,9 @@
 
 // clang-format off
 
-#include "lmw_types.h"
 #include "lmw_symbol.h"
+#include "lmw_atom.h"
+#include "lmw_types.h"
 
 namespace lmw::sym {
     symbol any                 = c74::max::gensym("any");
@@ -51,7 +52,6 @@ namespace lmw::sym {
 }
 
 #include "lmw_wrapper_preprocessor.h"
-#include "lmw_atom.h"
 #include "lmw_type_traits.h"
 #include "lmw_threads.h"
 #include "lmw_message.h"

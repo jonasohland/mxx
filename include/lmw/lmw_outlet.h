@@ -44,7 +44,7 @@ namespace lmw {
         }
 
         template <typename OutputType>
-        LMW_ALWAYS_INLINE void outlet_output_accm(atom_vector& output,
+        LMW_ALWAYS_INLINE void outlet_output_accm(atom::vector& output,
                                                   const OutputType& noutput)
         {
             output.emplace_back(noutput);
@@ -52,7 +52,7 @@ namespace lmw {
 
         template <>
         LMW_ALWAYS_INLINE void
-        outlet_output_accm<std::vector<atom>>(atom_vector& output,
+        outlet_output_accm<std::vector<atom>>(atom::vector& output,
                                               const std::vector<atom>& noutput)
         {
             std::copy(
@@ -164,7 +164,7 @@ namespace lmw {
         void lmw_internal_create(max_class_base* obj, long index, std::size_t);
 
         
-        atom_vector m_buffer;
+        atom::vector m_buffer;
         c74::max::t_outlet* m_outlet = nullptr;
     };
 }

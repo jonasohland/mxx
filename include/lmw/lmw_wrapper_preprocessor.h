@@ -189,19 +189,24 @@ namespace lmw::detail {
 
 #ifdef LMW_ENABLE_CTTI_DEBUG
 
+#define LMW_DEBUG_MSG_PREFIX "LMW DEBUG: "
+
 #define LMW_CTTI_DEBUG_SECTION(user_class)                                     \
     LMW_STATIC_WARNING(!lmw::type_traits::has_bang_handler<user_class>(),      \
-                       "CTTI Debug: bang handler enabled");                    \
+                       LMW_DEBUG_MSG_PREFIX "bang handler enabled");           \
     LMW_STATIC_WARNING(!lmw::type_traits::has_int_handler<user_class>(),       \
-                       "CTTI Debug: int handler enabled");                     \
+                       LMW_DEBUG_MSG_PREFIX "int handler enabled");            \
     LMW_STATIC_WARNING(!lmw::type_traits::has_float_handler<user_class>(),     \
-                       "CTTI Debug: float handler enabled");                   \
+                       LMW_DEBUG_MSG_PREFIX "float handler enabled");          \
     LMW_STATIC_WARNING(!lmw::type_traits::has_list_handler<user_class>(),      \
-                       "CTTI Debug: list handler enabled");                    \
+                       LMW_DEBUG_MSG_PREFIX "list handler enabled");           \
     LMW_STATIC_WARNING(!lmw::type_traits::has_raw_list_handler<user_class>(),  \
-                       "CTTI Debug: raw list handler enabled");                \
+                       LMW_DEBUG_MSG_PREFIX "raw list handler enabled");       \
     LMW_STATIC_WARNING(!lmw::type_traits::has_dsp_handler<user_class>(),       \
-                       "CTTI Debug: DSP perform routine enabled");
+                       LMW_DEBUG_MSG_PREFIX "DSP perform routine enabled");    \
+    LMW_STATIC_WARNING(                                                        \
+        !lmw::type_traits::has_input_changed_function<user_class>(),           \
+        LMW_DEBUG_MSG_PREFIX "inputchanged handler enabled");
 #else
 
 #define LMW_CTTI_DEBUG_SECTION(user_class) ;
@@ -343,12 +348,8 @@ namespace lmw::detail {
         double samplerate, long maxvectorsize, long flags)                     \
     {                                                                          \
         lmw::wrapper_dsp64_setup<classname>(                                   \
-            x, dsp64, count, samplerate, maxvectorsize, flags);                \
-                                                                               \
-        c74::max::object_method(                                               \
-            dsp64, lmw::sym::dsp_add64, x,                                     \
-            reinterpret_cast<void*>(                                           \
-                LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)));              \
+            x, dsp64, count, samplerate, maxvectorsize, flags,                 \
+            LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier));                   \
     }
 
 #define LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                \

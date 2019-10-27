@@ -10,9 +10,14 @@ namespace lmw {
             c74::max::t_pxobject mspobj_header;
         };
 
-        operator c74::max::t_object*()
+        operator c74::max::t_object*() const noexcept
         {
             return &object_header.maxobj_header;
+        }
+        
+        operator c74::max::t_pxobject*() const noexcept
+        {
+            return &object_header.mspobj_header;
         }
 
         bool lmw_internal_init(t_atom_span args, long attr_offset)
@@ -23,21 +28,26 @@ namespace lmw {
 
             if constexpr(type_traits::has_construct_function<user_class>()){
                 try {
-                    object.construct(atom_vector(
+                    object.construct(atom::vector(
                         args.begin(), args.begin() + attr_offset));
                 }
                 catch (std::runtime_error ex) {
+                    c74::max::object_error(nullptr, ex.what());
                     return false;
                 }
             }
+            
+            // clang-format on
             
             object.lmw_internal_finalize();
             
             c74::max::attr_args_process(&object_header, args.size(), args.begin());
 
-            // clang-format on
-
             return true;
+        }
+        
+        void lmw_internal_finish(){
+            object_header.mspobj_header.z_misc |= object.mspflags();
         }
 
         object_header_type object_header;
@@ -87,7 +97,8 @@ namespace lmw {
         }
 
         if constexpr(type_traits::has_dsp_handler<user_class>()){
-            c74::max::class_addmethod(class_ptr, dsp64h, "dsp64");
+            c74::max::class_addmethod(
+                class_ptr, dsp64h, "dsp64", c74::max::A_CANT, 0);
         }
         
         // clang-format on
@@ -97,10 +108,11 @@ namespace lmw {
         c74::max::class_addmethod(
             class_ptr, inletinfoh, "inletinfo", c74::max::A_CANT, 0);
 
-        c74::max::class_addmethod(
-            class_ptr, multichanneloutputsh, "multichanneloutputs");
+        c74::max::class_addmethod(class_ptr, multichanneloutputsh,
+                                  "multichanneloutputs", c74::max::A_CANT, 0);
 
-        c74::max::class_addmethod(class_ptr, inputchangedh, "inputchanged");
+        c74::max::class_addmethod(
+            class_ptr, inputchangedh, "inputchanged", c74::max::A_CANT, 0);
 
         user_class dummy;
         
@@ -123,9 +135,11 @@ namespace lmw {
         static_assert(std::is_constructible<user_class>(),
                       "External class must be constructible without arguments");
 
+        // create new maxobject instance
         auto* obj = c74::max::object_alloc(class_ptr);
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(obj);
 
+        // place user class into it
         try {
             new (&wrapper->object) user_class();
         }
@@ -133,18 +147,27 @@ namespace lmw {
             return nullptr;
         };
 
+        // prepare wrapper (by assigning a pointer to the object header)
         wrapper->object.lmw_internal_prepare(
             static_cast<c74::max::t_object*>(obj));
 
+        // this symbol will tell us if we are dummy-instanciated or not
         static symbol tsym("__lmw_test_symbol__");
 
-        if (static_cast<c74::max::t_symbol*>(tsym))
-            wrapper->lmw_internal_init(
-                detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
-        
-        if constexpr(type_traits::is_dsp_class<user_class>()){
-            c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj), wrapper->object.streams());
+        // initialize user class (run constructor and create inlets/outlets and stuff)
+        if (static_cast<c74::max::t_symbol*>(tsym)) {
+            if (!wrapper->lmw_internal_init(detail::to_span(av, ac),
+                                            c74::max::attr_args_offset(ac, av)))
+                return nullptr;
         }
+
+        // dspsetup if dsp class
+        if constexpr(type_traits::is_dsp_class<user_class>()){
+            c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj),
+                                wrapper->object.streams());
+        }
+        
+        wrapper->lmw_internal_finish();
 
         return obj;
     }
@@ -153,6 +176,9 @@ namespace lmw {
     void wrapper_object_free(c74::max::t_object* instance)
     {
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(instance);
+        
+        if constexpr (type_traits::is_dsp_class<user_class>())
+            c74::max::dsp_free(reinterpret_cast<c74::max::t_pxobject*>(wrapper));
 
         wrapper->object.~user_class();
     }
@@ -165,7 +191,7 @@ namespace lmw {
         auto args = t_atom_span(av, ac);
 
         reinterpret_cast<object_wrapper<user_class>*>(o)->object.call(
-            s->s_name, std::make_shared<atom_vector>(args.begin(), args.end()));
+            s->s_name, std::make_shared<atom::vector>(args.begin(), args.end()));
     }
 
 } // namespace lmw

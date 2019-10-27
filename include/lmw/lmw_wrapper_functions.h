@@ -110,6 +110,9 @@ namespace lmw {
             return;
         
         wrapper->object.m_inlets[index]->signal_count(chans);
+        
+        if constexpr (type_traits::has_input_changed_function<user_class>())
+            wrapper->object.inputchanged();
     }
 
     template <typename user_class>
@@ -127,14 +130,27 @@ namespace lmw {
     template <typename user_class>
     LMW_ALWAYS_INLINE void
     wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                        short* count, double srate, long vsize, long flags)
+                        short* count, double srate, long vsize, long flags, c74::max::t_perfroutine64 r)
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
-        for (int i = 0; i < wrapper->object.streams(); ++i)
+        bool is_mc = wrapper->object.mc();
+
+        for (long i = 0; i < wrapper->object.streams(); ++i) {
             wrapper->object.m_inlets[i]->m_connections = *(count + i);
 
+            if (is_mc)
+                wrapper->object.m_inlets[i]->signal_count(
+                    reinterpret_cast<long>(c74::max::object_method(
+                        dspman, sym::getnuminputchannels, wrapper,
+                        reinterpret_cast<void*>(i))));
+        }
+
         wrapper->object.prepare(srate, vsize);
+        
+        c74::max::dsp_add64(dspman, x, r, 0, nullptr);
+        
+        c74::max::object_post(x, "added to dspchain");
     }
 
     template <typename user_class>

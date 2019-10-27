@@ -22,9 +22,9 @@ namespace lmw {
         message(max_class_base* owner, const symbol& name, const symbol& type,
                 const std::string& description, const method& hander);
 
-        void call(std::shared_ptr<atom_vector> args, long inlet)
+        void call(std::shared_ptr<atom::vector> args, long inlet)
         {
-            executor.post(std::forward<std::shared_ptr<atom_vector>>(args), inlet);
+            executor.post(std::forward<std::shared_ptr<atom::vector>>(args), inlet);
         }
 
         const char* name()

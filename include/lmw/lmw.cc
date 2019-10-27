@@ -7,6 +7,12 @@ struct test_external : lmw::max_class<test_external> {
     {
         make_mc_inlet(10, "(mc) blub");
     }
+    
+    void process(double**, double**, long, long, long)
+    {
+        
+    }
+
 };
 
 
