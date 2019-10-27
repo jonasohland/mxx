@@ -1,9 +1,5 @@
 #pragma once
 
-#include <optional>
-#include <thread>
-#include <queue>
-
 namespace lmw {
 
     class default_executor {

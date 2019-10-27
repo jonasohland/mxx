@@ -2,7 +2,7 @@
 
 namespace lmw {
 
-    class object_base;
+    class max_class_base;
 
     template <typename ExtMember, typename user_class>
     decltype(auto) bind(ExtMember func, user_class* obj)
@@ -14,12 +14,12 @@ namespace lmw {
     class message {
 
       public:
-        message(object_base* owner, const symbol& name, const method& handler);
+        message(max_class_base* owner, const symbol& name, const method& handler);
 
-        message(object_base* owner, const symbol& name, const symbol& type,
+        message(max_class_base* owner, const symbol& name, const symbol& type,
                 const method& handler);
 
-        message(object_base* owner, const symbol& name, const symbol& type,
+        message(max_class_base* owner, const symbol& name, const symbol& type,
                 const std::string& description, const method& hander);
 
         void call(std::shared_ptr<atom_vector> args, long inlet)
@@ -37,12 +37,12 @@ namespace lmw {
             return c74::max::A_GIMME;
         }
 
-        friend class object_base;
+        friend class max_class_base;
         friend struct std::hash<message*>;
 
       private:
         
-        void lmw_internal_init(object_base* owner, method m);
+        void lmw_internal_init(max_class_base* owner, method m);
         
         symbol m_name;
         symbol m_type;

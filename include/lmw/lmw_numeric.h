@@ -1,8 +1,5 @@
 #pragma once
 
-#include <numeric>
-#include "lmw_atom.h"
-
 namespace lmw {
     template <typename Operator>
     struct add : public std::binary_function<lmw::atom, lmw::atom, lmw::atom> {

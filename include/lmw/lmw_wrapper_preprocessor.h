@@ -143,12 +143,12 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     template <typename user_class>                                             \
     std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
+
 /* -------------------------------------------------------------------------- */
 /*                      PRINT WARNINGS AT COMPILE TIME                        */
 /*                              taken from:                                   */
 /*    stackoverflow.com/questions/8936063/does-there-exist-a-static-warning   */
 /* -------------------------------------------------------------------------- */
-
 
 #if defined(__GNUC__) || defined(__clang__)
 #define LMW_DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
@@ -174,18 +174,39 @@ namespace lmw::detail {
     };
 }
 
-#define LMW_STATIC_WARNING(cond, msg)                                          \
-    struct LMW_PP_CAT(static_warning, __LINE__) {                              \
+#define LMW_STATIC_WARNING_IMPL(cond, msg, counter)                            \
+    struct LMW_PP_CAT(static_warning, counter) {                               \
         LMW_DEPRECATE(void _(::lmw::detail::false_type const&), msg){};        \
         void _(::lmw::detail::true_type const&){};                             \
-        LMW_PP_CAT(static_warning, __LINE__)()                                 \
+        LMW_PP_CAT(static_warning, counter)()                                  \
         {                                                                      \
             _(::lmw::detail::converter<(cond)>());                             \
         }                                                                      \
     }
 
-#define LMW_STATIC_WARNING_TEMPLATE(token, cond, msg) \
-    LMW_STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
+#define LMW_STATIC_WARNING(cond, msg)                                          \
+    LMW_STATIC_WARNING_IMPL(cond, msg, __COUNTER__)
+
+#ifdef LMW_ENABLE_CTTI_DEBUG
+
+#define LMW_CTTI_DEBUG_SECTION(user_class)                                     \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_bang_handler<user_class>(),      \
+                       "CTTI Debug: bang handler enabled");                    \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_int_handler<user_class>(),       \
+                       "CTTI Debug: int handler enabled");                     \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_float_handler<user_class>(),     \
+                       "CTTI Debug: float handler enabled");                   \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_list_handler<user_class>(),      \
+                       "CTTI Debug: list handler enabled");                    \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_raw_list_handler<user_class>(),  \
+                       "CTTI Debug: raw list handler enabled");                \
+    LMW_STATIC_WARNING(!lmw::type_traits::has_dsp_handler<user_class>(),       \
+                       "CTTI Debug: DSP perform routine enabled");
+#else
+
+#define LMW_CTTI_DEBUG_SECTION(user_class) ;
+
+#endif
 
 /* -------------------------------------------------------------------------- */
 /*                         NAME DECORATORS AND STUFF                          */
@@ -220,6 +241,12 @@ namespace lmw::detail {
 
 #define LMW_WRAPPER_FUNCTION_INLETINFO(identifier)                             \
     LMW_WRAPPER_FUNCTION(_inletinfo, identifier)
+
+#define LMW_WRAPPER_FUNCTION_INPUTCHANGED(identifier)                          \
+    LMW_WRAPPER_FUNCTION(_inputchanged, identifier)
+
+#define LMW_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(identifier)                   \
+    LMW_WRAPPER_FUNCTION(_multichanneloutputs, identifier)
 
 #define LMW_WRAPPER_FUNCTION_BANG(identifier)                                  \
     LMW_WRAPPER_FUNCTION(_bang, identifier)
@@ -285,6 +312,20 @@ namespace lmw::detail {
         lmw::wrapper_inletinfo_impl<classname>(x, b, index, t);                \
     }
 
+#define LMW_CREATE_INPUTCHANGED_FUNCTION(identifier, classname)                \
+    void LMW_WRAPPER_FUNCTION_INPUTCHANGED(identifier)(                        \
+        c74::max::t_object * x, long index, long chans)                        \
+    {                                                                          \
+        lmw::wrapper_inputchanged_impl<classname>(x, index, chans);            \
+    }
+
+#define LMW_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)         \
+    long LMW_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(identifier)(                 \
+        c74::max::t_object * x, long idx)                                      \
+    {                                                                          \
+        return lmw::wrapper_multichanneloutputs_impl<classname>(x, idx);       \
+    }
+
 #define LMW_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                 \
     void LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)(                       \
         c74::max::t_object * x, c74::max::t_object * dsp64, double** ins,      \
@@ -305,7 +346,7 @@ namespace lmw::detail {
             x, dsp64, count, samplerate, maxvectorsize, flags);                \
                                                                                \
         c74::max::object_method(                                               \
-            dsp64, c74::max::gensym("dsp_add64"), x,                           \
+            dsp64, lmw::sym::dsp_add64, x,                                     \
             reinterpret_cast<void*>(                                           \
                 LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)));              \
     }
@@ -327,6 +368,8 @@ namespace lmw::detail {
     LMW_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                      \
     LMW_CREATE_ASSIST_FUNCTION(identifier, classname)                          \
     LMW_CREATE_INLETINFO_FUNCTION(identifier, classname)                       \
+    LMW_CREATE_INPUTCHANGED_FUNCTION(identifier, classname)                    \
+    LMW_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)             \
     LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)
 
 /* -------------------------------------------------------------------------- */
@@ -378,6 +421,8 @@ namespace lmw::detail {
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_LIST(ident)),                      \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_ASSIST(ident)),                    \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_INLETINFO(ident)),                 \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_INPUTCHANGED(ident)),              \
+        LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(ident)),       \
         LMW_MAX_METHOD(LMW_WRAPPER_FUNCTION_DSP64_METHOD(ident)));             \
                                                                                \
     c74::max::class_register(                                                  \
@@ -392,6 +437,7 @@ namespace lmw::detail {
     LMW_NEW_INSTANCE_FUNCTION(default, class)                                  \
     LMW_FREE_INSTANCE_FUNCTION(default, class)                                 \
     LMW_EXT_HANDLER_FUNCTIONS(default, class)                                  \
+    LMW_CTTI_DEBUG_SECTION(class)                                              \
     void lmw_external_main(void*)                                              \
     {                                                                          \
         LMW_MAXCLASS_DEF_IMPL(default, class)                                  \

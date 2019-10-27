@@ -1,7 +1,5 @@
 #pragma once
 
-#include <sstream>
-
 namespace lmw {
 
     struct default_console_stream {
@@ -48,7 +46,7 @@ namespace lmw {
             return *this;
         }
 
-        friend class object_base;
+        friend class max_class_base;
 
       private:
         

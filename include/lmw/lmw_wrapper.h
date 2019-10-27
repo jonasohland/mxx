@@ -1,10 +1,5 @@
 #pragma once
 
-#include "lmw_wrapper_preprocessor.h"
-#include "lmw_type_traits.h"
-#include <c74_max.h>
-#include <c74_msp.h>
-
 namespace lmw {
 
     template <typename user_class>
@@ -55,10 +50,11 @@ namespace lmw {
         c74::max::method free_instance, c74::max::method named_meth_wrapper,
         c74::max::method inth, c74::max::method bangh, c74::max::method floath,
         c74::max::method listh, c74::max::method assisth,
-        c74::max::method inletinfoh, c74::max::method dsp64h)
+        c74::max::method inletinfoh, c74::max::method inputchangedh, c74::max::method multichanneloutputsh,
+        c74::max::method dsp64h)
     {
         class_ptr = c74::max::class_new(
-            "testexternal~", new_instance, free_instance,
+            "testexternal", new_instance, free_instance,
             sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
 
         // clang-format off
@@ -101,8 +97,13 @@ namespace lmw {
         c74::max::class_addmethod(
             class_ptr, inletinfoh, "inletinfo", c74::max::A_CANT, 0);
 
-        user_class dummy;
+        c74::max::class_addmethod(
+            class_ptr, multichanneloutputsh, "multichanneloutputs");
 
+        c74::max::class_addmethod(class_ptr, inputchangedh, "inputchanged");
+
+        user_class dummy;
+        
         for (const auto& msg : dummy.messages()) {
 
             auto[name, handler] = msg;
@@ -142,7 +143,7 @@ namespace lmw {
                 detail::to_span(av, ac), c74::max::attr_args_offset(ac, av));
         
         if constexpr(type_traits::is_dsp_class<user_class>()){
-            c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj), wrapper->object.signals_count());
+            c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj), wrapper->object.streams());
         }
 
         return obj;

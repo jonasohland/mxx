@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lmw_wrapper_preprocessor.h"
-
 namespace lmw::type_traits {
 
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_bang_handler, handle_bang, long);

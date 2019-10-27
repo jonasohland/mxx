@@ -1,12 +1,4 @@
-
 #pragma once
-
-#include <c74_max.h>
-#include <string>
-#include <array>
-#include <vector>
-
-#include "lmw_symbol.h"
 
 namespace lmw {
 

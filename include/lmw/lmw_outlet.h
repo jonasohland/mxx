@@ -60,14 +60,18 @@ namespace lmw {
         }
     }
 
-    class outlet : port {
+    class outlet : public port {
 
-        friend class object_base;
-
+        friend class max_class_base;
+        
+        template <typename user_class>
+        friend void
+        wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
+                            short* count, double srate, long vsize, long flags);
+        
       public:
-        outlet(const char* msg_name, const char* msg_description)
+        outlet(const char* msg_description)
         {
-            name(msg_name);
             description(msg_description);
         }
 
@@ -157,10 +161,10 @@ namespace lmw {
             m_buffer.clear();
         }
 
-        void lmw_internal_create(object_base* obj, long index, std::size_t);
+        void lmw_internal_create(max_class_base* obj, long index, std::size_t);
 
+        
         atom_vector m_buffer;
-
         c74::max::t_outlet* m_outlet = nullptr;
     };
 }
