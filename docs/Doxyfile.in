@@ -1,0 +1,18 @@
+DOXYFILE_ENCODING      = UTF-8
+
+PROJECT_NAME           = "Lightweight Max API Wrapper"
+PROJECT_NUMBER         = v0.0.1
+# PROJECT_BRIEF          = "A library for ambisonics decoders"
+# PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/dotadd.png
+
+RECURSIVE              	= YES
+
+INPUT                  	= @CMAKE_CURRENT_LIST_DIR@/include
+						  
+# USE_MDFILE_AS_MAINPAGE = main_page.md
+DISABLE_INDEX          = YES
+
+GENERATE_TREEVIEW      = YES
+
+OUTPUT_LANGUAGE        = English
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/docs

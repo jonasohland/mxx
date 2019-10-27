@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.4)
 
 project(LightweightMaxApiWrapper VERSION 0.0.1 LANGUAGES CXX)
 
+option(lmw_generate_docs "Generate Documentation" OFF)
+
 include(CMakePackageConfigHelpers)
 
 set(lmw_version_major           0)
@@ -39,6 +41,9 @@ set(lmw_include_install_dir     ${lmw_root_install_dir}/include/${lmw_wrapper_ta
 
 set(lmw_max_api_install_dir     ${lmw_include_install_dir}/max-api)
 set(lmw_wrapper_install_dir     ${lmw_include_install_dir}/${lmw_wrapper_target_name})
+
+set(lmw_doxyfile_template       ${CMAKE_CURRENT_LIST_DIR}/docs/Doxyfile.in)
+set(lmw_doxyfile                ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 if(APPLE)
 
@@ -199,5 +204,21 @@ install(
     NAMESPACE           ${lmw_export_namespace} 
     DESTINATION         ${lmw_package_install_dir}
 )
+
+if(${lmw_generate_docs})
+
+	find_package(Doxygen)
+		
+		configure_file(${lmw_doxyfile_template} ${lmw_doxyfile} @ONLY)
+	
+		add_custom_target( 
+			libdotadd_docs ALL
+			COMMAND ${DOXYGEN_EXECUTABLE} ${lmw_doxyfile}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+			COMMENT "Generating API documentation with Doxygen"
+			VERBATIM 
+		)
+    
+endif()
 
 include(${lmw_cmake_scripts_dir}/lmw.cmake)
