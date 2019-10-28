@@ -107,10 +107,10 @@ namespace lmw {
             
             if (span[0].a_type == c74::max::A_LONG||
                 span[0].a_type == c74::max::A_LONG)
-                c74::max::outlet_list(m_outlet, nullptr, span.size(), span.data());
+                c74::max::outlet_list(m_outlet, nullptr, static_cast<short>(span.size()), span.data());
             else {
                 if (span.size() > 1)
-                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, span.size() - 1, span.data() + 1);
+                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, static_cast<short>(span.size() - 1), span.data() + 1);
                 else
                     c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, 0, nullptr);
             }

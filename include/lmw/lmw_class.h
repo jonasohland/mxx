@@ -220,12 +220,12 @@ namespace lmw {
 
             for (auto it = m_inlets.rbegin(); it != m_inlets.rend(); ++it)
                 (*it)->lmw_internal_create(this,
-                                           std::distance(m_inlets.rbegin(), it),
+                                           static_cast<long>(std::distance(m_inlets.rbegin(), it)),
                                            m_inlets.size());
 
             for (auto it = m_outlets.rbegin(); it != m_outlets.rend(); ++it)
                 (*it)->lmw_internal_create(
-                    this, std::distance(m_outlets.rbegin(), it),
+                    this, static_cast<long>(std::distance(m_outlets.rbegin(), it)),
                     m_inlets.size());
             
             if(mc()){

@@ -56,6 +56,26 @@ if(APPLE)
 
 endif()
 
+if(WIN32)
+
+    if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+        set(lmw_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win32)
+    else()
+        set(lmw_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win64)   
+    endif()
+
+    set(lmw_win_installed_lib_dir               ${lmw_root_install_dir}/lib)
+
+    set(lmw_win_maxapi_lib                      ${lmw_win_lib_dir}/MaxAPI.lib)
+    set(lmw_win_mspapi_lib                      ${lmw_win_lib_dir}/MaxAudio.lib)
+    set(lmw_win_jitapi_lib                      ${lmw_win_lib_dir}/jitlib.lib)
+
+    set(lmw_win_installed_maxapi_lib            ${lmw_win_installed_lib_dir}/MaxAPI.lib)
+    set(lmw_win_installed_mspapi_lib            ${lmw_win_installed_lib_dir}/MaxAudio.lib)
+    set(lmw_win_installed_jitapi_lib            ${lmw_win_installed_lib_dir}/jitlib.lib)
+
+endif()
+
 add_library(${lmw_wrapper_target_name} INTERFACE)
 add_library(${lmw_max_api_target_name} INTERFACE)
 
@@ -94,6 +114,31 @@ if(APPLE)
         INTERFACE
         $<BUILD_INTERFACE:${lmw_mac_jitterapi_framework}>
         $<INSTALL_INTERFACE:${lmw_mac_jitterapi_installed_framework}>
+    )
+
+endif()
+
+if(WIN32)
+
+    target_link_libraries(
+        ${lmw_max_api_target_name}
+        INTERFACE
+        $<BUILD_INTERFACE:${lmw_win_maxapi_lib}>
+        $<INSTALL_INTERFACE:${lmw_win_installed_maxapi_lib}>
+    )
+
+    target_link_libraries(
+        ${lmw_max_api_target_name}
+        INTERFACE
+        $<BUILD_INTERFACE:${lmw_win_mspapi_lib}>
+        $<INSTALL_INTERFACE:${lmw_win_installed_mspapi_lib}>
+    )
+
+    target_link_libraries(
+        ${lmw_max_api_target_name}
+        INTERFACE
+        $<BUILD_INTERFACE:${lmw_win_jitapi_lib}>
+        $<INSTALL_INTERFACE:${lmw_win_installed_jitapi_lib}>
     )
 
 endif()
@@ -141,7 +186,7 @@ target_include_directories(
     $<INSTALL_INTERFACE:${lmw_max_api_install_dir}>
 )
 
-if(${CMAKE_GENERATOR} MATCHES "(^Visual\\sStudio|^Xcode|^XCode).*")
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio")
 
     add_library(
         lmw_header_files
@@ -190,6 +235,17 @@ if(APPLE)
     install(
         DIRECTORY       ${lmw_mac_jitterapi_framework}
         DESTINATION     ${lmw_frameworks_install_dir}
+    )
+endif()
+
+if(WIN32)
+    install(
+        FILES       
+        ${lmw_win_maxapi_lib}
+        ${lmw_win_mspapi_lib}
+        ${lmw_win_jitapi_lib}
+        DESTINATION     
+        ${lmw_win_installed_lib_dir}
     )
 endif()
 

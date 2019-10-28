@@ -21,12 +21,12 @@ namespace lmw {
 
     namespace detail {
 
-        t_atom_span to_span(c74::max::t_atom* argv, long argc) noexcept
+        inline t_atom_span to_span(c74::max::t_atom* argv, long argc) noexcept
         {
             return {argv, static_cast<t_atom_span::index_type>(argc)};
         }
 
-        atom::vector to_atom_vector(c74::max::t_atom* argv, long argc) noexcept
+        inline atom::vector to_atom_vector(c74::max::t_atom* argv, long argc) noexcept
         {
             auto spn = to_span(argv, argc);
 

@@ -41,7 +41,7 @@ namespace lmw {
             
             object.lmw_internal_finalize();
             
-            c74::max::attr_args_process(&object_header, args.size(), args.begin());
+            c74::max::attr_args_process(&object_header, static_cast<short>(args.size()), args.begin());
 
             return true;
         }
@@ -157,7 +157,7 @@ namespace lmw {
         // initialize user class (run constructor and create inlets/outlets and stuff)
         if (static_cast<c74::max::t_symbol*>(tsym)) {
             if (!wrapper->lmw_internal_init(detail::to_span(av, ac),
-                                            c74::max::attr_args_offset(ac, av)))
+                                            c74::max::attr_args_offset(static_cast<short>(ac), av)))
                 return nullptr;
         }
 
