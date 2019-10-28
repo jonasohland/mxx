@@ -71,7 +71,7 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     struct sname##_impl {                                                      \
         template <typename C>                                                  \
         static constexpr decltype(                                             \
-            std::declval<C>().fname(LMW_FORCE_EXPAND(__VA_ARGS__)),            \
+            std::declval<C>().fname(__VA_ARGS__),            \
             bool())                                                            \
         test(int)                                                              \
         {                                                                      \

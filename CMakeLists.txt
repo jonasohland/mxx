@@ -186,7 +186,8 @@ target_include_directories(
     $<INSTALL_INTERFACE:${lmw_max_api_install_dir}>
 )
 
-if(${CMAKE_GENERATOR} MATCHES "Visual Studio")
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio" 
+    OR ${CMAKE_GENERATOR} MATCHES "Xcode")
 
     add_library(
         lmw_header_files

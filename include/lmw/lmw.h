@@ -12,7 +12,7 @@
 
 #define LMW_MSVC_IGNORE_POINTER_TRUNCATION(x) x
 
-#define LMW_STRCPY (src, dst) strcpy(src, dest)
+#define LMW_STRCPY(src, dst) strcpy(src, dst)
 
 #elif _MSC_VER
 
