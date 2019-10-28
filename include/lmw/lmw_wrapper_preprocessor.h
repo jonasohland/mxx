@@ -1,3 +1,4 @@
+/** @file */
 #pragma once
 
 #define lmw_external_main ext_main
@@ -143,7 +144,6 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     template <typename user_class>                                             \
     std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
-
 /* -------------------------------------------------------------------------- */
 /*                      PRINT WARNINGS AT COMPILE TIME                        */
 /*                              taken from:                                   */
@@ -172,7 +172,7 @@ namespace lmw::detail {
     template <>
     struct converter<0> : public false_type {
     };
-}
+} // namespace lmw::detail
 
 #define LMW_STATIC_WARNING_IMPL(cond, msg, counter)                            \
     struct LMW_PP_CAT(static_warning, counter) {                               \

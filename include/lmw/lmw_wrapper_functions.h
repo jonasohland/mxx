@@ -1,3 +1,4 @@
+/** @file */
 #pragma once
 
 namespace lmw {
@@ -11,9 +12,9 @@ namespace lmw {
     template <typename user_class>
     LMW_ALWAYS_INLINE void wrapper_handle_bang_impl(c74::max::t_object* obj)
     {
-        if constexpr(type_traits::has_bang_handler<user_class>())
-            get_wrapper<user_class>(obj)
-                ->object.handle_bang(c74::max::proxy_getinlet(obj));
+        if constexpr (type_traits::has_bang_handler<user_class>())
+            get_wrapper<user_class>(obj)->object.handle_bang(
+                c74::max::proxy_getinlet(obj));
 
 #ifdef LMW_REQUIRE_BANG_HANDLER
         static_assert(
@@ -26,9 +27,9 @@ namespace lmw {
     LMW_ALWAYS_INLINE void wrapper_handle_int_impl(c74::max::t_object* obj,
                                                    long n)
     {
-        if constexpr(type_traits::has_int_handler<user_class>())
-            get_wrapper<user_class>(obj)
-                ->object.handle_int(n, c74::max::proxy_getinlet(obj));
+        if constexpr (type_traits::has_int_handler<user_class>())
+            get_wrapper<user_class>(obj)->object.handle_int(
+                n, c74::max::proxy_getinlet(obj));
 
 #ifdef LMW_REQUIRE_INT_HANDLER
         static_assert(lmw::type_traits::has_int_handler<user_class>(),
@@ -40,9 +41,9 @@ namespace lmw {
     LMW_ALWAYS_INLINE void wrapper_handle_float_impl(c74::max::t_object* obj,
                                                      double n)
     {
-        if constexpr(type_traits::has_float_handler<user_class>())
-            get_wrapper<user_class>(obj)
-                ->object.handle_float(n, c74::max::proxy_getinlet(obj));
+        if constexpr (type_traits::has_float_handler<user_class>())
+            get_wrapper<user_class>(obj)->object.handle_float(
+                n, c74::max::proxy_getinlet(obj));
 
 #ifdef LMW_REQUIRE_FLOAT_HANDLER
         static_assert(
@@ -56,25 +57,23 @@ namespace lmw {
     wrapper_handle_list_impl(c74::max::t_object* obj, c74::max::t_symbol* s,
                              long ac, c74::max::t_atom* av)
     {
-        if constexpr(type_traits::has_list_handler<user_class>())
-            get_wrapper<user_class>(obj)
-                ->object.handle_list(
-                    detail::to_atom_vector(av, ac), c74::max::proxy_getinlet(obj));
-        
-        if constexpr(type_traits::has_raw_list_handler<user_class>())
-            get_wrapper<user_class>(obj)
-                ->object.handle_raw_list(
-                    detail::to_span(av, ac), c74::max::proxy_getinlet(obj));
-        
+        if constexpr (type_traits::has_list_handler<user_class>())
+            get_wrapper<user_class>(obj)->object.handle_list(
+                detail::to_atom_vector(av, ac), c74::max::proxy_getinlet(obj));
+
+        if constexpr (type_traits::has_raw_list_handler<user_class>())
+            get_wrapper<user_class>(obj)->object.handle_raw_list(
+                detail::to_span(av, ac), c74::max::proxy_getinlet(obj));
+
 #ifdef LMW_REQUIRE_LIST_HANDLER
-        static_assert(
-            type_traits::has_list_handler<user_class>(),
-            "Missing required handle_list(atom_vector) function on external class");
+        static_assert(type_traits::has_list_handler<user_class>(),
+                      "Missing required handle_list(atom_vector) function on "
+                      "external class");
 #endif
 #ifdef LMW_REQUIRE_RAW_LIST_HANDLER
-        static_assert(
-            type_traits::has_raw_list_handler<user_class>(),
-            "Missing required handle_list(t_atom_span) function on external class");
+        static_assert(type_traits::has_raw_list_handler<user_class>(),
+                      "Missing required handle_list(t_atom_span) function on "
+                      "external class");
 #endif
     }
 
@@ -83,8 +82,8 @@ namespace lmw {
                                                long io, long index, char* s)
     {
         auto wrapper = get_wrapper<user_class>(x);
-        
-        if(io - 1)
+
+        if (io - 1)
             strcpy(s, wrapper->object.description_for_outlet(index));
         else
             strcpy(s, wrapper->object.description_for_inlet(index));
@@ -95,9 +94,8 @@ namespace lmw {
                                                   void* b, long index, char* t)
     {
         auto wrapper = get_wrapper<user_class>(x);
-        
-        if(!wrapper->object.inlet_is_hot(index))
-            *t = 1;
+
+        if (!wrapper->object.inlet_is_hot(index)) *t = 1;
     }
 
     template <typename user_class>
@@ -105,12 +103,11 @@ namespace lmw {
                                                      long index, long chans)
     {
         auto* wrapper = get_wrapper<user_class>(x);
-        
-        if(LMW_UNLIKELY(index >= wrapper->object.m_inlets.size()))
-            return;
-        
+
+        if (LMW_UNLIKELY(index >= wrapper->object.m_inlets.size())) return;
+
         wrapper->object.m_inlets[index]->signal_count(chans);
-        
+
         if constexpr (type_traits::has_input_changed_function<user_class>())
             wrapper->object.inputchanged();
     }
@@ -120,17 +117,17 @@ namespace lmw {
     wrapper_multichanneloutputs_impl(c74::max::t_object* x, long idx)
     {
         auto* wrapper = get_wrapper<user_class>(x);
-        
-        if(LMW_UNLIKELY(idx >= wrapper->object.m_outlets.size()))
-            return 1;
-        
+
+        if (LMW_UNLIKELY(idx >= wrapper->object.m_outlets.size())) return 1;
+
         return wrapper->object.m_outlets[idx]->signal_count();
     }
 
     template <typename user_class>
     LMW_ALWAYS_INLINE void
     wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                        short* count, double srate, long vsize, long flags, c74::max::t_perfroutine64 r)
+                        short* count, double srate, long vsize, long flags,
+                        c74::max::t_perfroutine64 r)
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
@@ -147,9 +144,9 @@ namespace lmw {
         }
 
         wrapper->object.prepare(srate, vsize);
-        
+
         c74::max::dsp_add64(dspman, x, r, 0, nullptr);
-        
+
         c74::max::object_post(x, "added to dspchain");
     }
 
@@ -160,13 +157,13 @@ namespace lmw {
                                long numouts, long frames, long flags,
                                void* userparam)
     {
-        if constexpr(lmw::type_traits::has_dsp_handler<user_class>())
-            get_wrapper<user_class>(x)
-                ->object.process(ins, outs, numins, numouts, frames);
+        if constexpr (lmw::type_traits::has_dsp_handler<user_class>())
+            get_wrapper<user_class>(x)->object.process(
+                ins, outs, numins, numouts, frames);
 
 #ifdef LMW_REQUIRE_PROCESS_FUNCTION
         static_assert(type_traits::has_dsp_handler<user_class>(),
                       "Missing required perform function on external class");
 #endif
     }
-}
+} // namespace lmw

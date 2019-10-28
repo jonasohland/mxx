@@ -27,11 +27,7 @@ namespace lmw {
             description(d);
         }
 
-        inlet(bool hot) : m_hot_inlet(hot)
-        {
-        }
-
-        inlet(bool hot, symbol desc) : m_hot_inlet(hot)
+        inlet(symbol desc, bool hot) : m_hot_inlet(hot)
         {
             description(desc);
         }

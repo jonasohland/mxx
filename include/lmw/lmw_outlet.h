@@ -1,3 +1,4 @@
+/** @file */
 #pragma once
 
 namespace lmw {

@@ -1,3 +1,4 @@
+/** @file */
 #pragma once
 
 namespace lmw {
@@ -14,7 +15,7 @@ namespace lmw {
         {
             return &object_header.maxobj_header;
         }
-        
+
         operator c74::max::t_pxobject*() const noexcept
         {
             return &object_header.mspobj_header;
@@ -36,17 +37,19 @@ namespace lmw {
                     return false;
                 }
             }
-            
+
             // clang-format on
-            
+
             object.lmw_internal_finalize();
-            
-            c74::max::attr_args_process(&object_header, args.size(), args.begin());
+
+            c74::max::attr_args_process(
+                &object_header, args.size(), args.begin());
 
             return true;
         }
-        
-        void lmw_internal_finish(){
+
+        void lmw_internal_finish()
+        {
             object_header.mspobj_header.z_misc |= object.mspflags();
         }
 
@@ -60,8 +63,8 @@ namespace lmw {
         c74::max::method free_instance, c74::max::method named_meth_wrapper,
         c74::max::method inth, c74::max::method bangh, c74::max::method floath,
         c74::max::method listh, c74::max::method assisth,
-        c74::max::method inletinfoh, c74::max::method inputchangedh, c74::max::method multichanneloutputsh,
-        c74::max::method dsp64h)
+        c74::max::method inletinfoh, c74::max::method inputchangedh,
+        c74::max::method multichanneloutputsh, c74::max::method dsp64h)
     {
         class_ptr = c74::max::class_new(
             "testexternal", new_instance, free_instance,
@@ -100,7 +103,7 @@ namespace lmw {
             c74::max::class_addmethod(
                 class_ptr, dsp64h, "dsp64", c74::max::A_CANT, 0);
         }
-        
+
         // clang-format on
 
         c74::max::class_addmethod(
@@ -115,10 +118,10 @@ namespace lmw {
             class_ptr, inputchangedh, "inputchanged", c74::max::A_CANT, 0);
 
         user_class dummy;
-        
+
         for (const auto& msg : dummy.messages()) {
 
-            auto[name, handler] = msg;
+            auto [name, handler] = msg;
 
             c74::max::class_addmethod(class_ptr, named_meth_wrapper,
                                       name.c_str(), handler->type(), 0);
@@ -154,7 +157,8 @@ namespace lmw {
         // this symbol will tell us if we are dummy-instanciated or not
         static symbol tsym("__lmw_test_symbol__");
 
-        // initialize user class (run constructor and create inlets/outlets and stuff)
+        // initialize user class (run constructor and create inlets/outlets and
+        // stuff)
         if (static_cast<c74::max::t_symbol*>(tsym)) {
             if (!wrapper->lmw_internal_init(detail::to_span(av, ac),
                                             c74::max::attr_args_offset(ac, av)))
@@ -162,11 +166,11 @@ namespace lmw {
         }
 
         // dspsetup if dsp class
-        if constexpr(type_traits::is_dsp_class<user_class>()){
+        if constexpr (type_traits::is_dsp_class<user_class>()) {
             c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj),
                                 wrapper->object.streams());
         }
-        
+
         wrapper->lmw_internal_finish();
 
         return obj;
@@ -176,9 +180,10 @@ namespace lmw {
     void wrapper_object_free(c74::max::t_object* instance)
     {
         auto* wrapper = reinterpret_cast<object_wrapper<user_class>*>(instance);
-        
+
         if constexpr (type_traits::is_dsp_class<user_class>())
-            c74::max::dsp_free(reinterpret_cast<c74::max::t_pxobject*>(wrapper));
+            c74::max::dsp_free(
+                reinterpret_cast<c74::max::t_pxobject*>(wrapper));
 
         wrapper->object.~user_class();
     }
@@ -191,7 +196,8 @@ namespace lmw {
         auto args = t_atom_span(av, ac);
 
         reinterpret_cast<object_wrapper<user_class>*>(o)->object.call(
-            s->s_name, std::make_shared<atom::vector>(args.begin(), args.end()));
+            s->s_name,
+            std::make_shared<atom::vector>(args.begin(), args.end()));
     }
 
 } // namespace lmw

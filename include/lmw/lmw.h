@@ -1,3 +1,6 @@
+/**
+ @File main include
+ */
 #pragma once
 
 #if __GNUC__ || __clang__
@@ -43,12 +46,27 @@
 #include "lmw_types.h"
 
 namespace lmw::sym {
+    
+    /// Symbol "any".
     symbol any                 = c74::max::gensym("any");
+    
+    /// Symbol "anything".
     symbol anything            = c74::max::gensym("anything");
+    
+    /// Symbol "signal". Used to create signal outlets.
     symbol signal              = c74::max::gensym("signal");
+    
+    /// Symbol "multichannelsignal". Used to create multichannelsignal outlets.
     symbol multichannelsignal  = c74::max::gensym("multichannelsignal");
+    
+    /// Symbol "getnuminputchannels". Used to obtain information about input channels on a msp object.
     symbol getnuminputchannels = c74::max::gensym("getnuminputchannels");
+    
+    /// Symbol "dsp_add64". Used to register an msp object to the msp compiler.
     symbol dsp_add64           = c74::max::gensym("dsp_add64");
+    
+    /// Empty Symbol
+    symbol empty = c74::max::gensym("");
 }
 
 #include "lmw_wrapper_preprocessor.h"
