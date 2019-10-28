@@ -18,14 +18,23 @@
 
 #define LMW_ALWAYS_INLINE __forceinline
 
+// clang-format off
+
 #define LMW_MSVC_IGNORE_POINTER_TRUNCATION(expr)                               \
-  __pragma(warning(push)) __pragma(warning(disable : 4312))                    \
-      __pragma(warning(disable : 4311)) __pragma(warning(disable : 4302))      \
-          expr __pragma(warning(pop))
+    __pragma(warning(push))                                                    \
+    __pragma(warning(disable : 4312))                                          \
+    __pragma(warning(disable : 4311))                                          \
+    __pragma(warning(disable : 4302))                                          \
+    expr                                                                       \
+    __pragma(warning(pop))
 
 #define LMW_STRCPY(src, dest)                                                  \
-  __pragma(warning(push)) __pragma(warning(disable : 4996)) strcpy(src, dest)  \
-      __pragma(warning(pop))
+    __pragma(warning(push))                                                    \
+    __pragma(warning(disable : 4996))                                          \
+    strcpy(src, dest)                                                          \
+    __pragma(warning(pop))
+
+// clang-format on
 
 #else
 

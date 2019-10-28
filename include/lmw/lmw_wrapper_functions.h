@@ -84,7 +84,7 @@ namespace lmw {
     {
         auto wrapper = get_wrapper<user_class>(x);
         
-        if(io - 1)
+        if (io - 1)
             LMW_STRCPY(s, wrapper->object.description_for_outlet(index));
         else
             LMW_STRCPY(s, wrapper->object.description_for_inlet(index));
