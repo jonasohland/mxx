@@ -10,12 +10,34 @@
 
 #define LMW_ALWAYS_INLINE __attribute__((always_inline))
 
+#define LMW_MSVC_IGNORE_POINTER_TRUNCATION(x) x
+
+#define LMW_STRCPY (src, dst) strcpy(src, dest)
+
 #elif _MSC_VER
 
 #define LMW_LIKELY(x) x
-#define LME_UNLIKELY(x) x
+#define LMW_UNLIKELY(x) x
 
 #define LMW_ALWAYS_INLINE __forceinline
+
+// clang-format off
+
+#define LMW_MSVC_IGNORE_POINTER_TRUNCATION(expr)                               \
+    __pragma(warning(push))                                                    \
+    __pragma(warning(disable : 4312))                                          \
+    __pragma(warning(disable : 4311))                                          \
+    __pragma(warning(disable : 4302))                                          \
+    expr                                                                       \
+    __pragma(warning(pop))
+
+#define LMW_STRCPY(src, dest)                                                  \
+    __pragma(warning(push))                                                    \
+    __pragma(warning(disable : 4996))                                          \
+    strcpy(src, dest)                                                          \
+    __pragma(warning(pop))
+
+// clang-format on
 
 #else
 
@@ -41,45 +63,45 @@
 
 // clang-format off
 
-#include "lmw_symbol.h"
-#include "lmw_atom.h"
-#include "lmw_types.h"
+#include <lmw/lmw_symbol.h>
+#include <lmw/lmw_atom.h>
+#include <lmw/lmw_types.h>
 
 namespace lmw::sym {
-    
+
     /// Symbol "any".
-    symbol any                 = c74::max::gensym("any");
+    inline symbol any                 = c74::max::gensym("any");
     
     /// Symbol "anything".
-    symbol anything            = c74::max::gensym("anything");
+    inline symbol anything            = c74::max::gensym("anything");
     
     /// Symbol "signal". Used to create signal outlets.
-    symbol signal              = c74::max::gensym("signal");
+    inline symbol signal              = c74::max::gensym("signal");
     
     /// Symbol "multichannelsignal". Used to create multichannelsignal outlets.
-    symbol multichannelsignal  = c74::max::gensym("multichannelsignal");
+    inline symbol multichannelsignal  = c74::max::gensym("multichannelsignal");
     
     /// Symbol "getnuminputchannels". Used to obtain information about input channels on a msp object.
-    symbol getnuminputchannels = c74::max::gensym("getnuminputchannels");
+    inline symbol getnuminputchannels = c74::max::gensym("getnuminputchannels");
     
     /// Symbol "dsp_add64". Used to register an msp object to the msp compiler.
-    symbol dsp_add64           = c74::max::gensym("dsp_add64");
+    inline symbol dsp_add64           = c74::max::gensym("dsp_add64");
     
     /// Empty Symbol
-    symbol empty = c74::max::gensym("");
+    inline symbol empty = c74::max::gensym("");
 }
 
-#include "lmw_wrapper_preprocessor.h"
-#include "lmw_type_traits.h"
-#include "lmw_threads.h"
-#include "lmw_message.h"
-#include "lmw_port.h"
-#include "lmw_outlet.h"
-#include "lmw_inlet.h"
-#include "lmw_cstream.h"
-#include "lmw_class.h"
-#include "lmw_inlet_outlet_impl.h"
-#include "lmw_wrapper.h"
-#include "lmw_wrapper_functions.h"
+#include <lmw/lmw_wrapper_preprocessor.h>
+#include <lmw/lmw_type_traits.h>
+#include <lmw/lmw_threads.h>
+#include <lmw/lmw_message.h>
+#include <lmw/lmw_port.h>
+#include <lmw/lmw_outlet.h>
+#include <lmw/lmw_inlet.h>
+#include <lmw/lmw_cstream.h>
+#include <lmw/lmw_class.h>
+#include <lmw/lmw_inlet_outlet_impl.h>
+#include <lmw/lmw_wrapper.h>
+#include <lmw/lmw_wrapper_functions.h>
 
 // clang-format on

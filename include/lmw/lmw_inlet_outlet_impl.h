@@ -1,20 +1,20 @@
 #pragma once
 
-lmw::message::message(max_class_base* owner, const symbol& name,
+inline lmw::message::message(max_class_base* owner, const symbol& name,
                       const method& handler)
     : m_name(name), m_type("anything")
 {
     lmw_internal_init(owner, handler);
 }
 
-lmw::message::message(max_class_base* owner, const symbol& name,
+inline lmw::message::message(max_class_base* owner, const symbol& name,
                       const symbol& type, const method& handler)
     : m_name(name), m_type(type)
 {
     lmw_internal_init(owner, handler);
 }
 
-lmw::message::message(max_class_base* owner, const symbol& name,
+inline lmw::message::message(max_class_base* owner, const symbol& name,
                       const symbol& type, const std::string& description,
                       const method& handler)
     : m_name(name), m_type(type), m_description(description)
@@ -46,6 +46,6 @@ inline void lmw::inlet::lmw_internal_create(max_class_base* obj, long index,
 
         if (index == total - 1) return;
 
-        m_inlet_proxy = c74::max::proxy_new(owner(), total - index - 1, nullptr);
+        m_inlet_proxy = c74::max::proxy_new(owner(), static_cast<long>(total - index) - 1, nullptr);
     }
 }

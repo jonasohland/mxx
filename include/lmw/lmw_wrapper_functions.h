@@ -84,9 +84,9 @@ namespace lmw {
         auto wrapper = get_wrapper<user_class>(x);
 
         if (io - 1)
-            strcpy(s, wrapper->object.description_for_outlet(index));
+            LMW_STRCPY(s, wrapper->object.description_for_outlet(index));
         else
-            strcpy(s, wrapper->object.description_for_inlet(index));
+            LMW_STRCPY(s, wrapper->object.description_for_inlet(index));
     }
 
     template <typename user_class>
@@ -140,7 +140,8 @@ namespace lmw {
                 wrapper->object.m_inlets[i]->signal_count(
                     reinterpret_cast<long>(c74::max::object_method(
                         dspman, sym::getnuminputchannels, wrapper,
-                        reinterpret_cast<void*>(i))));
+                        LMW_MSVC_IGNORE_POINTER_TRUNCATION(
+                            reinterpret_cast<void*>(i)))));
         }
 
         wrapper->object.prepare(srate, vsize);
