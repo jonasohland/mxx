@@ -50,6 +50,25 @@ macro(_lmw_setup_macos_bundle)
 
 endmacro(_lmw_setup_macos_bundle)
 
+macro(_lmw_setup_win_dll)
+
+    set_target_properties(
+        ${_lmw_target_name}                 PROPERTIES
+        SUFFIX                              ".mxe64"
+        LIBRARY_OUTPUT_DIRECTORY            ${_lmw_EXTERNAL_OUTPUT_DIR}
+    )
+
+    target_compile_definitions(
+        ${_lmw_target_name}                 
+        PUBLIC
+        MAXAPI_USE_MSCRT
+        WIN_VERSION
+        _USE_MATH_DEFINES
+    )
+    
+endmacro(_lmw_setup_win_dll)
+
+
 
 function(lmw_setup_external _lmw_target_name)
 
@@ -84,6 +103,8 @@ function(lmw_setup_external _lmw_target_name)
 
     if(APPLE)
         _lmw_setup_macos_bundle()
+    else()
+        _lmw_setup_win_dll()
     endif()
     
 endfunction()

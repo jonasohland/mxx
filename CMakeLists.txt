@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(LightweightMaxApiWrapper VERSION 0.0.1 LANGUAGES CXX)
+project(lmw VERSION 0.0.1 LANGUAGES CXX)
 
 option(lmw_generate_docs "Generate Documentation" OFF)
 
@@ -186,22 +186,6 @@ target_include_directories(
     $<INSTALL_INTERFACE:${lmw_max_api_install_dir}>
 )
 
-if(${CMAKE_GENERATOR} MATCHES "Visual Studio" 
-    OR ${CMAKE_GENERATOR} MATCHES "Xcode")
-
-    add_library(
-        lmw_header_files
-        STATIC
-        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw.cc"
-        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw_2.cc"
-        ${lmw_wrapper_header_files}
-    )
-
-    set_target_properties(lmw_header_files PROPERTIES LINKER_LANGUAGE CXX)
-    target_link_libraries(lmw_header_files PUBLIC ${lmw_wrapper_target_name})
-
-endif()
-
 install(
     FILES               ${lmw_wrapper_header_files}
     DESTINATION         ${lmw_wrapper_install_dir}/${lmw_wrapper_target_name}
@@ -279,3 +263,20 @@ if(${lmw_generate_docs})
 endif()
 
 include(${lmw_cmake_scripts_dir}/lmw.cmake)
+
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio" 
+    OR ${CMAKE_GENERATOR} MATCHES "Xcode")
+
+    add_library(
+        lmw_header_files
+        MODULE
+        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw.cc"
+        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw_2.cc"
+        ${lmw_wrapper_header_files}
+    )
+
+    target_link_libraries(lmw_header_files PUBLIC ${lmw_wrapper_target_name})
+    
+    lmw_setup_external(lmw_header_files)
+
+endif()
