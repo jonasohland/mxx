@@ -1,23 +1,32 @@
 #pragma once
 
-inline lmw::message::message(max_class_base* owner, const symbol& name,
-                      const method& handler)
-    : m_name(name), m_type("anything")
+inline lmw::message::message(max_class_base* owner,
+                             const symbol& name,
+                             const method& handler)
+    : m_name(name)
+    , m_type("anything")
 {
     lmw_internal_init(owner, handler);
 }
 
-inline lmw::message::message(max_class_base* owner, const symbol& name,
-                      const symbol& type, const method& handler)
-    : m_name(name), m_type(type)
+inline lmw::message::message(max_class_base* owner,
+                             const symbol& name,
+                             const symbol& type,
+                             const method& handler)
+    : m_name(name)
+    , m_type(type)
 {
     lmw_internal_init(owner, handler);
 }
 
-inline lmw::message::message(max_class_base* owner, const symbol& name,
-                      const symbol& type, const std::string& description,
-                      const method& handler)
-    : m_name(name), m_type(type), m_description(description)
+inline lmw::message::message(max_class_base* owner,
+                             const symbol& name,
+                             const symbol& type,
+                             const std::string& description,
+                             const method& handler)
+    : m_name(name)
+    , m_type(type)
+    , m_description(description)
 {
     lmw_internal_init(owner, handler);
 }
@@ -28,7 +37,8 @@ inline void lmw::message::lmw_internal_init(max_class_base* owner, method m)
     executor.set_handler(m);
 }
 
-inline void lmw::outlet::lmw_internal_create(max_class_base* obj, long index,
+inline void lmw::outlet::lmw_internal_create(max_class_base* obj,
+                                             long index,
                                              std::size_t total)
 {
     lmw_internal_set_owner(obj->native_handle());
@@ -37,7 +47,8 @@ inline void lmw::outlet::lmw_internal_create(max_class_base* obj, long index,
         owner(), any() ? nullptr : static_cast<const char*>(type())));
 }
 
-inline void lmw::inlet::lmw_internal_create(max_class_base* obj, long index,
+inline void lmw::inlet::lmw_internal_create(max_class_base* obj,
+                                            long index,
                                             std::size_t total)
 {
     lmw_internal_set_owner(obj->native_handle());
@@ -46,6 +57,7 @@ inline void lmw::inlet::lmw_internal_create(max_class_base* obj, long index,
 
         if (index == total - 1) return;
 
-        m_inlet_proxy = c74::max::proxy_new(owner(), static_cast<long>(total - index) - 1, nullptr);
+        m_inlet_proxy = c74::max::proxy_new(
+            owner(), static_cast<long>(total - index) - 1, nullptr);
     }
 }

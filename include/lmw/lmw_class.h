@@ -10,14 +10,19 @@ namespace lmw {
         friend class outlet;
 
         template <typename user_class>
-        friend void* wrapper_object_new(c74::max::t_class*, c74::max::t_symbol*,
-                                        long, c74::max::t_atom*);
+        friend void* wrapper_object_new(c74::max::t_class*,
+                                        c74::max::t_symbol*,
+                                        long,
+                                        c74::max::t_atom*);
 
         template <typename user_class>
         friend void wrapper_dsp64_setup(c74::max::t_object* x,
                                         c74::max::t_object* dspman,
-                                        short* count, double srate, long vsize,
-                                        long flags, c74::max::t_perfroutine64);
+                                        short* count,
+                                        double srate,
+                                        long vsize,
+                                        long flags,
+                                        c74::max::t_perfroutine64);
 
         template <typename user_class>
         friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
@@ -25,9 +30,7 @@ namespace lmw {
         template <typename user_class>
         friend long wrapper_multichanneloutputs_impl(c74::max::t_object*, long);
 
-        virtual ~max_class_base()
-        {
-        }
+        virtual ~max_class_base() {}
 
         std::unordered_map<std::string, message*>& messages()
         {
@@ -38,37 +41,34 @@ namespace lmw {
         {
             return m_messages.find(name) != m_messages.end();
         }
-        
+
         const char* description_for_inlet(long inlet_idx)
         {
             return get_port_description(m_inlets, inlet_idx);
         }
-        
+
         const char* description_for_outlet(long outlet_idx)
         {
             return get_port_description(m_outlets, outlet_idx);
         }
-        
+
         bool inlet_is_hot(long inlet_idx)
         {
-            if(LMW_UNLIKELY(inlet_idx >= m_inlets.size()))
-                return false;
-            
+            if (LMW_UNLIKELY(inlet_idx >= m_inlets.size())) return false;
+
             return m_inlets[inlet_idx]->hot();
         }
-        
+
         bool mc() const
         {
-            for (const auto& inlet : m_inlets){
-                if(inlet->mc())
-                    return true;
+            for (const auto& inlet : m_inlets) {
+                if (inlet->mc()) return true;
             }
-            
-            for (const auto& outlet : m_outlets){
-                if(outlet->mc())
-                    return true;
+
+            for (const auto& outlet : m_outlets) {
+                if (outlet->mc()) return true;
             }
-            
+
             return false;
         }
 
@@ -77,16 +77,17 @@ namespace lmw {
             std::size_t acc = 0;
 
             for (const auto& inlet : m_inlets)
-                acc += (inlet->type() == sym::signal ||
-                        inlet->type() == sym::multichannelsignal);
-            
+                acc += (inlet->type() == sym::signal
+                        || inlet->type() == sym::multichannelsignal);
+
             return acc;
         }
 
-        atom::vector call(const char* name, std::shared_ptr<atom::vector>&& args)
+        atom::vector call(const char* name,
+                          std::shared_ptr<atom::vector>&& args)
         {
             long inlet = c74::max::proxy_getinlet(native_handle());
-            
+
             if (auto func = m_messages.find(name);
                 LMW_LIKELY(func != m_messages.end()))
                 func->second->call(
@@ -121,7 +122,7 @@ namespace lmw {
         {
             return make_port<inlet>(ty, std::forward<Args>(args)...);
         }
-        
+
         template <typename... Args>
         outlet_ptr make_typed_outlet(symbol ty, Args&&... args)
         {
@@ -153,15 +154,15 @@ namespace lmw {
             return make_port<inlet>(
                 sym::multichannelsignal, std::forward<Args>(args)...);
         }
-        
+
         template <typename... Args>
         outlet_ptr make_mc_outlet(long channelcount, Args... args)
         {
             auto p = make_port<outlet>(
                 sym::multichannelsignal, std::forward<Args>(args)...);
-            
+
             p->signale_count(channelcount);
-            
+
             return p;
         }
 
@@ -179,11 +180,11 @@ namespace lmw {
         template <typename port_type, typename... Args>
         std::shared_ptr<port_type> make_port(symbol ty, Args... args)
         {
-            auto port =
-                std::make_shared<port_type>(std::forward<Args>(args)...);
+            auto port
+                = std::make_shared<port_type>(std::forward<Args>(args)...);
 
             port->type(ty);
-            
+
             lmw_internal_assign(port);
 
             return port;
@@ -193,17 +194,17 @@ namespace lmw {
         {
             return m_inlets;
         }
-        
+
         std::vector<inlet_ptr>& inlets() noexcept
         {
             return m_inlets;
         }
-        
+
         const std::vector<outlet_ptr>& outlets() const noexcept
         {
             return m_outlets;
         }
-        
+
         std::vector<outlet_ptr>& outlets() noexcept
         {
             return m_outlets;
@@ -219,16 +220,18 @@ namespace lmw {
             std::sort(m_outlets.begin(), m_outlets.end(), sort_signals);
 
             for (auto it = m_inlets.rbegin(); it != m_inlets.rend(); ++it)
-                (*it)->lmw_internal_create(this,
-                                           static_cast<long>(std::distance(m_inlets.rbegin(), it)),
-                                           m_inlets.size());
+                (*it)->lmw_internal_create(
+                    this,
+                    static_cast<long>(std::distance(m_inlets.rbegin(), it)),
+                    m_inlets.size());
 
             for (auto it = m_outlets.rbegin(); it != m_outlets.rend(); ++it)
                 (*it)->lmw_internal_create(
-                    this, static_cast<long>(std::distance(m_outlets.rbegin(), it)),
+                    this,
+                    static_cast<long>(std::distance(m_outlets.rbegin(), it)),
                     m_inlets.size());
-            
-            if(mc()){
+
+            if (mc()) {
                 mspflag(c74::max::Z_MC_INLETS);
                 mspflag(c74::max::Z_NO_INPLACE);
             }
@@ -251,53 +254,48 @@ namespace lmw {
         {
             c74::max::object_warn(native_handle(), msg, args...);
         }
-        
-        virtual void prepare(double srate, long max_vsize)
-        {
-        }
-        
+
+        virtual void prepare(double srate, long max_vsize) {}
+
         void clear_mspflags() noexcept
         {
             m_mspflags = 0;
         }
-        
+
         void mspflag(short flag) noexcept
         {
             m_mspflags |= flag;
         }
-        
+
         short mspflags() const noexcept
         {
             return m_mspflags;
         }
 
       protected:
-        
         console_stream<default_console_stream> console;
         console_stream<warning_console_stream> console_warn;
         console_stream<error_console_stream> console_error;
 
       private:
-        
         template <typename PortArr>
         const char* get_port_description(const PortArr& p, long index)
         {
-            if(LMW_UNLIKELY(index >= p.size()))
-                return "unknown";
-            
+            if (LMW_UNLIKELY(index >= p.size())) return "unknown";
+
             return p[index]->description();
         }
-        
+
         void lmw_internal_assign(message* msg)
         {
-            m_messages.insert({msg->name(), msg});
+            m_messages.insert({ msg->name(), msg });
         }
-        
+
         void lmw_internal_assign(inlet_ptr inlet)
         {
             m_inlets.push_back(inlet);
         }
-        
+
         void lmw_internal_assign(outlet_ptr outlet)
         {
             m_outlets.push_back(outlet);
@@ -312,20 +310,18 @@ namespace lmw {
             console_error.lmw_internal_prepare(t_obj_instance_ptr);
         }
 
-        short m_mspflags = 0;
-        c74::max::t_object*                         t_obj_instance_ptr = nullptr;
-        std::unordered_map<std::string, message*>   m_messages;
-        std::vector<std::shared_ptr<inlet>>         m_inlets;
-        std::vector<std::shared_ptr<outlet>>        m_outlets;
+        short m_mspflags                       = 0;
+        c74::max::t_object* t_obj_instance_ptr = nullptr;
+        std::unordered_map<std::string, message*> m_messages;
+        std::vector<std::shared_ptr<inlet>> m_inlets;
+        std::vector<std::shared_ptr<outlet>> m_outlets;
     };
 
     template <typename user_class>
-    class max_class : public max_class_base {
+    class max_class: public max_class_base {
       public:
-        virtual ~max_class()
-        {
-        }
+        virtual ~max_class() {}
 
       private:
     };
-}
+}    // namespace lmw

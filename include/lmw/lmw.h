@@ -5,21 +5,21 @@
 
 #if __GNUC__ || __clang__
 
-#define LMW_LIKELY(x) __builtin_expect(!!(x), 1)
-#define LMW_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#    define LMW_LIKELY(x)   __builtin_expect(!!(x), 1)
+#    define LMW_UNLIKELY(x) __builtin_expect(!!(x), 0)
 
-#define LMW_ALWAYS_INLINE __attribute__((always_inline))
+#    define LMW_ALWAYS_INLINE __attribute__((always_inline)) inline
 
-#define LMW_MSVC_IGNORE_POINTER_TRUNCATION(x) x
+#    define LMW_MSVC_IGNORE_POINTER_TRUNCATION(x) x
 
-#define LMW_STRCPY(src, dst) strcpy(src, dst)
+#    define LMW_STRCPY(src, dst) strcpy(src, dst)
 
 #elif _MSC_VER
 
-#define LMW_LIKELY(x) x
-#define LMW_UNLIKELY(x) x
+#    define LMW_LIKELY(x)   x
+#    define LMW_UNLIKELY(x) x
 
-#define LMW_ALWAYS_INLINE __forceinline
+#    define LMW_ALWAYS_INLINE __forceinline
 
 // clang-format off
 
@@ -41,10 +41,10 @@
 
 #else
 
-#define LMW_LIKELY(x) x
-#define LME_UNLIKELY(x) x
+#    define LMW_LIKELY(x)   x
+#    define LME_UNLIKELY(x) x
 
-#define LMW_ALWAYS_INLINE
+#    define LMW_ALWAYS_INLINE
 
 #endif
 

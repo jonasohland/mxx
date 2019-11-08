@@ -6,30 +6,32 @@ namespace lmw {
     class span {
       public:
         using element_type = Ty;
-        using value_type = typename std::remove_cv<Ty>::type;
+        using value_type   = typename std::remove_cv<Ty>::type;
 
-        using index_type = std::size_t;
+        using index_type      = std::size_t;
         using difference_type = std::ptrdiff_t;
 
-        using pointer = Ty*;
+        using pointer       = Ty*;
         using const_pointer = const Ty*;
 
-        using referece = Ty&;
+        using referece       = Ty&;
         using const_referece = const Ty&;
 
-        using iterator = Ty*;
+        using iterator       = Ty*;
         using const_iterator = const Ty*;
 
-        using reverse_iterator = std::reverse_iterator<iterator>;
+        using reverse_iterator       = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
         span(pointer ptr, index_type count) noexcept
-            : m_data(ptr), m_count(count)
+            : m_data(ptr)
+            , m_count(count)
         {
         }
 
         span(pointer first, pointer last) noexcept
-            : m_data(first), m_count(std::distance(first, last))
+            : m_data(first)
+            , m_count(std::distance(first, last))
         {
         }
 
@@ -41,7 +43,8 @@ namespace lmw {
 
         template <typename Container>
         span(Container& cont)
-            : m_data(std::data(cont)), m_count(std::size(cont))
+            : m_data(std::data(cont))
+            , m_count(std::size(cont))
         {
         }
 
@@ -156,27 +159,27 @@ namespace lmw {
         index_type m_count;
     };
 
-    class atom : public c74::max::t_atom {
+    class atom: public c74::max::t_atom {
 
       public:
         using vector = std::vector<atom>;
 
         template <std::size_t Size>
         using array = std::array<atom, Size>;
-        
+
         using span = span<atom>;
 
         enum class types {
-            NOTHING = 0, ///< no type, thus no atom
-            LONG,  ///< integer (32-bit on 32-bit arch, 64-bit on 64-bit arch)
-            FLOAT, ///< decimal (float on 32-bit arch, double on 64-bit arch)
-            SYM,   ///< symbol
-            OBJ,   ///< object
+            NOTHING = 0,    ///< no type, thus no atom
+            LONG,    ///< integer (32-bit on 32-bit arch, 64-bit on 64-bit arch)
+            FLOAT,    ///< decimal (float on 32-bit arch, double on 64-bit arch)
+            SYM,      ///< symbol
+            OBJ,      ///< object
         };
 
         atom() noexcept
         {
-            this->a_type = c74::max::A_NOTHING;
+            this->a_type    = c74::max::A_NOTHING;
             this->a_w.w_obj = nullptr;
         }
 
@@ -185,7 +188,7 @@ namespace lmw {
 
         atom(atom&& other) noexcept
         {
-            this->a_w = other.a_w;
+            this->a_w    = other.a_w;
             this->a_type = other.a_type;
 
             other.a_type = c74::max::e_max_atomtypes::A_NOTHING;
@@ -193,13 +196,13 @@ namespace lmw {
 
         atom(const c74::max::t_atom& atm) noexcept
         {
-            this->a_w = atm.a_w;
+            this->a_w    = atm.a_w;
             this->a_type = atm.a_type;
         }
 
         atom& operator=(atom&& other)
         {
-            this->a_w = other.a_w;
+            this->a_w    = other.a_w;
             this->a_type = other.a_type;
 
             other.a_type = c74::max::e_max_atomtypes::A_NOTHING;
@@ -311,16 +314,13 @@ namespace lmw {
         [[nodiscard]] bool empty() const noexcept
         {
             switch (type()) {
-            case types::NOTHING:
-                return true;
-            case types::LONG:
-            case types::FLOAT:
-                return false;
-            case types::SYM:
-                return this->a_w.w_sym == nullptr ||
-                       this->a_w.w_sym == detail::empty_t_symbol;
-            case types::OBJ:
-                return this->a_w.w_obj == nullptr;
+                case types::NOTHING: return true;
+                case types::LONG:
+                case types::FLOAT: return false;
+                case types::SYM:
+                    return this->a_w.w_sym == nullptr
+                           || this->a_w.w_sym == detail::empty_t_symbol;
+                case types::OBJ: return this->a_w.w_obj == nullptr;
             }
 
             return false;
@@ -336,4 +336,4 @@ namespace lmw {
             return atm.type();
         }
     };
-}
+}    // namespace lmw

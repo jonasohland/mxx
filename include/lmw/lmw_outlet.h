@@ -9,18 +9,21 @@ namespace lmw {
         LMW_ALWAYS_INLINE void outlet_send_impl(c74::max::t_outlet* outlet,
                                                 const OutputType& output)
         {
-            if (output[0].type() == atom::types::LONG ||
-                output[0].type() == atom::types::FLOAT)
+            if (output[0].type() == atom::types::LONG
+                || output[0].type() == atom::types::FLOAT)
 
                 c74::max::outlet_list(
-                    outlet, nullptr, static_cast<short>(output.size()),
+                    outlet,
+                    nullptr,
+                    static_cast<short>(output.size()),
                     static_cast<const c74::max::t_atom*>(&output[0]));
 
             else {
 
                 if (output.size() > 1)
                     c74::max::outlet_anything(
-                        outlet, output[0],
+                        outlet,
+                        output[0],
                         static_cast<short>(output.size() - 1),
                         static_cast<const c74::max::t_atom*>(&output[1]));
 
@@ -59,17 +62,20 @@ namespace lmw {
             std::copy(
                 noutput.begin(), noutput.end(), std::back_inserter(output));
         }
-    }
+    }    // namespace detail
 
-    class outlet : public port {
+    class outlet: public port {
 
         friend class max_class_base;
-        
+
         template <typename user_class>
-        friend void
-        wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                            short* count, double srate, long vsize, long flags);
-        
+        friend void wrapper_dsp64_setup(c74::max::t_object* x,
+                                        c74::max::t_object* dspman,
+                                        short* count,
+                                        double srate,
+                                        long vsize,
+                                        long flags);
+
       public:
         outlet(const char* msg_description)
         {
@@ -99,24 +105,31 @@ namespace lmw {
             append_to_output(arg);
             send_buffer();
         }
-        
+
         template <>
         void send<lmw::t_atom_span>(t_atom_span&& span)
         {
-            if(LMW_UNLIKELY(!span.size()))
-                return;
-            
-            if (span[0].a_type == c74::max::A_LONG||
-                span[0].a_type == c74::max::A_LONG)
-                c74::max::outlet_list(m_outlet, nullptr, static_cast<short>(span.size()), span.data());
+            if (LMW_UNLIKELY(!span.size())) return;
+
+            if (span[0].a_type == c74::max::A_LONG
+                || span[0].a_type == c74::max::A_LONG)
+                c74::max::outlet_list(m_outlet,
+                                      nullptr,
+                                      static_cast<short>(span.size()),
+                                      span.data());
             else {
                 if (span.size() > 1)
-                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, static_cast<short>(span.size() - 1), span.data() + 1);
+                    c74::max::outlet_anything(
+                        m_outlet,
+                        span[0].a_w.w_sym,
+                        static_cast<short>(span.size() - 1),
+                        span.data() + 1);
                 else
-                    c74::max::outlet_anything(m_outlet, span[0].a_w.w_sym, 0, nullptr);
+                    c74::max::outlet_anything(
+                        m_outlet, span[0].a_w.w_sym, 0, nullptr);
             }
         }
-        
+
         template <>
         void send<c74::max::t_atom*>(c74::max::t_atom*&& atom)
         {
@@ -128,12 +141,12 @@ namespace lmw {
                     c74::max::outlet_float(m_outlet, atom->a_w.w_float);
                     break;
                 case c74::max::A_SYM:
-                    c74::max::outlet_anything(m_outlet, atom->a_w.w_sym, 0, nullptr);
-                default:
-                    break;
+                    c74::max::outlet_anything(
+                        m_outlet, atom->a_w.w_sym, 0, nullptr);
+                default: break;
             }
         }
-        
+
         template <>
         void send<atom>(atom&& atom)
         {
@@ -146,7 +159,6 @@ namespace lmw {
         }
 
       private:
-        
         template <typename Arg>
         void append_to_output(const Arg& arg)
         {
@@ -164,8 +176,7 @@ namespace lmw {
 
         void lmw_internal_create(max_class_base* obj, long index, std::size_t);
 
-        
         atom::vector m_buffer;
         c74::max::t_outlet* m_outlet = nullptr;
     };
-}
+}    // namespace lmw

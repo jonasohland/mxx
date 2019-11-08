@@ -14,17 +14,25 @@ namespace lmw {
     class message {
 
       public:
-        message(max_class_base* owner, const symbol& name, const method& handler);
-
-        message(max_class_base* owner, const symbol& name, const symbol& type,
+        message(max_class_base* owner,
+                const symbol& name,
                 const method& handler);
 
-        message(max_class_base* owner, const symbol& name, const symbol& type,
-                const std::string& description, const method& hander);
+        message(max_class_base* owner,
+                const symbol& name,
+                const symbol& type,
+                const method& handler);
+
+        message(max_class_base* owner,
+                const symbol& name,
+                const symbol& type,
+                const std::string& description,
+                const method& hander);
 
         void call(std::shared_ptr<atom::vector> args, long inlet)
         {
-            executor.post(std::forward<std::shared_ptr<atom::vector>>(args), inlet);
+            executor.post(
+                std::forward<std::shared_ptr<atom::vector>>(args), inlet);
         }
 
         const char* name()
@@ -41,12 +49,11 @@ namespace lmw {
         friend struct std::hash<message*>;
 
       private:
-        
         void lmw_internal_init(max_class_base* owner, method m);
-        
+
         symbol m_name;
         symbol m_type;
         std::string m_description;
         default_executor executor;
     };
-}
+}    // namespace lmw

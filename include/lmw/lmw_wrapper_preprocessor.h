@@ -9,7 +9,7 @@
 
 #define LMW_FORCE_EXPAND(x) x
 
-#define LMW_PASTE(a, b) a##b
+#define LMW_PASTE(a, b)  a##b
 #define LMW_XPASTE(a, b) LMW_PASTE(a, b)
 
 /// helper for LMW_PREPROCESSOR_CAT
@@ -70,9 +70,8 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     template <class T>                                                         \
     struct sname##_impl {                                                      \
         template <typename C>                                                  \
-        static constexpr decltype(                                             \
-            std::declval<C>().fname(__VA_ARGS__),            \
-            bool())                                                            \
+        static constexpr decltype(std::declval<C>().fname(__VA_ARGS__),        \
+                                  bool())                                      \
         test(int)                                                              \
         {                                                                      \
             return true;                                                       \
@@ -96,14 +95,14 @@ LMW_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
 /* -------------------------------------------------------------------------- */
 
 #if defined(__GNUC__) || defined(__clang__)
-#define LMW_DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
+#    define LMW_DEPRECATE(foo, msg) foo __attribute__((deprecated(msg)))
 #elif defined(_MSC_VER)
-#define LMW_DEPRECATE(foo, msg) __declspec(deprecated(msg)) foo
+#    define LMW_DEPRECATE(foo, msg) __declspec(deprecated(msg)) foo
 #else
-#error This compiler is not supported
+#    error This compiler is not supported
 #endif
 
-#define LMW_PP_CAT(x, y) LMW_PP_CAT1(x, y)
+#define LMW_PP_CAT(x, y)  LMW_PP_CAT1(x, y)
 #define LMW_PP_CAT1(x, y) x##y
 
 namespace lmw::detail {
@@ -112,17 +111,17 @@ namespace lmw::detail {
     struct false_type {
     };
     template <int test>
-    struct converter : public true_type {
+    struct converter: public true_type {
     };
     template <>
-    struct converter<0> : public false_type {
+    struct converter<0>: public false_type {
     };
-} // namespace lmw::detail
+}    // namespace lmw::detail
 
 #define LMW_STATIC_WARNING_IMPL(cond, msg, counter)                            \
     struct LMW_PP_CAT(static_warning, counter) {                               \
-        LMW_DEPRECATE(void _(::lmw::detail::false_type const&), msg){};        \
-        void _(::lmw::detail::true_type const&){};                             \
+        LMW_DEPRECATE(void _(::lmw::detail::false_type const&), msg) {};       \
+        void _(::lmw::detail::true_type const&) {};                            \
         LMW_PP_CAT(static_warning, counter)()                                  \
         {                                                                      \
             _(::lmw::detail::converter<(cond)>());                             \
@@ -134,27 +133,29 @@ namespace lmw::detail {
 
 #ifdef LMW_ENABLE_CTTI_DEBUG
 
-#define LMW_DEBUG_MSG_PREFIX "LMW DEBUG: "
+#    define LMW_DEBUG_MSG_PREFIX "LMW DEBUG: "
 
-#define LMW_CTTI_DEBUG_SECTION(user_class)                                     \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_bang_handler<user_class>(),      \
-                       LMW_DEBUG_MSG_PREFIX "bang handler enabled");           \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_int_handler<user_class>(),       \
-                       LMW_DEBUG_MSG_PREFIX "int handler enabled");            \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_float_handler<user_class>(),     \
-                       LMW_DEBUG_MSG_PREFIX "float handler enabled");          \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_list_handler<user_class>(),      \
-                       LMW_DEBUG_MSG_PREFIX "list handler enabled");           \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_raw_list_handler<user_class>(),  \
-                       LMW_DEBUG_MSG_PREFIX "raw list handler enabled");       \
-    LMW_STATIC_WARNING(!lmw::type_traits::has_dsp_handler<user_class>(),       \
-                       LMW_DEBUG_MSG_PREFIX "DSP perform routine enabled");    \
-    LMW_STATIC_WARNING(                                                        \
-        !lmw::type_traits::has_input_changed_function<user_class>(),           \
-        LMW_DEBUG_MSG_PREFIX "inputchanged handler enabled");
+#    define LMW_CTTI_DEBUG_SECTION(user_class)                                 \
+        LMW_STATIC_WARNING(!lmw::type_traits::has_bang_handler<user_class>(),  \
+                           LMW_DEBUG_MSG_PREFIX "bang handler enabled");       \
+        LMW_STATIC_WARNING(!lmw::type_traits::has_int_handler<user_class>(),   \
+                           LMW_DEBUG_MSG_PREFIX "int handler enabled");        \
+        LMW_STATIC_WARNING(!lmw::type_traits::has_float_handler<user_class>(), \
+                           LMW_DEBUG_MSG_PREFIX "float handler enabled");      \
+        LMW_STATIC_WARNING(!lmw::type_traits::has_list_handler<user_class>(),  \
+                           LMW_DEBUG_MSG_PREFIX "list handler enabled");       \
+        LMW_STATIC_WARNING(                                                    \
+            !lmw::type_traits::has_raw_list_handler<user_class>(),             \
+            LMW_DEBUG_MSG_PREFIX "raw list handler enabled");                  \
+        LMW_STATIC_WARNING(!lmw::type_traits::has_dsp_handler<user_class>(),   \
+                           LMW_DEBUG_MSG_PREFIX                                \
+                           "DSP perform routine enabled");                     \
+        LMW_STATIC_WARNING(                                                    \
+            !lmw::type_traits::has_input_changed_function<user_class>(),       \
+            LMW_DEBUG_MSG_PREFIX "inputchanged handler enabled");
 #else
 
-#define LMW_CTTI_DEBUG_SECTION(user_class) ;
+#    define LMW_CTTI_DEBUG_SECTION(user_class) ;
 
 #endif
 
@@ -241,9 +242,10 @@ namespace lmw::detail {
     }
 
 #define LMW_CREATE_LIST_HANDLER_FUNCTION(identifier, classname)                \
-    void LMW_WRAPPER_FUNCTION_LIST(identifier)(                                \
-        c74::max::t_object * obj, c74::max::t_symbol * s, long argc,           \
-        c74::max::t_atom* argv)                                                \
+    void LMW_WRAPPER_FUNCTION_LIST(identifier)(c74::max::t_object * obj,       \
+                                               c74::max::t_symbol * s,         \
+                                               long argc,                      \
+                                               c74::max::t_atom* argv)         \
     {                                                                          \
         lmw::wrapper_handle_list_impl<classname>(obj, s, argc, argv);          \
     }
@@ -278,29 +280,51 @@ namespace lmw::detail {
 
 #define LMW_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                 \
     void LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)(                       \
-        c74::max::t_object * x, c74::max::t_object * dsp64, double** ins,      \
-        long numins, double** outs, long numouts, long sampleframes,           \
-        long flags, void* userparam)                                           \
+        c74::max::t_object * x,                                                \
+        c74::max::t_object * dsp64,                                            \
+        double** ins,                                                          \
+        long numins,                                                           \
+        double** outs,                                                         \
+        long numouts,                                                          \
+        long sampleframes,                                                     \
+        long flags,                                                            \
+        void* userparam)                                                       \
     {                                                                          \
-        lmw::wrapper_dsp64_perform_impl<classname>(                            \
-            x, dsp64, ins, numins, outs, numouts, sampleframes, flags,         \
-            userparam);                                                        \
+        lmw::wrapper_dsp64_perform_impl<classname>(x,                          \
+                                                   dsp64,                      \
+                                                   ins,                        \
+                                                   numins,                     \
+                                                   outs,                       \
+                                                   numouts,                    \
+                                                   sampleframes,               \
+                                                   flags,                      \
+                                                   userparam);                 \
     }
 
 #define LMW_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                  \
     void LMW_WRAPPER_FUNCTION_DSP64_METHOD(identifier)(                        \
-        c74::max::t_object * x, c74::max::t_object * dsp64, short* count,      \
-        double samplerate, long maxvectorsize, long flags)                     \
+        c74::max::t_object * x,                                                \
+        c74::max::t_object * dsp64,                                            \
+        short* count,                                                          \
+        double samplerate,                                                     \
+        long maxvectorsize,                                                    \
+        long flags)                                                            \
     {                                                                          \
         lmw::wrapper_dsp64_setup<classname>(                                   \
-            x, dsp64, count, samplerate, maxvectorsize, flags,                 \
+            x,                                                                 \
+            dsp64,                                                             \
+            count,                                                             \
+            samplerate,                                                        \
+            maxvectorsize,                                                     \
+            flags,                                                             \
             LMW_WRAPPER_FUNCTION_DSP64_PERFORM(identifier));                   \
     }
 
 #define LMW_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                \
-    void LMW_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(                        \
-        c74::max::t_object * o, c74::max::t_symbol * s, long ac,               \
-        c74::max::t_atom* av)                                                  \
+    void LMW_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(c74::max::t_object * o, \
+                                                       c74::max::t_symbol * s, \
+                                                       long ac,                \
+                                                       c74::max::t_atom* av)   \
     {                                                                          \
         lmw::wrapper_msg_call<classname>(o, s, ac, av);                        \
     }

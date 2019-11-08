@@ -21,7 +21,7 @@ namespace lmw {
         }
 
       private:
-        method m_handler = [](
-            const atom::vector&, long) -> atom::vector { return {}; };
+        method m_handler
+            = [](const atom::vector&, long) -> atom::vector { return {}; };
     };
-}
+}    // namespace lmw

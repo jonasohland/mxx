@@ -3,8 +3,7 @@
 namespace lmw {
 
     namespace detail {
-        static c74::max::t_symbol* empty_t_symbol =
-            c74::max::gensym("");
+        static c74::max::t_symbol* empty_t_symbol = c74::max::gensym("");
     }
 
     /**
@@ -17,7 +16,6 @@ namespace lmw {
         friend class atom;
 
       public:
-        
         /// Default constructor creates any empty symbol.
         symbol()
         {
@@ -27,15 +25,17 @@ namespace lmw {
         /// Copy constructor
         symbol(const symbol& other) = default;
 
-        /// Move constructor. After moving a symbol the moved-from symbol will be empty.
+        /// Move constructor. After moving a symbol the moved-from symbol will
+        /// be empty.
         symbol(symbol&& other)
         {
-            m_sym = other.m_sym;
+            m_sym       = other.m_sym;
             other.m_sym = detail::empty_t_symbol;
         }
 
         /// Construct a new symbol from a native `t_symbol*`
-        symbol(c74::max::t_symbol* sym) : m_sym(sym)
+        symbol(c74::max::t_symbol* sym)
+            : m_sym(sym)
         {
         }
 
@@ -54,10 +54,10 @@ namespace lmw {
         }
 
         /**
-         Construct a new symbol from a pointer to an atom. The atom will be converted to a
-         string. This will look up the string in the max symbol table and
-         store a pointer to it if a symbol was found. If not, a new one will
-         be created.
+         Construct a new symbol from a pointer to an atom. The atom will be
+         converted to a string. This will look up the string in the max symbol
+         table and store a pointer to it if a symbol was found. If not, a new
+         one will be created.
          */
         symbol(const c74::max::t_atom* atm)
         {
@@ -67,19 +67,20 @@ namespace lmw {
         /// Default assignment operator.
         symbol& operator=(const symbol& other) noexcept = default;
 
-        /// Move assignment operator. The moved from symbol will be empty after the move.
+        /// Move assignment operator. The moved from symbol will be empty after
+        /// the move.
         symbol& operator=(symbol&& other) noexcept
         {
-            m_sym = other.m_sym;
+            m_sym       = other.m_sym;
             other.m_sym = detail::empty_t_symbol;
 
             return *this;
         }
 
         /**
-          Construct a new symbol from a C String. This will look up the string in the max symbol table and
-          store a pointer to it if a symbol was found. If not, a new one will
-          be created.
+          Construct a new symbol from a C String. This will look up the string
+          in the max symbol table and store a pointer to it if a symbol was
+          found. If not, a new one will be created.
          */
         symbol(const char* cstr)
         {
@@ -87,9 +88,9 @@ namespace lmw {
         }
 
         /**
-          Construct a new symbol from a std::string. This will look up the string in the max symbol table and
-          store a pointer to it if a symbol was found. If not, a new one will
-          be created.
+          Construct a new symbol from a std::string. This will look up the
+          string in the max symbol table and store a pointer to it if a symbol
+          was found. If not, a new one will be created.
          */
         symbol(const std::string& str)
         {
@@ -101,7 +102,7 @@ namespace lmw {
         {
             return m_sym->s_name;
         }
-        
+
         /// Convert to `std::string`
         std::string str() const
         {
@@ -134,21 +135,21 @@ namespace lmw {
             return symbol(other) == *this;
         }
 
-        
         /// Support implicit conversion to C String
         inline operator const char*() const noexcept
         {
             return m_sym->s_name;
         }
-        
+
         /// Support implicit conversion to `std::string`
         inline operator std::string() const
         {
             return std::string(m_sym->s_name);
         }
-        
+
         /// Support implicit conversion to `t_symbol*`
-        inline operator c74::max::t_symbol*() {
+        inline operator c74::max::t_symbol*()
+        {
             return m_sym;
         }
 
@@ -161,4 +162,4 @@ namespace lmw {
       private:
         c74::max::t_symbol* m_sym = nullptr;
     };
-}
+}    // namespace lmw

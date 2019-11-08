@@ -53,9 +53,10 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void
-    wrapper_handle_list_impl(c74::max::t_object* obj, c74::max::t_symbol* s,
-                             long ac, c74::max::t_atom* av)
+    LMW_ALWAYS_INLINE void wrapper_handle_list_impl(c74::max::t_object* obj,
+                                                    c74::max::t_symbol* s,
+                                                    long ac,
+                                                    c74::max::t_atom* av)
     {
         if constexpr (type_traits::has_list_handler<user_class>())
             get_wrapper<user_class>(obj)->object.handle_list(
@@ -78,8 +79,8 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void wrapper_assist_impl(c74::max::t_object* x, void* b,
-                                               long io, long index, char* s)
+    LMW_ALWAYS_INLINE void wrapper_assist_impl(
+        c74::max::t_object* x, void* b, long io, long index, char* s)
     {
         auto wrapper = get_wrapper<user_class>(x);
 
@@ -90,8 +91,8 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void wrapper_inletinfo_impl(c74::max::t_object* x,
-                                                  void* b, long index, char* t)
+    LMW_ALWAYS_INLINE void
+    wrapper_inletinfo_impl(c74::max::t_object* x, void* b, long index, char* t)
     {
         auto wrapper = get_wrapper<user_class>(x);
 
@@ -99,8 +100,8 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void wrapper_inputchanged_impl(c74::max::t_object* x,
-                                                     long index, long chans)
+    LMW_ALWAYS_INLINE void
+    wrapper_inputchanged_impl(c74::max::t_object* x, long index, long chans)
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
@@ -124,10 +125,13 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void
-    wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                        short* count, double srate, long vsize, long flags,
-                        c74::max::t_perfroutine64 r)
+    LMW_ALWAYS_INLINE void wrapper_dsp64_setup(c74::max::t_object* x,
+                                               c74::max::t_object* dspman,
+                                               short* count,
+                                               double srate,
+                                               long vsize,
+                                               long flags,
+                                               c74::max::t_perfroutine64 r)
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
@@ -139,7 +143,9 @@ namespace lmw {
             if (is_mc)
                 wrapper->object.m_inlets[i]->signal_count(
                     reinterpret_cast<long>(c74::max::object_method(
-                        dspman, sym::getnuminputchannels, wrapper,
+                        dspman,
+                        sym::getnuminputchannels,
+                        wrapper,
                         LMW_MSVC_IGNORE_POINTER_TRUNCATION(
                             reinterpret_cast<void*>(i)))));
         }
@@ -152,11 +158,15 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void
-    wrapper_dsp64_perform_impl(c74::max::t_object* x, c74::max::t_object* dsp64,
-                               double** ins, long numins, double** outs,
-                               long numouts, long frames, long flags,
-                               void* userparam)
+    LMW_ALWAYS_INLINE void wrapper_dsp64_perform_impl(c74::max::t_object* x,
+                                                      c74::max::t_object* dsp64,
+                                                      double** ins,
+                                                      long numins,
+                                                      double** outs,
+                                                      long numouts,
+                                                      long frames,
+                                                      long flags,
+                                                      void* userparam)
     {
         if constexpr (lmw::type_traits::has_dsp_handler<user_class>())
             get_wrapper<user_class>(x)->object.process(
@@ -167,4 +177,4 @@ namespace lmw {
                       "Missing required perform function on external class");
 #endif
     }
-} // namespace lmw
+}    // namespace lmw

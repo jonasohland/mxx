@@ -2,7 +2,7 @@
 
 namespace lmw {
     template <typename Operator>
-    struct add : public std::binary_function<lmw::atom, lmw::atom, lmw::atom> {
+    struct add: public std::binary_function<lmw::atom, lmw::atom, lmw::atom> {
 
         using internal_operation_type = typename Operator::first_argument_type;
 
@@ -23,4 +23,4 @@ namespace lmw {
     {
         return std::reduce(first, last, 0, add<std::plus<T>>());
     }
-}
+}    // namespace lmw
