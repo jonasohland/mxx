@@ -93,8 +93,10 @@ namespace lmw::sym {
 
 #include <lmw/lmw_wrapper_preprocessor.h>
 #include <lmw/lmw_type_traits.h>
+#include <lmw/lmw_mutex.h>
 #include <lmw/lmw_threads.h>
 #include <lmw/lmw_message.h>
+#include <lmw/lmw_attribute.h>
 #include <lmw/lmw_port.h>
 #include <lmw/lmw_outlet.h>
 #include <lmw/lmw_inlet.h>

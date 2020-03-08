@@ -19,7 +19,7 @@ namespace lmw {
             color
         };
 
-        inline std::unordered_map<style, symbol> style_syms {
+        static inline std::unordered_map<style, symbol> style_syms {
             { style::text, "text" },     { style::toggle, "onoff" },
             { style::enum_sym, "enum" }, { style::enum_int, "enumindex" },
             { style::rect, "rect" },     { style::font, "font" },
@@ -45,9 +45,25 @@ namespace lmw {
         class array_attr: public attr_base {
 
           public:
+            using iterator = typename T::iterator;
+
+            using difference_type =
+                typename std::iterator_traits<iterator>::difference_type;
+
+            using value_type =
+                typename std::iterator_traits<iterator>::value_type;
+
+            using pointer = typename std::iterator_traits<iterator>::pointer;
+
+            using reference =
+                typename std::iterator_traits<iterator>::reference;
+
+            using iterator_category =
+                typename std::iterator_traits<iterator>::iterator_category;
+
             std::size_t size_offset()
             {
-                return (&m_size) - reinterpret_cast<size_t*>(&m_owner);
+                return (&m_size) - reinterpret_cast<size_t*>(m_owner);
             }
 
           private:
@@ -93,6 +109,17 @@ namespace lmw {
         struct attr_select_base<std::vector<int>> {
             using type = array_attr<std::vector<int>>;
         };
+
+        template <>
+        struct attr_select_base<std::vector<std::string>> {
+            using type = array_attr<std::vector<std::string>>;
+        };
+
+        template <>
+        struct attr_select_base<std::vector<symbol>> {
+            using type = array_attr<symbol>;
+        };
+
     }    // namespace detail
 
     template <typename T>

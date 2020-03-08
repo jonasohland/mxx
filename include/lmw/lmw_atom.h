@@ -5,20 +5,16 @@ namespace lmw {
     template <typename Ty>
     class span {
       public:
-        using element_type = Ty;
-        using value_type   = typename std::remove_cv<Ty>::type;
-
+        using element_type    = Ty;
+        using value_type      = typename std::remove_cv<Ty>::type;
         using index_type      = std::size_t;
         using difference_type = std::ptrdiff_t;
-
-        using pointer       = Ty*;
-        using const_pointer = const Ty*;
-
-        using referece       = Ty&;
-        using const_referece = const Ty&;
-
-        using iterator       = Ty*;
-        using const_iterator = const Ty*;
+        using pointer         = Ty*;
+        using const_pointer   = const Ty*;
+        using referece        = Ty&;
+        using const_referece  = const Ty&;
+        using iterator        = Ty*;
+        using const_iterator  = const Ty*;
 
         using reverse_iterator       = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
