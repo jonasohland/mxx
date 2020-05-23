@@ -41,7 +41,10 @@ namespace lmw::type_traits {
                                      construct,
                                      std::declval<::lmw::atom::vector>());
 
-    LMW_CREATE_BASIC_MEMBER_CHECK(has_input_changed_function, inputchanged);
+    LMW_CREATE_ADVANCED_MEMBER_CHECK(has_input_changed_function,
+                                     inputchanged,
+                                     long(),
+                                     std::declval<bool&>());
 
     template <typename user_class>
     std::integral_constant<bool, has_dsp_handler_impl<user_class>::value>

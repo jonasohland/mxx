@@ -100,7 +100,7 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void
+    LMW_ALWAYS_INLINE long
     wrapper_inputchanged_impl(c74::max::t_object* x, long index, long chans)
     {
         auto* wrapper = get_wrapper<user_class>(x);
@@ -109,8 +109,13 @@ namespace lmw {
 
         wrapper->object.m_inlets[index]->signal_count(chans);
 
-        if constexpr (type_traits::has_input_changed_function<user_class>())
-            wrapper->object.inputchanged();
+        if constexpr (type_traits::has_input_changed_function<user_class>()) {
+            bool changed;
+            wrapper->object.inputchanged(index, changed);
+            return changed;
+        }
+
+        return false;
     }
 
     template <typename user_class>
@@ -153,8 +158,6 @@ namespace lmw {
         wrapper->object.prepare(srate, vsize);
 
         c74::max::dsp_add64(dspman, x, r, 0, nullptr);
-
-        c74::max::object_post(x, "added to dspchain");
     }
 
     template <typename user_class>

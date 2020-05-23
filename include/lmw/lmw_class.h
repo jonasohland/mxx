@@ -25,7 +25,7 @@ namespace lmw {
                                         c74::max::t_perfroutine64);
 
         template <typename user_class>
-        friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
+        friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
         template <typename user_class>
         friend long wrapper_multichanneloutputs_impl(c74::max::t_object*, long);
