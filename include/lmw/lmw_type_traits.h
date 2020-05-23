@@ -43,8 +43,7 @@ namespace lmw::type_traits {
 
     LMW_CREATE_ADVANCED_MEMBER_CHECK(has_input_changed_function,
                                      inputchanged,
-                                     long(),
-                                     std::declval<bool&>());
+                                     long());
 
     template <typename user_class>
     std::integral_constant<bool, has_dsp_handler_impl<user_class>::value>

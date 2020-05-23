@@ -309,6 +309,18 @@ namespace lmw {
             console_warn.lmw_internal_prepare(t_obj_instance_ptr);
             console_error.lmw_internal_prepare(t_obj_instance_ptr);
         }
+        
+        bool lmw_internal_sigcnt_changed()
+        {
+            bool ch = false;
+            
+            for(auto& p : m_outlets)
+                ch = ch || p->lmw_internal_sigcount_changed();
+            
+            c74::max::object_post(native_handle(), "sigcount changed: %d", ch);
+            
+            return ch;
+        }
 
         short m_mspflags                       = 0;
         c74::max::t_object* t_obj_instance_ptr = nullptr;

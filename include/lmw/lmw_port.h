@@ -2,6 +2,8 @@
 
 namespace lmw {
     class port {
+        
+        friend class max_class_base;
 
         template <typename user_class>
         friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
@@ -46,6 +48,9 @@ namespace lmw {
 
         void signal_count(long c) noexcept
         {
+            if(c != m_signal_count)
+                m_sigc_changed = true;
+            
             m_signal_count = c;
         }
 
@@ -75,6 +80,17 @@ namespace lmw {
         c74::max::t_object* m_owner;
 
       private:
+        
+
+        bool lmw_internal_sigcount_changed()
+        {
+            bool s = m_sigc_changed;
+            m_sigc_changed = false;
+            return s;
+        }
+          
+        bool m_sigc_changed = false;
+        
         long m_signal_count  = 1;
         symbol m_type        = detail::empty_t_symbol;
         symbol m_name        = detail::empty_t_symbol;

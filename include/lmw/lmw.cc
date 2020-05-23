@@ -16,7 +16,5 @@ struct test_external: lmw::max_class<test_external> {
     lmw::mutex mtx;
 };
 
-lmw::basic_attribute<std::vector<int>> attr;
-
 
 LMW_EXTERNAL(test_external, test_external)

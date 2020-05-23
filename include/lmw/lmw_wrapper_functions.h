@@ -109,13 +109,10 @@ namespace lmw {
 
         wrapper->object.m_inlets[index]->signal_count(chans);
 
-        if constexpr (type_traits::has_input_changed_function<user_class>()) {
-            bool changed;
-            wrapper->object.inputchanged(index, changed);
-            return changed;
-        }
+        if constexpr (type_traits::has_input_changed_function<user_class>())
+            wrapper->object.inputchanged(index);
 
-        return false;
+        return wrapper->object.lmw_internal_sigcnt_changed();
     }
 
     template <typename user_class>
