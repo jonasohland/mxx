@@ -291,12 +291,12 @@ namespace lmw {
             return c74::max::atom_getlong(this) != 0;
         }
 
-        inline operator c74::max::t_symbol*() const noexcept
+        inline operator c74::max::t_symbol *() const noexcept
         {
             return c74::max::atom_getsym(this);
         }
 
-        inline operator c74::max::t_object*() const noexcept
+        inline operator c74::max::t_object *() const noexcept
         {
             return static_cast<c74::max::t_object*>(
                 c74::max::atom_getobj(this));

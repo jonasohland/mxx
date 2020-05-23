@@ -148,7 +148,7 @@ namespace lmw {
         }
 
         /// Support implicit conversion to `t_symbol*`
-        inline operator c74::max::t_symbol*()
+        inline operator c74::max::t_symbol *()
         {
             return m_sym;
         }

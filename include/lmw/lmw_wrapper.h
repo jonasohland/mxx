@@ -11,12 +11,12 @@ namespace lmw {
             c74::max::t_pxobject mspobj_header;
         };
 
-        operator c74::max::t_object*() const noexcept
+        operator c74::max::t_object *() const noexcept
         {
             return &object_header.maxobj_header;
         }
 
-        operator c74::max::t_pxobject*() const noexcept
+        operator c74::max::t_pxobject *() const noexcept
         {
             return &object_header.mspobj_header;
         }

@@ -402,13 +402,13 @@ namespace lmw::detail {
 //                            THE MAGIC WRAPPER
 /* -------------------------------------------------------------------------- */
 
-#define LMW_EXTERNAL(class)                                                    \
-    LMW_USER_CLASS_MAXCLASS_DECL(default)                                      \
-    LMW_NEW_INSTANCE_FUNCTION(default, class)                                  \
-    LMW_FREE_INSTANCE_FUNCTION(default, class)                                 \
-    LMW_EXT_HANDLER_FUNCTIONS(default, class)                                  \
+#define LMW_EXTERNAL(class, identifier)                                        \
+    LMW_USER_CLASS_MAXCLASS_DECL(identifier)                                   \
+    LMW_NEW_INSTANCE_FUNCTION(identifier, class)                               \
+    LMW_FREE_INSTANCE_FUNCTION(identifier, class)                              \
+    LMW_EXT_HANDLER_FUNCTIONS(identifier, class)                               \
     LMW_CTTI_DEBUG_SECTION(class)                                              \
     void lmw_external_main(void*)                                              \
     {                                                                          \
-        LMW_MAXCLASS_DEF_IMPL(default, class)                                  \
+        LMW_MAXCLASS_DEF_IMPL(identifier, class)                               \
     }

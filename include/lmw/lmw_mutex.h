@@ -41,9 +41,8 @@ namespace lmw {
         {
             return m_mtx;
         }
-        
-    private:
 
+      private:
         c74::max::t_systhread_mutex m_mtx;
     };
 
@@ -84,24 +83,22 @@ namespace lmw {
         {
             return m_mtx;
         }
-        
-    private:
 
+      private:
         c74::max::t_systhread_mutex m_mtx;
     };
 
-    
+
     class global_critical_region {
-        
+
         global_critical_region()
         {
-            c74::max::critical_enter(0);
+            // c74::max::critical_enter(0);
         }
-        
+
         ~global_critical_region()
         {
-            c74::max::critical_exit(0);
+            /// c74::max::critical_exit(0);
         }
-            
     };
 }    // namespace lmw

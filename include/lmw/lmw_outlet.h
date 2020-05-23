@@ -82,6 +82,12 @@ namespace lmw {
             description(msg_description);
         }
 
+        outlet(const char* msg_description, long signals)
+        {
+            description(msg_description);
+            signal_count(signals);
+        }
+
         ~outlet()
         {
             if (m_outlet) c74::max::outlet_delete(m_outlet);
