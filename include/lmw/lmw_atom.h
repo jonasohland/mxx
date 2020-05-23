@@ -240,7 +240,13 @@ namespace lmw {
         {
             c74::max::atom_setlong(this, i);
         }
-
+        
+        template <typename T>
+        T get() const
+        {
+            return static_cast<const T>(*this);
+        }
+        
         inline operator const char*() const noexcept
         {
             return c74::max::atom_getsym(this)->s_name;
