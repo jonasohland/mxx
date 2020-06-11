@@ -1,12 +1,12 @@
 /** @file */
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     namespace detail {
 
         template <typename OutputType>
-        LMW_ALWAYS_INLINE void outlet_send_impl(c74::max::t_outlet* outlet,
+        MXX_ALWAYS_INLINE void outlet_send_impl(c74::max::t_outlet* outlet,
                                                 const OutputType& output)
         {
             if (output[0].type() == atom::types::LONG
@@ -33,14 +33,14 @@ namespace lmw {
         }
 
         template <>
-        LMW_ALWAYS_INLINE void outlet_send_impl<c74::max::t_atom_long>(
+        MXX_ALWAYS_INLINE void outlet_send_impl<c74::max::t_atom_long>(
             c74::max::t_outlet* maxoutlet, const c74::max::t_atom_long& value)
         {
             c74::max::outlet_int(maxoutlet, value);
         }
 
         template <>
-        LMW_ALWAYS_INLINE void
+        MXX_ALWAYS_INLINE void
         outlet_send_impl<double>(c74::max::t_outlet* maxoutlet,
                                  const double& value)
         {
@@ -48,14 +48,14 @@ namespace lmw {
         }
 
         template <typename OutputType>
-        LMW_ALWAYS_INLINE void outlet_output_accm(atom::vector& output,
+        MXX_ALWAYS_INLINE void outlet_output_accm(atom::vector& output,
                                                   const OutputType& noutput)
         {
             output.emplace_back(noutput);
         }
 
         template <>
-        LMW_ALWAYS_INLINE void
+        MXX_ALWAYS_INLINE void
         outlet_output_accm<std::vector<atom>>(atom::vector& output,
                                               const std::vector<atom>& noutput)
         {
@@ -113,9 +113,9 @@ namespace lmw {
         }
 
         template <>
-        void send<lmw::t_atom_span>(t_atom_span&& span)
+        void send<mxx::t_atom_span>(t_atom_span&& span)
         {
-            if (LMW_UNLIKELY(!span.size())) return;
+            if (MXX_UNLIKELY(!span.size())) return;
 
             if (span[0].a_type == c74::max::A_LONG
                 || span[0].a_type == c74::max::A_LONG)
@@ -173,16 +173,16 @@ namespace lmw {
 
         void send_buffer()
         {
-            if (LMW_UNLIKELY(!m_outlet || m_buffer.empty())) return;
+            if (MXX_UNLIKELY(!m_outlet || m_buffer.empty())) return;
 
             detail::outlet_send_impl(native_handle(), m_buffer);
 
             m_buffer.clear();
         }
 
-        void lmw_internal_create(max_class_base* obj, long index, std::size_t);
+        void mxx_internal_create(max_class_base* obj, long index, std::size_t);
 
         atom::vector m_buffer;
         c74::max::t_outlet* m_outlet = nullptr;
     };
-}    // namespace lmw
+}    // namespace mxx

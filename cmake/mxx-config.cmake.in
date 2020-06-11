@@ -1,0 +1,5 @@
+set(mxx_package_install_dir      "@mxx_package_install_dir@")
+set(mxx_info_plist_template      "@mxx_installed_info_plist_template@")
+
+include(${CMAKE_CURRENT_LIST_DIR}/mxx_export.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/mxx.cmake)

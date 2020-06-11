@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     class default_executor {
 
@@ -24,4 +24,4 @@ namespace lmw {
         method m_handler
             = [](const atom::vector&, long) -> atom::vector { return {}; };
     };
-}    // namespace lmw
+}    // namespace mxx

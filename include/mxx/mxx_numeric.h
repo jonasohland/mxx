@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
     template <typename Operator>
-    struct add: public std::binary_function<lmw::atom, lmw::atom, lmw::atom> {
+    struct add: public std::binary_function<mxx::atom, mxx::atom, mxx::atom> {
 
         using internal_operation_type = typename Operator::first_argument_type;
 
-        lmw::atom operator()(const lmw::atom& lhs, const lmw::atom& rhs)
+        mxx::atom operator()(const mxx::atom& lhs, const mxx::atom& rhs)
         {
             static_assert(
                 std::is_same<typename Operator::first_argument_type,
@@ -23,4 +23,4 @@ namespace lmw {
     {
         return std::reduce(first, last, 0, add<std::plus<T>>());
     }
-}    // namespace lmw
+}    // namespace mxx

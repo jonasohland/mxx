@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     struct default_console_stream {
     };
@@ -49,7 +49,7 @@ namespace lmw {
         friend class max_class_base;
 
       private:
-        void lmw_internal_prepare(c74::max::t_object* o)
+        void mxx_internal_prepare(c74::max::t_object* o)
         {
             m_owner = o;
         }
@@ -57,4 +57,4 @@ namespace lmw {
         c74::max::t_object* m_owner = nullptr;
         std::stringstream m_buffer;
     };
-}    // namespace lmw
+}    // namespace mxx

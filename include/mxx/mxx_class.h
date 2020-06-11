@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     class max_class_base {
 
@@ -54,7 +54,7 @@ namespace lmw {
 
         bool inlet_is_hot(long inlet_idx)
         {
-            if (LMW_UNLIKELY(inlet_idx >= m_inlets.size())) return false;
+            if (MXX_UNLIKELY(inlet_idx >= m_inlets.size())) return false;
 
             return m_inlets[inlet_idx]->hot();
         }
@@ -89,7 +89,7 @@ namespace lmw {
             long inlet = c74::max::proxy_getinlet(native_handle());
 
             if (auto func = m_messages.find(name);
-                LMW_LIKELY(func != m_messages.end()))
+                MXX_LIKELY(func != m_messages.end()))
                 func->second->call(
                     std::forward<std::shared_ptr<atom::vector>>(args), inlet);
 
@@ -185,7 +185,7 @@ namespace lmw {
 
             port->type(ty);
 
-            lmw_internal_assign(port);
+            mxx_internal_assign(port);
 
             return port;
         }
@@ -210,7 +210,7 @@ namespace lmw {
             return m_outlets;
         }
 
-        void lmw_internal_finalize()
+        void mxx_internal_finalize()
         {
             auto sort_signals = [](const auto& lhs, const auto& rhs) {
                 return lhs->signal() && !rhs->signal();
@@ -220,13 +220,13 @@ namespace lmw {
             std::sort(m_outlets.begin(), m_outlets.end(), sort_signals);
 
             for (auto it = m_inlets.rbegin(); it != m_inlets.rend(); ++it)
-                (*it)->lmw_internal_create(
+                (*it)->mxx_internal_create(
                     this,
                     static_cast<long>(std::distance(m_inlets.rbegin(), it)),
                     m_inlets.size());
 
             for (auto it = m_outlets.rbegin(); it != m_outlets.rend(); ++it)
-                (*it)->lmw_internal_create(
+                (*it)->mxx_internal_create(
                     this,
                     static_cast<long>(std::distance(m_outlets.rbegin(), it)),
                     m_inlets.size());
@@ -281,41 +281,41 @@ namespace lmw {
         template <typename PortArr>
         const char* get_port_description(const PortArr& p, long index)
         {
-            if (LMW_UNLIKELY(index >= p.size())) return "unknown";
+            if (MXX_UNLIKELY(index >= p.size())) return "unknown";
 
             return p[index]->description();
         }
 
-        void lmw_internal_assign(message* msg)
+        void mxx_internal_assign(message* msg)
         {
             m_messages.insert({ msg->name(), msg });
         }
 
-        void lmw_internal_assign(inlet_ptr inlet)
+        void mxx_internal_assign(inlet_ptr inlet)
         {
             m_inlets.push_back(inlet);
         }
 
-        void lmw_internal_assign(outlet_ptr outlet)
+        void mxx_internal_assign(outlet_ptr outlet)
         {
             m_outlets.push_back(outlet);
         }
 
-        void lmw_internal_prepare(c74::max::t_object* instance_ptr)
+        void mxx_internal_prepare(c74::max::t_object* instance_ptr)
         {
             t_obj_instance_ptr = instance_ptr;
 
-            console.lmw_internal_prepare(t_obj_instance_ptr);
-            console_warn.lmw_internal_prepare(t_obj_instance_ptr);
-            console_error.lmw_internal_prepare(t_obj_instance_ptr);
+            console.mxx_internal_prepare(t_obj_instance_ptr);
+            console_warn.mxx_internal_prepare(t_obj_instance_ptr);
+            console_error.mxx_internal_prepare(t_obj_instance_ptr);
         }
         
-        bool lmw_internal_sigcnt_changed()
+        bool mxx_internal_sigcnt_changed()
         {
             bool ch = false;
             
             for(auto& p : m_outlets)
-                ch = ch || p->lmw_internal_sigcount_changed();
+                ch = ch || p->mxx_internal_sigcount_changed();
             
             c74::max::object_post(native_handle(), "sigcount changed: %d", ch);
             
@@ -336,4 +336,4 @@ namespace lmw {
 
       private:
     };
-}    // namespace lmw
+}    // namespace mxx

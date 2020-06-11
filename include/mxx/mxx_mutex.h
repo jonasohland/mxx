@@ -3,7 +3,7 @@
 #include <c74_max.h>
 #include <c74_max_systhread.h>
 
-namespace lmw {
+namespace mxx {
 
     class mutex {
 
@@ -101,4 +101,4 @@ namespace lmw {
             /// c74::max::critical_exit(0);
         }
     };
-}    // namespace lmw
+}    // namespace mxx

@@ -5,25 +5,25 @@
 
 #if __GNUC__ || __clang__
 
-#    define LMW_LIKELY(x)   __builtin_expect(!!(x), 1)
-#    define LMW_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#    define MXX_LIKELY(x)   __builtin_expect(!!(x), 1)
+#    define MXX_UNLIKELY(x) __builtin_expect(!!(x), 0)
 
-#    define LMW_ALWAYS_INLINE __attribute__((always_inline)) inline
+#    define MXX_ALWAYS_INLINE __attribute__((always_inline)) inline
 
-#    define LMW_MSVC_IGNORE_POINTER_TRUNCATION(x) x
+#    define MXX_MSVC_IGNORE_POINTER_TRUNCATION(x) x
 
-#    define LMW_STRCPY(src, dst) strcpy(src, dst)
+#    define MXX_STRCPY(src, dst) strcpy(src, dst)
 
 #elif _MSC_VER
 
-#    define LMW_LIKELY(x)   x
-#    define LMW_UNLIKELY(x) x
+#    define MXX_LIKELY(x)   x
+#    define MXX_UNLIKELY(x) x
 
-#    define LMW_ALWAYS_INLINE __forceinline
+#    define MXX_ALWAYS_INLINE __forceinline
 
 // clang-format off
 
-#define LMW_MSVC_IGNORE_POINTER_TRUNCATION(expr)                               \
+#define MXX_MSVC_IGNORE_POINTER_TRUNCATION(expr)                               \
     __pragma(warning(push))                                                    \
     __pragma(warning(disable : 4312))                                          \
     __pragma(warning(disable : 4311))                                          \
@@ -31,7 +31,7 @@
     expr                                                                       \
     __pragma(warning(pop))
 
-#define LMW_STRCPY(src, dest)                                                  \
+#define MXX_STRCPY(src, dest)                                                  \
     __pragma(warning(push))                                                    \
     __pragma(warning(disable : 4996))                                          \
     strcpy(src, dest)                                                          \
@@ -41,10 +41,10 @@
 
 #else
 
-#    define LMW_LIKELY(x)   x
+#    define MXX_LIKELY(x)   x
 #    define LME_UNLIKELY(x) x
 
-#    define LMW_ALWAYS_INLINE
+#    define MXX_ALWAYS_INLINE
 
 #endif
 
@@ -63,11 +63,11 @@
 
 // clang-format off
 
-#include <lmw/lmw_symbol.h>
-#include <lmw/lmw_atom.h>
-#include <lmw/lmw_types.h>
+#include <mxx/mxx_symbol.h>
+#include <mxx/mxx_atom.h>
+#include <mxx/mxx_types.h>
 
-namespace lmw::sym {
+namespace mxx::sym {
 
     /// Symbol "any".
     inline symbol any                 = c74::max::gensym("any");
@@ -91,19 +91,19 @@ namespace lmw::sym {
     inline symbol empty = c74::max::gensym("");
 }
 
-#include <lmw/lmw_wrapper_preprocessor.h>
-#include <lmw/lmw_type_traits.h>
-#include <lmw/lmw_mutex.h>
-#include <lmw/lmw_threads.h>
-#include <lmw/lmw_message.h>
-#include <lmw/lmw_attribute.h>
-#include <lmw/lmw_port.h>
-#include <lmw/lmw_outlet.h>
-#include <lmw/lmw_inlet.h>
-#include <lmw/lmw_cstream.h>
-#include <lmw/lmw_class.h>
-#include <lmw/lmw_inlet_outlet_impl.h>
-#include <lmw/lmw_wrapper.h>
-#include <lmw/lmw_wrapper_functions.h>
+#include <mxx/mxx_wrapper_preprocessor.h>
+#include <mxx/mxx_type_traits.h>
+#include <mxx/mxx_mutex.h>
+#include <mxx/mxx_threads.h>
+#include <mxx/mxx_message.h>
+#include <mxx/mxx_attribute.h>
+#include <mxx/mxx_port.h>
+#include <mxx/mxx_outlet.h>
+#include <mxx/mxx_inlet.h>
+#include <mxx/mxx_cstream.h>
+#include <mxx/mxx_class.h>
+#include <mxx/mxx_inlet_outlet_impl.h>
+#include <mxx/mxx_wrapper.h>
+#include <mxx/mxx_wrapper_functions.h>
 
 // clang-format on

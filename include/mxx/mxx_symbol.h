@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     namespace detail {
         static c74::max::t_symbol* empty_t_symbol = c74::max::gensym("");
@@ -47,7 +47,7 @@ namespace lmw {
          */
         symbol(const c74::max::t_atom& atm)
         {
-            if (LMW_LIKELY(atm.a_type == c74::max::e_max_atomtypes::A_SYM))
+            if (MXX_LIKELY(atm.a_type == c74::max::e_max_atomtypes::A_SYM))
                 m_sym = c74::max::atom_getsym(&atm);
             else
                 m_sym = detail::empty_t_symbol;
@@ -162,4 +162,4 @@ namespace lmw {
       private:
         c74::max::t_symbol* m_sym = nullptr;
     };
-}    // namespace lmw
+}    // namespace mxx

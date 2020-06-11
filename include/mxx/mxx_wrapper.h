@@ -1,7 +1,7 @@
 /** @file */
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     template <typename user_class>
     struct object_wrapper {
@@ -21,7 +21,7 @@ namespace lmw {
             return &object_header.mspobj_header;
         }
 
-        bool lmw_internal_init(t_atom_span args, long attr_offset)
+        bool mxx_internal_init(t_atom_span args, long attr_offset)
         {
             // clang-format off
             
@@ -40,7 +40,7 @@ namespace lmw {
 
             // clang-format on
 
-            object.lmw_internal_finalize();
+            object.mxx_internal_finalize();
 
             c74::max::attr_args_process(
                 &object_header, static_cast<short>(args.size()), args.begin());
@@ -48,7 +48,7 @@ namespace lmw {
             return true;
         }
 
-        void lmw_internal_finish()
+        void mxx_internal_finish()
         {
             object_header.mspobj_header.z_misc |= object.mspflags();
         }
@@ -163,16 +163,16 @@ namespace lmw {
         };
 
         // prepare wrapper (by assigning a pointer to the object header)
-        wrapper->object.lmw_internal_prepare(
+        wrapper->object.mxx_internal_prepare(
             static_cast<c74::max::t_object*>(obj));
 
         // this symbol will tell us if we are dummy-instanciated or not
-        static symbol tsym("__lmw_test_symbol__");
+        static symbol tsym("__mxx_test_symbol__");
 
         // initialize user class (run constructor and create inlets/outlets and
         // stuff)
         if (static_cast<c74::max::t_symbol*>(tsym)) {
-            if (!wrapper->lmw_internal_init(
+            if (!wrapper->mxx_internal_init(
                     detail::to_span(av, ac),
                     c74::max::attr_args_offset(static_cast<short>(ac), av)))
                 return nullptr;
@@ -184,7 +184,7 @@ namespace lmw {
                                 wrapper->object.streams());
         }
 
-        wrapper->lmw_internal_finish();
+        wrapper->mxx_internal_finish();
 
         return obj;
     }
@@ -202,7 +202,7 @@ namespace lmw {
     }
 
     template <typename user_class>
-    LMW_ALWAYS_INLINE void wrapper_msg_call(c74::max::t_object* o,
+    MXX_ALWAYS_INLINE void wrapper_msg_call(c74::max::t_object* o,
                                             c74::max::t_symbol* s,
                                             long ac,
                                             c74::max::t_atom* av)
@@ -214,4 +214,4 @@ namespace lmw {
             std::make_shared<atom::vector>(args.begin(), args.end()));
     }
 
-}    // namespace lmw
+}    // namespace mxx

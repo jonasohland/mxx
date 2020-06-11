@@ -1,119 +1,119 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(lmw VERSION 0.0.1 LANGUAGES CXX)
+project(mxx VERSION 0.0.1 LANGUAGES CXX)
 
-option(lmw_generate_docs "Generate Documentation" OFF)
+option(mxx_generate_docs "Generate Documentation" OFF)
 
 include(CMakePackageConfigHelpers)
 
-set(lmw_version_major           0)
-set(lmw_version_minor           0)
-set(lmw_version_patch           1)
+set(mxx_version_major           0)
+set(mxx_version_minor           0)
+set(mxx_version_patch           1)
 
-set(lmw_version                 ${lmw_version_major}.${lmw_version_minor}.${lmw_version_patch})
+set(mxx_version                 ${mxx_version_major}.${mxx_version_minor}.${mxx_version_patch})
 
-set(lmw_wrapper_target_name     lmw)
-set(lmw_max_api_target_name     maxapi)
-set(lmw_export_namespace        lmw::)
-set(lmw_export_group            lmw_export)
+set(mxx_wrapper_target_name     mxx)
+set(mxx_max_api_target_name     maxapi)
+set(mxx_export_namespace        mxx::)
+set(mxx_export_group            mxx_export)
 
 set(C74_MAX_API_DIR             ${CMAKE_CURRENT_LIST_DIR}/c74/max-api)
 set(C74_MAX_API_LIB_DIR         ${C74_MAX_API_DIR}/lib)
 set(C74_MAX_API_SCRIPT_DIR      ${C74_MAX_API_DIR}/script)
 
-set(lmw_max_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/max-linker-flags.txt)
-set(lmw_msp_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/msp-linker-flags.txt)
+set(mxx_max_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/max-linker-flags.txt)
+set(mxx_msp_linker_flags_file   ${C74_MAX_API_SCRIPT_DIR}/msp-linker-flags.txt)
 
-set(lmw_root_install_dir        ${CMAKE_INSTALL_PREFIX})
-set(lmw_package_install_dir     ${lmw_root_install_dir}/lib/cmake/${lmw_wrapper_target_name}-${lmw_version})
-set(lmw_templates_dir           ${lmw_package_install_dir}/templates)
+set(mxx_root_install_dir        ${CMAKE_INSTALL_PREFIX})
+set(mxx_package_install_dir     ${mxx_root_install_dir}/lib/cmake/${mxx_wrapper_target_name}-${mxx_version})
+set(mxx_templates_dir           ${mxx_package_install_dir}/templates)
 
-set(lmw_cmake_scripts_dir       ${CMAKE_CURRENT_LIST_DIR}/cmake)
+set(mxx_cmake_scripts_dir       ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-set(lmw_config_file_template    ${lmw_cmake_scripts_dir}/lmw-config.cmake.in)
-set(lmw_cmake_config_file       ${CMAKE_CURRENT_BINARY_DIR}/install_files/lmw-config.cmake)
-set(lmw_cmake_version_file      ${CMAKE_CURRENT_BINARY_DIR}/install_files/lmw-config-version.cmake)
+set(mxx_config_file_template    ${mxx_cmake_scripts_dir}/mxx-config.cmake.in)
+set(mxx_cmake_config_file       ${CMAKE_CURRENT_BINARY_DIR}/install_files/mxx-config.cmake)
+set(mxx_cmake_version_file      ${CMAKE_CURRENT_BINARY_DIR}/install_files/mxx-config-version.cmake)
 
-set(lmw_max_api_include_dir     ${C74_MAX_API_DIR}/include)
-set(lmw_wrapper_include_dir     ${CMAKE_CURRENT_LIST_DIR}/include)
+set(mxx_max_api_include_dir     ${C74_MAX_API_DIR}/include)
+set(mxx_wrapper_include_dir     ${CMAKE_CURRENT_LIST_DIR}/include)
 
-set(lmw_include_install_dir     ${lmw_root_install_dir}/include/${lmw_wrapper_target_name}-${lmw_version})
+set(mxx_include_install_dir     ${mxx_root_install_dir}/include/${mxx_wrapper_target_name}-${mxx_version})
 
-set(lmw_max_api_install_dir     ${lmw_include_install_dir}/max-api)
-set(lmw_wrapper_install_dir     ${lmw_include_install_dir}/${lmw_wrapper_target_name})
+set(mxx_max_api_install_dir     ${mxx_include_install_dir}/max-api)
+set(mxx_wrapper_install_dir     ${mxx_include_install_dir}/${mxx_wrapper_target_name})
 
-set(lmw_doxyfile_template       ${CMAKE_CURRENT_LIST_DIR}/docs/Doxyfile.in)
-set(lmw_doxyfile                ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+set(mxx_doxyfile_template       ${CMAKE_CURRENT_LIST_DIR}/docs/Doxyfile.in)
+set(mxx_doxyfile                ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 if(APPLE)
 
-    set(lmw_frameworks_install_dir              ${lmw_root_install_dir}/Frameworks/${lmw_wrapper_target_name}-${lmw_version})
-    set(lmw_mac_jitterapi_framework             ${C74_MAX_API_LIB_DIR}/mac/JitterAPI.framework)
-    set(lmw_mac_jitterapi_installed_framework   ${lmw_frameworks_install_dir}/JitterAPI.framework)
+    set(mxx_frameworks_install_dir              ${mxx_root_install_dir}/Frameworks/${mxx_wrapper_target_name}-${mxx_version})
+    set(mxx_mac_jitterapi_framework             ${C74_MAX_API_LIB_DIR}/mac/JitterAPI.framework)
+    set(mxx_mac_jitterapi_installed_framework   ${mxx_frameworks_install_dir}/JitterAPI.framework)
 
-    set(lmw_info_plist_template                 ${C74_MAX_API_SCRIPT_DIR}/Info.plist.in)
-    set(lmw_installed_info_plist_template       ${lmw_templates_dir}/Info.plist.in)    
+    set(mxx_info_plist_template                 ${C74_MAX_API_SCRIPT_DIR}/Info.plist.in)
+    set(mxx_installed_info_plist_template       ${mxx_templates_dir}/Info.plist.in)    
 
 endif()
 
 if(WIN32)
 
     if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
-        set(lmw_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win32)
+        set(mxx_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win32)
     else()
-        set(lmw_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win64)   
+        set(mxx_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win64)   
     endif()
 
-    set(lmw_win_installed_lib_dir               ${lmw_root_install_dir}/lib)
+    set(mxx_win_installed_lib_dir               ${mxx_root_install_dir}/lib)
 
-    set(lmw_win_maxapi_lib                      ${lmw_win_lib_dir}/MaxAPI.lib)
-    set(lmw_win_mspapi_lib                      ${lmw_win_lib_dir}/MaxAudio.lib)
-    set(lmw_win_jitapi_lib                      ${lmw_win_lib_dir}/jitlib.lib)
+    set(mxx_win_maxapi_lib                      ${mxx_win_lib_dir}/MaxAPI.lib)
+    set(mxx_win_mspapi_lib                      ${mxx_win_lib_dir}/MaxAudio.lib)
+    set(mxx_win_jitapi_lib                      ${mxx_win_lib_dir}/jitlib.lib)
 
-    set(lmw_win_installed_maxapi_lib            ${lmw_win_installed_lib_dir}/MaxAPI.lib)
-    set(lmw_win_installed_mspapi_lib            ${lmw_win_installed_lib_dir}/MaxAudio.lib)
-    set(lmw_win_installed_jitapi_lib            ${lmw_win_installed_lib_dir}/jitlib.lib)
+    set(mxx_win_installed_maxapi_lib            ${mxx_win_installed_lib_dir}/MaxAPI.lib)
+    set(mxx_win_installed_mspapi_lib            ${mxx_win_installed_lib_dir}/MaxAudio.lib)
+    set(mxx_win_installed_jitapi_lib            ${mxx_win_installed_lib_dir}/jitlib.lib)
 
 endif()
 
-add_library(${lmw_wrapper_target_name} INTERFACE)
-add_library(${lmw_max_api_target_name} INTERFACE)
+add_library(${mxx_wrapper_target_name} INTERFACE)
+add_library(${mxx_max_api_target_name} INTERFACE)
 
-target_compile_features(${lmw_wrapper_target_name} INTERFACE cxx_std_17)
+target_compile_features(${mxx_wrapper_target_name} INTERFACE cxx_std_17)
 
 if(APPLE)
 
     file(
-        STRINGS ${lmw_max_linker_flags_file} 
-        lmw_max_linker_flags_string
+        STRINGS ${mxx_max_linker_flags_file} 
+        mxx_max_linker_flags_string
     )
 
     file(
-        STRINGS ${lmw_msp_linker_flags_file} 
-        lmw_msp_linker_flags_string
+        STRINGS ${mxx_msp_linker_flags_file} 
+        mxx_msp_linker_flags_string
     )
 
     set(
-        lmw_max_api_linker_flags_string 
-        "${lmw_max_linker_flags_string} ${lmw_msp_linker_flags_string}"
+        mxx_max_api_linker_flags_string 
+        "${mxx_max_linker_flags_string} ${mxx_msp_linker_flags_string}"
     )
 
     string(
         REPLACE " " ";" 
-        lmw_max_api_linker_flags 
-        ${lmw_max_api_linker_flags_string}
+        mxx_max_api_linker_flags 
+        ${mxx_max_api_linker_flags_string}
     )
 
-    foreach(__flag ${lmw_max_api_linker_flags})
+    foreach(__flag ${mxx_max_api_linker_flags})
         string(REPLACE "'" "" _flag ${__flag})
-        target_link_libraries(${lmw_max_api_target_name} INTERFACE ${_flag})
+        target_link_libraries(${mxx_max_api_target_name} INTERFACE ${_flag})
     endforeach(__flag)
 
     target_link_libraries(
-        ${lmw_max_api_target_name}
+        ${mxx_max_api_target_name}
         INTERFACE
-        $<BUILD_INTERFACE:${lmw_mac_jitterapi_framework}>
-        $<INSTALL_INTERFACE:${lmw_mac_jitterapi_installed_framework}>
+        $<BUILD_INTERFACE:${mxx_mac_jitterapi_framework}>
+        $<INSTALL_INTERFACE:${mxx_mac_jitterapi_installed_framework}>
     )
 
 endif()
@@ -121,140 +121,140 @@ endif()
 if(WIN32)
 
     target_link_libraries(
-        ${lmw_max_api_target_name}
+        ${mxx_max_api_target_name}
         INTERFACE
-        $<BUILD_INTERFACE:${lmw_win_maxapi_lib}>
-        $<INSTALL_INTERFACE:${lmw_win_installed_maxapi_lib}>
+        $<BUILD_INTERFACE:${mxx_win_maxapi_lib}>
+        $<INSTALL_INTERFACE:${mxx_win_installed_maxapi_lib}>
     )
 
     target_link_libraries(
-        ${lmw_max_api_target_name}
+        ${mxx_max_api_target_name}
         INTERFACE
-        $<BUILD_INTERFACE:${lmw_win_mspapi_lib}>
-        $<INSTALL_INTERFACE:${lmw_win_installed_mspapi_lib}>
+        $<BUILD_INTERFACE:${mxx_win_mspapi_lib}>
+        $<INSTALL_INTERFACE:${mxx_win_installed_mspapi_lib}>
     )
 
     target_link_libraries(
-        ${lmw_max_api_target_name}
+        ${mxx_max_api_target_name}
         INTERFACE
-        $<BUILD_INTERFACE:${lmw_win_jitapi_lib}>
-        $<INSTALL_INTERFACE:${lmw_win_installed_jitapi_lib}>
+        $<BUILD_INTERFACE:${mxx_win_jitapi_lib}>
+        $<INSTALL_INTERFACE:${mxx_win_installed_jitapi_lib}>
     )
 
 endif()
 
 target_link_libraries(
-    ${lmw_wrapper_target_name} 
+    ${mxx_wrapper_target_name} 
     INTERFACE 
-    ${lmw_max_api_target_name}
+    ${mxx_max_api_target_name}
 )
 
 file(
-    GLOB lmw_helper_module_files
-    ${lmw_cmake_scripts_dir}/*.cmake
+    GLOB mxx_helper_module_files
+    ${mxx_cmake_scripts_dir}/*.cmake
 )
 
 file(
-    GLOB lmw_max_api_header_files 
-    "${lmw_max_api_include_dir}/*.h"
+    GLOB mxx_max_api_header_files 
+    "${mxx_max_api_include_dir}/*.h"
 )
 
 file(
-    GLOB lmw_wrapper_header_files 
-    "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/*.h"
+    GLOB mxx_wrapper_header_files 
+    "${mxx_wrapper_include_dir}/${mxx_wrapper_target_name}/*.h"
 )
 
-configure_file(${lmw_config_file_template} ${lmw_cmake_config_file} @ONLY)
+configure_file(${mxx_config_file_template} ${mxx_cmake_config_file} @ONLY)
 
 write_basic_package_version_file(
-    ${lmw_cmake_version_file} 
-    VERSION ${lmw_version}
+    ${mxx_cmake_version_file} 
+    VERSION ${mxx_version}
     COMPATIBILITY SameMinorVersion
 )
 
 target_include_directories(
-    ${lmw_wrapper_target_name} 
+    ${mxx_wrapper_target_name} 
     INTERFACE 
-    $<BUILD_INTERFACE:${lmw_wrapper_include_dir}> 
-    $<INSTALL_INTERFACE:${lmw_wrapper_install_dir}>
+    $<BUILD_INTERFACE:${mxx_wrapper_include_dir}> 
+    $<INSTALL_INTERFACE:${mxx_wrapper_install_dir}>
 )
 
 target_include_directories(
-    ${lmw_max_api_target_name} 
+    ${mxx_max_api_target_name} 
     INTERFACE 
-    $<BUILD_INTERFACE:${lmw_max_api_include_dir}> 
-    $<INSTALL_INTERFACE:${lmw_max_api_install_dir}>
+    $<BUILD_INTERFACE:${mxx_max_api_include_dir}> 
+    $<INSTALL_INTERFACE:${mxx_max_api_install_dir}>
 )
 
 install(
-    FILES               ${lmw_wrapper_header_files}
-    DESTINATION         ${lmw_wrapper_install_dir}/${lmw_wrapper_target_name}
+    FILES               ${mxx_wrapper_header_files}
+    DESTINATION         ${mxx_wrapper_install_dir}/${mxx_wrapper_target_name}
 )
 
 install(
-    FILES               ${lmw_max_api_header_files}
-    DESTINATION         ${lmw_max_api_install_dir}
+    FILES               ${mxx_max_api_header_files}
+    DESTINATION         ${mxx_max_api_install_dir}
 )
 
 install(
-    FILES               ${lmw_helper_module_files}
-    DESTINATION         ${lmw_package_install_dir}
+    FILES               ${mxx_helper_module_files}
+    DESTINATION         ${mxx_package_install_dir}
 )
 
 install(
-    FILES               ${lmw_info_plist_template}
-    DESTINATION         ${lmw_templates_dir}
+    FILES               ${mxx_info_plist_template}
+    DESTINATION         ${mxx_templates_dir}
 )
 
 install(
-    FILES               ${lmw_cmake_config_file}
-    DESTINATION         ${lmw_package_install_dir}
+    FILES               ${mxx_cmake_config_file}
+    DESTINATION         ${mxx_package_install_dir}
 )
 
 install(
-    FILES               ${lmw_cmake_version_file}
-    DESTINATION         ${lmw_package_install_dir}
+    FILES               ${mxx_cmake_version_file}
+    DESTINATION         ${mxx_package_install_dir}
 )
 
 if(APPLE)
     install(
-        DIRECTORY       ${lmw_mac_jitterapi_framework}
-        DESTINATION     ${lmw_frameworks_install_dir}
+        DIRECTORY       ${mxx_mac_jitterapi_framework}
+        DESTINATION     ${mxx_frameworks_install_dir}
     )
 endif()
 
 if(WIN32)
     install(
         FILES       
-        ${lmw_win_maxapi_lib}
-        ${lmw_win_mspapi_lib}
-        ${lmw_win_jitapi_lib}
+        ${mxx_win_maxapi_lib}
+        ${mxx_win_mspapi_lib}
+        ${mxx_win_jitapi_lib}
         DESTINATION     
-        ${lmw_win_installed_lib_dir}
+        ${mxx_win_installed_lib_dir}
     )
 endif()
 
 install(
-    TARGETS             ${lmw_wrapper_target_name} ${lmw_max_api_target_name}
-    EXPORT              ${lmw_export_group}
-    DESTINATION         ${lmw_package_install_dir}
+    TARGETS             ${mxx_wrapper_target_name} ${mxx_max_api_target_name}
+    EXPORT              ${mxx_export_group}
+    DESTINATION         ${mxx_package_install_dir}
 )
 
 install(
-    EXPORT              ${lmw_export_group}
-    NAMESPACE           ${lmw_export_namespace} 
-    DESTINATION         ${lmw_package_install_dir}
+    EXPORT              ${mxx_export_group}
+    NAMESPACE           ${mxx_export_namespace} 
+    DESTINATION         ${mxx_package_install_dir}
 )
 
-if(${lmw_generate_docs})
+if(${mxx_generate_docs})
 
 	find_package(Doxygen)
 		
-		configure_file(${lmw_doxyfile_template} ${lmw_doxyfile} @ONLY)
+		configure_file(${mxx_doxyfile_template} ${mxx_doxyfile} @ONLY)
 	
 		add_custom_target( 
 			libdotadd_docs ALL
-			COMMAND ${DOXYGEN_EXECUTABLE} ${lmw_doxyfile}
+			COMMAND ${DOXYGEN_EXECUTABLE} ${mxx_doxyfile}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMENT "Generating API documentation with Doxygen"
 			VERBATIM 
@@ -262,21 +262,21 @@ if(${lmw_generate_docs})
     
 endif()
 
-include(${lmw_cmake_scripts_dir}/lmw.cmake)
+include(${mxx_cmake_scripts_dir}/mxx.cmake)
 
 if(${CMAKE_GENERATOR} MATCHES "Visual Studio" 
     OR ${CMAKE_GENERATOR} MATCHES "Xcode")
 
     add_library(
-        lmw_header_files
+        mxx_header_files
         MODULE
-        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw.cc"
-        "${lmw_wrapper_include_dir}/${lmw_wrapper_target_name}/lmw_2.cc"
-        ${lmw_wrapper_header_files}
+        "${mxx_wrapper_include_dir}/${mxx_wrapper_target_name}/mxx.cc"
+        "${mxx_wrapper_include_dir}/${mxx_wrapper_target_name}/mxx_2.cc"
+        ${mxx_wrapper_header_files}
     )
 
-    target_link_libraries(lmw_header_files PUBLIC ${lmw_wrapper_target_name})
+    target_link_libraries(mxx_header_files PUBLIC ${mxx_wrapper_target_name})
     
-    lmw_setup_external(lmw_header_files)
+    mxx_setup_external(mxx_header_files)
 
 endif()

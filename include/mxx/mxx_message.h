@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     class max_class_base;
 
@@ -49,11 +49,11 @@ namespace lmw {
         friend struct std::hash<message*>;
 
       private:
-        void lmw_internal_init(max_class_base* owner, method m);
+        void mxx_internal_init(max_class_base* owner, method m);
 
         symbol m_name;
         symbol m_type;
         std::string m_description;
         default_executor executor;
     };
-}    // namespace lmw
+}    // namespace mxx

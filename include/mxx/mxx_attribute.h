@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     namespace attribute {
 
@@ -125,4 +125,4 @@ namespace lmw {
     template <typename T>
     class basic_attribute: public detail::attr_select_base<T>::type {
     };
-}    // namespace lmw
+}    // namespace mxx

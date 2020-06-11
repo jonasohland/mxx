@@ -1,25 +1,25 @@
 #pragma once
 
-inline lmw::message::message(max_class_base* owner,
+inline mxx::message::message(max_class_base* owner,
                              const symbol& name,
                              const method& handler)
     : m_name(name)
     , m_type("anything")
 {
-    lmw_internal_init(owner, handler);
+    mxx_internal_init(owner, handler);
 }
 
-inline lmw::message::message(max_class_base* owner,
+inline mxx::message::message(max_class_base* owner,
                              const symbol& name,
                              const symbol& type,
                              const method& handler)
     : m_name(name)
     , m_type(type)
 {
-    lmw_internal_init(owner, handler);
+    mxx_internal_init(owner, handler);
 }
 
-inline lmw::message::message(max_class_base* owner,
+inline mxx::message::message(max_class_base* owner,
                              const symbol& name,
                              const symbol& type,
                              const std::string& description,
@@ -28,30 +28,30 @@ inline lmw::message::message(max_class_base* owner,
     , m_type(type)
     , m_description(description)
 {
-    lmw_internal_init(owner, handler);
+    mxx_internal_init(owner, handler);
 }
 
-inline void lmw::message::lmw_internal_init(max_class_base* owner, method m)
+inline void mxx::message::mxx_internal_init(max_class_base* owner, method m)
 {
-    owner->lmw_internal_assign(this);
+    owner->mxx_internal_assign(this);
     executor.set_handler(m);
 }
 
-inline void lmw::outlet::lmw_internal_create(max_class_base* obj,
+inline void mxx::outlet::mxx_internal_create(max_class_base* obj,
                                              long index,
                                              std::size_t total)
 {
-    lmw_internal_set_owner(obj->native_handle());
+    mxx_internal_set_owner(obj->native_handle());
 
     m_outlet = static_cast<c74::max::t_outlet*>(c74::max::outlet_new(
         owner(), any() ? nullptr : static_cast<const char*>(type())));
 }
 
-inline void lmw::inlet::lmw_internal_create(max_class_base* obj,
+inline void mxx::inlet::mxx_internal_create(max_class_base* obj,
                                             long index,
                                             std::size_t total)
 {
-    lmw_internal_set_owner(obj->native_handle());
+    mxx_internal_set_owner(obj->native_handle());
 
     if (!(type() == sym::signal) && !(type() == sym::multichannelsignal)) {
 

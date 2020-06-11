@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
     class port {
         
         friend class max_class_base;
@@ -69,10 +69,10 @@ namespace lmw {
 
       protected:
         virtual void
-        lmw_internal_create(max_class_base*, long index, std::size_t)
+        mxx_internal_create(max_class_base*, long index, std::size_t)
             = 0;
 
-        void lmw_internal_set_owner(c74::max::t_object* owner)
+        void mxx_internal_set_owner(c74::max::t_object* owner)
         {
             m_owner = owner;
         }
@@ -82,7 +82,7 @@ namespace lmw {
       private:
         
 
-        bool lmw_internal_sigcount_changed()
+        bool mxx_internal_sigcount_changed()
         {
             bool s = m_sigc_changed;
             m_sigc_changed = false;
@@ -96,4 +96,4 @@ namespace lmw {
         symbol m_name        = detail::empty_t_symbol;
         symbol m_description = detail::empty_t_symbol;
     };
-}    // namespace lmw
+}    // namespace mxx

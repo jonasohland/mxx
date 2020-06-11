@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     class max_class_base;
 
@@ -55,11 +55,11 @@ namespace lmw {
         }
 
       private:
-        void lmw_internal_create(max_class_base* obj, long index, std::size_t);
+        void mxx_internal_create(max_class_base* obj, long index, std::size_t);
 
         long m_connections  = 0;
         void* m_inlet_proxy = nullptr;
         void* m_inlet       = nullptr;
         bool m_hot_inlet    = true;
     };
-}    // namespace lmw
+}    // namespace mxx

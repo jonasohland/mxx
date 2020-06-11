@@ -2,7 +2,7 @@
 
 #include <c74_max.h>
 
-namespace lmw {
+namespace mxx {
 
     class outlet;
     class inlet;
@@ -34,4 +34,4 @@ namespace lmw {
             return atom::vector(spn.begin(), spn.end());
         }
     }    // namespace detail
-}    // namespace lmw
+}    // namespace mxx

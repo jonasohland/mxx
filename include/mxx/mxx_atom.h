@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lmw {
+namespace mxx {
 
     template <typename Ty>
     class span {
@@ -338,4 +338,4 @@ namespace lmw {
             return atm.type();
         }
     };
-}    // namespace lmw
+}    // namespace mxx
