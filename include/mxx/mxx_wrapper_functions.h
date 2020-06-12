@@ -107,7 +107,7 @@ namespace mxx {
         auto* wrapper = get_wrapper<user_class>(x);
 
         if (MXX_UNLIKELY(index >= wrapper->object.m_inlets.size()))
-            return;
+            return 0;
 
         wrapper->object.m_inlets[index]->signal_count(chans);
 
