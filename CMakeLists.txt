@@ -253,7 +253,7 @@ if(${mxx_generate_docs})
 		configure_file(${mxx_doxyfile_template} ${mxx_doxyfile} @ONLY)
 	
 		add_custom_target( 
-			libdotadd_docs ALL
+			mxx_docs ALL
 			COMMAND ${DOXYGEN_EXECUTABLE} ${mxx_doxyfile}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMENT "Generating API documentation with Doxygen"
