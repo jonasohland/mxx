@@ -265,4 +265,21 @@ if(${mxx_generate_docs})
 endif()
 
 include(${mxx_cmake_scripts_dir}/mxx.cmake)
+
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio"
+    OR ${CMAKE_GENERATOR} MATCHES "Xcode")
+
+    set(mxx_dummy_source "${CMAKE_CURRENT_BINARY_DIR}/mxx_dummy.cc")
+    file(WRITE "${mxx_dummy_source}" "#include <mxx/mxx.h>\n")
+
+    add_library(
+        mxx_header_files
+        MODULE
+        ${mxx_dummy_source}
+        ${mxx_wrapper_header_files}
+    )
+
+    target_link_libraries(mxx_header_files PUBLIC ${mxx_wrapper_target_name})
+endif()
+
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/test)

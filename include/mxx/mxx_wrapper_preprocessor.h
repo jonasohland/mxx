@@ -171,6 +171,9 @@ namespace mxx::detail {
             !mxx::type_traits::has_input_changed_function<user_class>(),       \
             MXX_DEBUG_MSG_PREFIX "inputchanged handler enabled");              \
         MXX_STATIC_WARNING(                                                    \
+            !mxx::type_traits::has_dblclick_handler<user_class>(),             \
+            MXX_DEBUG_MSG_PREFIX "dblclick handler enabled");                  \
+        MXX_STATIC_WARNING(                                                    \
             !mxx::type_traits::has_setup_dsp_function<user_class>(),           \
             MXX_DEBUG_MSG_PREFIX "setup_dsp function enabled");
 #else
@@ -215,6 +218,9 @@ namespace mxx::detail {
 
 #define MXX_WRAPPER_FUNCTION_INLETINFO(identifier)                             \
     MXX_WRAPPER_FUNCTION(_inletinfo, identifier)
+
+#define MXX_WRAPPER_FUNCTION_DBLCLICK(identifier)                              \
+    MXX_WRAPPER_FUNCTION(_dblclick, identifier)
 
 #define MXX_WRAPPER_FUNCTION_INPUTCHANGED(identifier)                          \
     MXX_WRAPPER_FUNCTION(_inputchanged, identifier)
@@ -306,6 +312,12 @@ namespace mxx::detail {
         mxx::wrapper_inputchanged_impl<classname>(x, index, chans);            \
     }
 
+#define MXX_CREATE_DBLCLICK_FUNCTION(identifier, classname)                    \
+    void MXX_WRAPPER_FUNCTION_DBLCLICK(identifier)(c74::max::t_object * x)     \
+    {                                                                          \
+        mxx::wrapper_dblclick_impl<classname>(x);                              \
+    }
+
 #define MXX_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)         \
     long MXX_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(identifier)(                 \
         c74::max::t_object * x, long idx)                                      \
@@ -387,6 +399,7 @@ namespace mxx::detail {
     MXX_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                      \
     MXX_CREATE_ASSIST_FUNCTION(identifier, classname)                          \
     MXX_CREATE_INLETINFO_FUNCTION(identifier, classname)                       \
+    MXX_CREATE_DBLCLICK_FUNCTION(identifier, classname)                        \
     MXX_CREATE_INPUTCHANGED_FUNCTION(identifier, classname)                    \
     MXX_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)             \
     MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                    \
@@ -443,6 +456,7 @@ namespace mxx::detail {
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_ANY_MSG(ident)),                   \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_ASSIST(ident)),                    \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INLETINFO(ident)),                 \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DBLCLICK(ident)),                  \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INPUTCHANGED(ident)),              \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(ident)),       \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_METHOD(ident)),              \

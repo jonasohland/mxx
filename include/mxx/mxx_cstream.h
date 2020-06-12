@@ -8,7 +8,6 @@ namespace mxx {
     }    // namespace detail
 
 
-
     namespace console {
         struct normal {
         };
@@ -16,7 +15,7 @@ namespace mxx {
         };
         struct error {
         };
-    }
+    }    // namespace console
 
     static detail::endl_type endl;
 

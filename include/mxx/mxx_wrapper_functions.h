@@ -122,6 +122,13 @@ namespace mxx {
     }
 
     template <typename user_class>
+    MXX_ALWAYS_INLINE void wrapper_dblclick_impl(c74::max::t_object* x)
+    {
+        if constexpr (type_traits::has_dblclick_handler<user_class>())
+            get_wrapper<user_class>(x)->object.handle_dblclick();
+    }
+
+    template <typename user_class>
     MXX_ALWAYS_INLINE long
     wrapper_inputchanged_impl(c74::max::t_object* x, long index, long chans)
     {

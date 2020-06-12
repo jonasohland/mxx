@@ -33,7 +33,7 @@ inline mxx::message::message(max_class_base* owner,
 
 inline void mxx::message::mxx_internal_init(max_class_base* owner, method m)
 {
-    owner->mxx_internal_assign(this);
+    owner->mxx_assign(this);
     executor.set_handler(m);
 }
 

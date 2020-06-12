@@ -10,6 +10,9 @@ namespace mxx {
         friend class outlet;
 
         template <typename user_class>
+        friend void wrapper_handle_int_impl(c74::max::t_object* obj, long n);
+
+        template <typename user_class>
         friend void* wrapper_object_new(c74::max::t_class*,
                                         c74::max::t_symbol*,
                                         long,
@@ -117,9 +120,10 @@ namespace mxx {
 
         inline c74::max::t_object* native_handle() const noexcept
         {
-            assert(static_cast<bool>(t_obj_instance_ptr));
-
-            return t_obj_instance_ptr;
+            if(t_obj_instance_ptr)
+                return t_obj_instance_ptr;
+            else
+                return nullptr;
         }
 
         template <typename... Args>
@@ -203,7 +207,7 @@ namespace mxx {
 
             port->type(ty);
 
-            mxx_internal_assign(port);
+            mxx_assign(port);
 
             return port;
         }
@@ -258,7 +262,10 @@ namespace mxx {
         template <typename... Args>
         void post(const char* msg, Args... args)
         {
-            c74::max::object_post(native_handle(), msg, args...);
+            if (t_obj_instance_ptr)
+                c74::max::object_post(native_handle(), msg, args...);
+            else
+                c74::max::object_post(NULL, msg, args...);
         }
 
         template <typename... Args>
@@ -305,17 +312,17 @@ namespace mxx {
             return p[index]->description();
         }
 
-        void mxx_internal_assign(message* msg)
+        void mxx_assign(message* msg)
         {
             m_messages.insert({ msg->name(), msg });
         }
 
-        void mxx_internal_assign(inlet_ptr inlet)
+        void mxx_assign(inlet_ptr inlet)
         {
             m_inlets.push_back(inlet);
         }
 
-        void mxx_internal_assign(outlet_ptr outlet)
+        void mxx_assign(outlet_ptr outlet)
         {
             m_outlets.push_back(outlet);
         }

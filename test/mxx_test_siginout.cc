@@ -1,7 +1,7 @@
 #include <mxx/mxx.h>
+#include <iostream>
 
 class mxx_test_siginout: public mxx::max_class<mxx_test_siginout> {
-
   public:
     mxx_test_siginout()
     {

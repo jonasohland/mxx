@@ -1,10 +1,10 @@
-#include <mxx/mxx.h>
 #include <iostream>
+#include <mxx/mxx.h>
 
 template <typename user_class>
 void test(mxx::console_stream<mxx::console::normal>& stream)
 {
-    if constexpr(mxx::type_traits::has_mxx_class_flags_variable<user_class>())
+    if constexpr (mxx::type_traits::has_mxx_class_flags_variable<user_class>())
         stream << "hi" << user_class::mxx_class_flags << mxx::endl;
 }
 
@@ -14,7 +14,7 @@ class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
     {
         inlet  = make_inlet("Data in");
         outlet = make_outlet("Data out");
-        
+
         test<mxx_test_delay1>(console);
     }
 
@@ -23,7 +23,7 @@ class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
     {
         post(msg);
     }
-    
+
     static constexpr int mxx_class_flags = 1;
 
     mxx::atom::vector buffer;

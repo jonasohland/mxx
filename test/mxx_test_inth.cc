@@ -10,6 +10,8 @@ class mxx_test_inth: public mxx::max_class<mxx_test_inth> {
 
     void handle_int(long value, long inlet)
     {
+        inlet_is_hot(inlet);
+
         outlet->send(value);
     }
 

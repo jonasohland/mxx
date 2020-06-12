@@ -96,6 +96,12 @@ namespace mxx::sym {
 
 namespace mxx {
     using perform_function = c74::max::t_perfroutine64;
+
+    enum class construction_type {
+        max_init,
+        wrapper_init,
+        construct
+    };
 }
 
 #include <mxx/mxx_wrapper_preprocessor.h>
