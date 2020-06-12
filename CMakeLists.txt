@@ -45,6 +45,8 @@ set(mxx_wrapper_install_dir     ${mxx_include_install_dir}/${mxx_wrapper_target_
 set(mxx_doxyfile_template       ${CMAKE_CURRENT_LIST_DIR}/docs/Doxyfile.in)
 set(mxx_doxyfile                ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
+set(mxx_external_output_dir     ${CMAKE_CURRENT_LIST_DIR}/externals)
+
 if(APPLE)
 
     set(mxx_frameworks_install_dir              ${mxx_root_install_dir}/Frameworks/${mxx_wrapper_target_name}-${mxx_version})
@@ -52,7 +54,7 @@ if(APPLE)
     set(mxx_mac_jitterapi_installed_framework   ${mxx_frameworks_install_dir}/JitterAPI.framework)
 
     set(mxx_info_plist_template                 ${C74_MAX_API_SCRIPT_DIR}/Info.plist.in)
-    set(mxx_installed_info_plist_template       ${mxx_templates_dir}/Info.plist.in)    
+    set(mxx_installed_info_plist_template       ${mxx_templates_dir}/Info.plist.in)
 
 endif()
 
@@ -61,7 +63,7 @@ if(WIN32)
     if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
         set(mxx_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win32)
     else()
-        set(mxx_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win64)   
+        set(mxx_win_lib_dir                     ${C74_MAX_API_LIB_DIR}/win64)
     endif()
 
     set(mxx_win_installed_lib_dir               ${mxx_root_install_dir}/lib)
@@ -84,23 +86,23 @@ target_compile_features(${mxx_wrapper_target_name} INTERFACE cxx_std_17)
 if(APPLE)
 
     file(
-        STRINGS ${mxx_max_linker_flags_file} 
+        STRINGS ${mxx_max_linker_flags_file}
         mxx_max_linker_flags_string
     )
 
     file(
-        STRINGS ${mxx_msp_linker_flags_file} 
+        STRINGS ${mxx_msp_linker_flags_file}
         mxx_msp_linker_flags_string
     )
 
     set(
-        mxx_max_api_linker_flags_string 
+        mxx_max_api_linker_flags_string
         "${mxx_max_linker_flags_string} ${mxx_msp_linker_flags_string}"
     )
 
     string(
-        REPLACE " " ";" 
-        mxx_max_api_linker_flags 
+        REPLACE " " ";"
+        mxx_max_api_linker_flags
         ${mxx_max_api_linker_flags_string}
     )
 
@@ -144,8 +146,8 @@ if(WIN32)
 endif()
 
 target_link_libraries(
-    ${mxx_wrapper_target_name} 
-    INTERFACE 
+    ${mxx_wrapper_target_name}
+    INTERFACE
     ${mxx_max_api_target_name}
 )
 
@@ -155,34 +157,34 @@ file(
 )
 
 file(
-    GLOB mxx_max_api_header_files 
+    GLOB mxx_max_api_header_files
     "${mxx_max_api_include_dir}/*.h"
 )
 
 file(
-    GLOB mxx_wrapper_header_files 
+    GLOB mxx_wrapper_header_files
     "${mxx_wrapper_include_dir}/${mxx_wrapper_target_name}/*.h"
 )
 
 configure_file(${mxx_config_file_template} ${mxx_cmake_config_file} @ONLY)
 
 write_basic_package_version_file(
-    ${mxx_cmake_version_file} 
+    ${mxx_cmake_version_file}
     VERSION ${mxx_version}
     COMPATIBILITY SameMinorVersion
 )
 
 target_include_directories(
-    ${mxx_wrapper_target_name} 
-    INTERFACE 
-    $<BUILD_INTERFACE:${mxx_wrapper_include_dir}> 
+    ${mxx_wrapper_target_name}
+    INTERFACE
+    $<BUILD_INTERFACE:${mxx_wrapper_include_dir}>
     $<INSTALL_INTERFACE:${mxx_wrapper_install_dir}>
 )
 
 target_include_directories(
-    ${mxx_max_api_target_name} 
-    INTERFACE 
-    $<BUILD_INTERFACE:${mxx_max_api_include_dir}> 
+    ${mxx_max_api_target_name}
+    INTERFACE
+    $<BUILD_INTERFACE:${mxx_max_api_include_dir}>
     $<INSTALL_INTERFACE:${mxx_max_api_install_dir}>
 )
 
@@ -225,11 +227,11 @@ endif()
 
 if(WIN32)
     install(
-        FILES       
+        FILES
         ${mxx_win_maxapi_lib}
         ${mxx_win_mspapi_lib}
         ${mxx_win_jitapi_lib}
-        DESTINATION     
+        DESTINATION
         ${mxx_win_installed_lib_dir}
     )
 endif()
@@ -242,29 +244,29 @@ install(
 
 install(
     EXPORT              ${mxx_export_group}
-    NAMESPACE           ${mxx_export_namespace} 
+    NAMESPACE           ${mxx_export_namespace}
     DESTINATION         ${mxx_package_install_dir}
 )
 
 if(${mxx_generate_docs})
 
 	find_package(Doxygen)
-		
+
 		configure_file(${mxx_doxyfile_template} ${mxx_doxyfile} @ONLY)
-	
-		add_custom_target( 
+
+		add_custom_target(
 			mxx_docs ALL
 			COMMAND ${DOXYGEN_EXECUTABLE} ${mxx_doxyfile}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMENT "Generating API documentation with Doxygen"
-			VERBATIM 
+			VERBATIM
 		)
-    
+
 endif()
 
 include(${mxx_cmake_scripts_dir}/mxx.cmake)
 
-if(${CMAKE_GENERATOR} MATCHES "Visual Studio" 
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio"
     OR ${CMAKE_GENERATOR} MATCHES "Xcode")
 
     add_library(
@@ -276,9 +278,9 @@ if(${CMAKE_GENERATOR} MATCHES "Visual Studio"
     )
 
     target_link_libraries(mxx_header_files PUBLIC ${mxx_wrapper_target_name})
-    
+
     mxx_setup_external(mxx_header_files)
 
 endif()
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/externals)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/test)

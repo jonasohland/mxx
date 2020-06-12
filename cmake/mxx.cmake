@@ -45,7 +45,8 @@ macro(_mxx_setup_macos_bundle)
         XCODE_ATTRIBUTE_WRAPPER_EXTENSION   "mxo"
         MACOSX_BUNDLE_BUNDLE_VERSION        ${_mxx_VERSION}
         MACOSX_BUNDLE_INFO_PLIST            ${_mxx_macos_bundle_plist_file}
-        LIBRARY_OUTPUT_DIRECTORY            ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
     )
 
 endmacro(_mxx_setup_macos_bundle)
