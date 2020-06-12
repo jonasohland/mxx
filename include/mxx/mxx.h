@@ -91,6 +91,10 @@ namespace mxx::sym {
     inline symbol empty = c74::max::gensym("");
 }
 
+namespace mxx {
+    using perform_function = c74::max::t_perfroutine64;
+}
+
 #include <mxx/mxx_wrapper_preprocessor.h>
 #include <mxx/mxx_type_traits.h>
 #include <mxx/mxx_mutex.h>

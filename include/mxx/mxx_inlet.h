@@ -18,6 +18,14 @@ namespace mxx {
                                         c74::max::t_perfroutine64);
 
         template <typename user_class>
+        friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
+                                             c74::max::t_object* dspman,
+                                             short* count,
+                                             double srate,
+                                             long vsize,
+                                             long flags);
+
+        template <typename user_class>
         friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
       public:
@@ -36,7 +44,8 @@ namespace mxx {
 
         ~inlet()
         {
-            if (m_inlet_proxy) c74::max::object_free(m_inlet_proxy);
+            if (m_inlet_proxy)
+                c74::max::object_free(m_inlet_proxy);
         }
 
         void hot(bool is_hot) noexcept

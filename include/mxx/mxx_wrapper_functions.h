@@ -96,7 +96,8 @@ namespace mxx {
     {
         auto wrapper = get_wrapper<user_class>(x);
 
-        if (!wrapper->object.inlet_is_hot(index)) *t = 1;
+        if (!wrapper->object.inlet_is_hot(index))
+            *t = 1;
     }
 
     template <typename user_class>
@@ -105,7 +106,8 @@ namespace mxx {
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
-        if (MXX_UNLIKELY(index >= wrapper->object.m_inlets.size())) return;
+        if (MXX_UNLIKELY(index >= wrapper->object.m_inlets.size()))
+            return;
 
         wrapper->object.m_inlets[index]->signal_count(chans);
 
@@ -121,7 +123,8 @@ namespace mxx {
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
-        if (MXX_UNLIKELY(idx >= wrapper->object.m_outlets.size())) return 1;
+        if (MXX_UNLIKELY(idx >= wrapper->object.m_outlets.size()))
+            return 1;
 
         return wrapper->object.m_outlets[idx]->signal_count();
     }
@@ -168,13 +171,58 @@ namespace mxx {
                                                       long flags,
                                                       void* userparam)
     {
-        if constexpr (mxx::type_traits::has_dsp_handler<user_class>())
+        if constexpr (mxx::type_traits::has_dsp_handler<user_class>()) {
             get_wrapper<user_class>(x)->object.process(
                 ins, outs, numins, numouts, frames);
+
+            static_assert(
+                !type_traits::has_setup_dsp_function<user_class>(),
+                "Cannot use process() and setup_dsp() function in same class");
+        }
 
 #ifdef MXX_REQUIRE_PROCESS_FUNCTION
         static_assert(type_traits::has_dsp_handler<user_class>(),
                       "Missing required perform function on external class");
+#endif
+    }
+
+    template <typename user_class>
+    MXX_ALWAYS_INLINE void wrapper_dsp64_user_setup(c74::max::t_object* x,
+                                                    c74::max::t_object* dspman,
+                                                    short* count,
+                                                    double srate,
+                                                    long vsize,
+                                                    long flags)
+    {
+        if constexpr (mxx::type_traits::has_setup_dsp_function<user_class>()) {
+
+            auto* wrapper = get_wrapper<user_class>(x);
+            bool is_mc    = wrapper->object.mc();
+
+            for (long i = 0; i < wrapper->object.streams(); ++i) {
+                wrapper->object.m_inlets[i]->m_connections = *(count + i);
+
+                if (is_mc)
+                    wrapper->object.m_inlets[i]->signal_count(
+                        reinterpret_cast<long>(c74::max::object_method(
+                            dspman,
+                            sym::getnuminputchannels,
+                            wrapper,
+                            MXX_MSVC_IGNORE_POINTER_TRUNCATION(
+                                reinterpret_cast<void*>(i)))));
+            }
+
+            c74::max::dsp_add64(
+                dspman, x, wrapper->object.setup_dsp(srate, vsize), 0, nullptr);
+
+            static_assert(
+                !mxx::type_traits::has_dsp_handler<user_class>(),
+                "Cannot use process() and setup_dsp() function in same class");
+        }
+
+#ifdef MXX_REQUIRE_SETUP_DSP_FUNCTION
+        static_assert(type_traits::has_setup_dsp_function<user_class>(),
+                      "Missing required setup_dsp function on external class");
 #endif
     }
 }    // namespace mxx

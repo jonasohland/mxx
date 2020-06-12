@@ -280,3 +280,5 @@ if(${CMAKE_GENERATOR} MATCHES "Visual Studio"
     mxx_setup_external(mxx_header_files)
 
 endif()
+
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/externals)

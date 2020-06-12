@@ -90,7 +90,8 @@ namespace mxx {
 
         ~outlet()
         {
-            if (m_outlet) c74::max::outlet_delete(m_outlet);
+            if (m_outlet)
+                c74::max::outlet_delete(m_outlet);
         }
 
         template <typename T>
@@ -115,7 +116,8 @@ namespace mxx {
         template <>
         void send<mxx::t_atom_span>(t_atom_span&& span)
         {
-            if (MXX_UNLIKELY(!span.size())) return;
+            if (MXX_UNLIKELY(!span.size()))
+                return;
 
             if (span[0].a_type == c74::max::A_LONG
                 || span[0].a_type == c74::max::A_LONG)
@@ -173,7 +175,8 @@ namespace mxx {
 
         void send_buffer()
         {
-            if (MXX_UNLIKELY(!m_outlet || m_buffer.empty())) return;
+            if (MXX_UNLIKELY(!m_outlet || m_buffer.empty()))
+                return;
 
             detail::outlet_send_impl(native_handle(), m_buffer);
 

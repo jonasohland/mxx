@@ -32,14 +32,20 @@ namespace mxx::type_traits {
                                      long(),
                                      long());
 
+    MXX_CREATE_ADVANCED_MEMBER_CHECK(has_setup_dsp_function,
+                                     setup_dsp,
+                                     double(),
+                                     long());
+
     MXX_CREATE_ADVANCED_MEMBER_CHECK(has_prepare_function,
                                      prepare,
                                      double(),
                                      long());
 
-    MXX_CREATE_ADVANCED_MEMBER_CHECK(has_construct_function,
-                                     construct,
-                                     std::declval<::mxx::atom::vector>());
+    MXX_CREATE_ADVANCED_MEMBER_CHECK(
+        has_construct_function,
+        construct,
+        std::declval<const ::mxx::atom::vector&>());
 
     MXX_CREATE_ADVANCED_MEMBER_CHECK(has_input_changed_function,
                                      inputchanged,

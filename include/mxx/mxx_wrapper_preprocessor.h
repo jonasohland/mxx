@@ -152,7 +152,10 @@ namespace mxx::detail {
                            "DSP perform routine enabled");                     \
         MXX_STATIC_WARNING(                                                    \
             !mxx::type_traits::has_input_changed_function<user_class>(),       \
-            MXX_DEBUG_MSG_PREFIX "inputchanged handler enabled");
+            MXX_DEBUG_MSG_PREFIX "inputchanged handler enabled");              \
+        MXX_STATIC_WARNING(                                                    \
+            !mxx::type_traits::has_setup_dsp_function<user_class>(),           \
+            MXX_DEBUG_MSG_PREFIX "setup_dsp function enabled");
 #else
 
 #    define MXX_CTTI_DEBUG_SECTION(user_class) ;
@@ -183,6 +186,9 @@ namespace mxx::detail {
 
 #define MXX_WRAPPER_FUNCTION_DSP64_METHOD(identifier)                          \
     MXX_WRAPPER_FUNCTION(_dsp64_method, identifier)
+
+#define MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(identifier)                     \
+    MXX_WRAPPER_FUNCTION(_dsp64_user_method, identifier)
 
 #define MXX_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)                         \
     MXX_WRAPPER_FUNCTION(_dsp64_perform, identifier)
@@ -320,6 +326,19 @@ namespace mxx::detail {
             MXX_WRAPPER_FUNCTION_DSP64_PERFORM(identifier));                   \
     }
 
+#define MXX_CREATE_DSP_USER_METHOD_FUNCTION(identifier, classname)             \
+    void MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(identifier)(                   \
+        c74::max::t_object * x,                                                \
+        c74::max::t_object * dsp64,                                            \
+        short* count,                                                          \
+        double samplerate,                                                     \
+        long maxvectorsize,                                                    \
+        long flags)                                                            \
+    {                                                                          \
+        mxx::wrapper_dsp64_user_setup<classname>(                              \
+            x, dsp64, count, samplerate, maxvectorsize, flags);                \
+    }
+
 #define MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                \
     void MXX_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(c74::max::t_object * o, \
                                                        c74::max::t_symbol * s, \
@@ -340,7 +359,8 @@ namespace mxx::detail {
     MXX_CREATE_INLETINFO_FUNCTION(identifier, classname)                       \
     MXX_CREATE_INPUTCHANGED_FUNCTION(identifier, classname)                    \
     MXX_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)             \
-    MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)
+    MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                    \
+    MXX_CREATE_DSP_USER_METHOD_FUNCTION(identifier, classname)
 
 /* -------------------------------------------------------------------------- */
 
@@ -382,6 +402,7 @@ namespace mxx::detail {
                                                                                \
     MXX_USER_CLASS_MAXCLASS_SYMBOL(ident) = mxx::wrapper_class_new<class>(     \
         MXX_USER_CLASS_MAXCLASS_SYMBOL(ident),                                 \
+        #ident,                                                                \
         MXX_MAX_METHOD(MXX_NEW_INSTANCE_FUNCTION_NAME(ident)),                 \
         MXX_MAX_METHOD(MXX_FREE_INSTANCE_FUNCTION_NAME(ident)),                \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_NAMED_METHOD(ident)),              \
@@ -393,7 +414,8 @@ namespace mxx::detail {
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INLETINFO(ident)),                 \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INPUTCHANGED(ident)),              \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(ident)),       \
-        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_METHOD(ident)));             \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_METHOD(ident)),              \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(ident)));        \
                                                                                \
     c74::max::class_register(                                                  \
         c74::max::CLASS_BOX, MXX_USER_CLASS_MAXCLASS_SYMBOL(ident));

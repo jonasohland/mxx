@@ -59,6 +59,7 @@ namespace mxx {
 
     template <typename user_class>
     c74::max::t_class* wrapper_class_new(c74::max::t_class* class_ptr,
+                                         const char* external_name,
                                          c74::max::method new_instance,
                                          c74::max::method free_instance,
                                          c74::max::method named_meth_wrapper,
@@ -70,9 +71,10 @@ namespace mxx {
                                          c74::max::method inletinfoh,
                                          c74::max::method inputchangedh,
                                          c74::max::method multichanneloutputsh,
-                                         c74::max::method dsp64h)
+                                         c74::max::method dsp64h,
+                                         c74::max::method dsp64h_user)
     {
-        class_ptr = c74::max::class_new("testexternal",
+        class_ptr = c74::max::class_new(external_name,
                                         new_instance,
                                         free_instance,
                                         sizeof(object_wrapper<user_class>),
@@ -109,6 +111,9 @@ namespace mxx {
             c74::max::class_addmethod(
                 class_ptr, dsp64h, "dsp64", c74::max::A_CANT, 0);
         }
+        else if constexpr (type_traits::has_setup_dsp_function<user_class>())
+            c74::max::class_addmethod(
+                class_ptr, dsp64h_user, "dsp64", c74::max::A_CANT, 0);
 
 
         c74::max::class_addmethod(

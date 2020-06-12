@@ -55,7 +55,8 @@ inline void mxx::inlet::mxx_internal_create(max_class_base* obj,
 
     if (!(type() == sym::signal) && !(type() == sym::multichannelsignal)) {
 
-        if (index == total - 1) return;
+        if (index == total - 1)
+            return;
 
         m_inlet_proxy = c74::max::proxy_new(
             owner(), static_cast<long>(total - index) - 1, nullptr);

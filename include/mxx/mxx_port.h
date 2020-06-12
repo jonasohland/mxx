@@ -2,7 +2,7 @@
 
 namespace mxx {
     class port {
-        
+
         friend class max_class_base;
 
         template <typename user_class>
@@ -48,9 +48,9 @@ namespace mxx {
 
         void signal_count(long c) noexcept
         {
-            if(c != m_signal_count)
+            if (c != m_signal_count)
                 m_sigc_changed = true;
-            
+
             m_signal_count = c;
         }
 
@@ -80,17 +80,15 @@ namespace mxx {
         c74::max::t_object* m_owner;
 
       private:
-        
-
         bool mxx_internal_sigcount_changed()
         {
-            bool s = m_sigc_changed;
+            bool s         = m_sigc_changed;
             m_sigc_changed = false;
             return s;
         }
-          
+
         bool m_sigc_changed = false;
-        
+
         long m_signal_count  = 1;
         symbol m_type        = detail::empty_t_symbol;
         symbol m_name        = detail::empty_t_symbol;

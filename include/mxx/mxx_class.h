@@ -25,6 +25,22 @@ namespace mxx {
                                         c74::max::t_perfroutine64);
 
         template <typename user_class>
+        friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
+                                             c74::max::t_object* dspman,
+                                             short* count,
+                                             double srate,
+                                             long vsize,
+                                             long flags);
+
+        template <typename user_class>
+        friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
+                                             c74::max::t_object* dspman,
+                                             short* count,
+                                             double srate,
+                                             long vsize,
+                                             long flags);
+
+        template <typename user_class>
         friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
         template <typename user_class>
@@ -54,7 +70,8 @@ namespace mxx {
 
         bool inlet_is_hot(long inlet_idx)
         {
-            if (MXX_UNLIKELY(inlet_idx >= m_inlets.size())) return false;
+            if (MXX_UNLIKELY(inlet_idx >= m_inlets.size()))
+                return false;
 
             return m_inlets[inlet_idx]->hot();
         }
@@ -62,11 +79,13 @@ namespace mxx {
         bool mc() const
         {
             for (const auto& inlet : m_inlets) {
-                if (inlet->mc()) return true;
+                if (inlet->mc())
+                    return true;
             }
 
             for (const auto& outlet : m_outlets) {
-                if (outlet->mc()) return true;
+                if (outlet->mc())
+                    return true;
             }
 
             return false;
@@ -106,15 +125,14 @@ namespace mxx {
         template <typename... Args>
         outlet_ptr make_outlet(Args&&... args)
         {
-            return make_port<outlets>(
+            return make_port<outlet>(
                 sym::anything, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
         inlet_ptr make_inlet(Args&&... args)
         {
-            return make_port<outlets>(
-                sym::anything, std::forward<Args>(args)...);
+            return make_port<inlet>(sym::anything, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
@@ -132,7 +150,7 @@ namespace mxx {
         template <typename... Args>
         outlet_ptr make_signal_outlet(Args... args)
         {
-            make_port<outlet>(sym::signal, std::forward<Args>(args)...);
+            return make_port<outlet>(sym::signal, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
@@ -281,7 +299,8 @@ namespace mxx {
         template <typename PortArr>
         const char* get_port_description(const PortArr& p, long index)
         {
-            if (MXX_UNLIKELY(index >= p.size())) return "unknown";
+            if (MXX_UNLIKELY(index >= p.size()))
+                return "unknown";
 
             return p[index]->description();
         }
@@ -309,16 +328,14 @@ namespace mxx {
             console_warn.mxx_internal_prepare(t_obj_instance_ptr);
             console_error.mxx_internal_prepare(t_obj_instance_ptr);
         }
-        
+
         bool mxx_internal_sigcnt_changed()
         {
             bool ch = false;
-            
-            for(auto& p : m_outlets)
+
+            for (auto& p : m_outlets)
                 ch = ch || p->mxx_internal_sigcount_changed();
-            
-            c74::max::object_post(native_handle(), "sigcount changed: %d", ch);
-            
+
             return ch;
         }
 

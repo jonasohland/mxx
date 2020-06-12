@@ -58,14 +58,16 @@ namespace mxx {
 
         referece at(index_type idx)
         {
-            if (idx >= size()) throw std::out_of_range("out of range");
+            if (idx >= size())
+                throw std::out_of_range("out of range");
 
             return *(begin() + idx);
         }
 
         const_referece at(index_type idx) const
         {
-            if (idx >= size()) throw std::out_of_range("out of range");
+            if (idx >= size())
+                throw std::out_of_range("out of range");
 
             return *(begin() + idx);
         }
@@ -240,13 +242,13 @@ namespace mxx {
         {
             c74::max::atom_setlong(this, i);
         }
-        
+
         template <typename T>
         T get() const
         {
             return static_cast<const T>(*this);
         }
-        
+
         inline operator const char*() const noexcept
         {
             return c74::max::atom_getsym(this)->s_name;
