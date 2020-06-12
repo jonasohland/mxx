@@ -2,17 +2,21 @@
 
 namespace mxx {
 
-    struct default_console_stream {
-    };
-    struct warning_console_stream {
-    };
-    struct error_console_stream {
-    };
-
     namespace detail {
         struct endl_type {
         };
     }    // namespace detail
+
+
+
+    namespace console {
+        struct normal {
+        };
+        struct warning {
+        };
+        struct error {
+        };
+    }
 
     static detail::endl_type endl;
 
@@ -34,9 +38,9 @@ namespace mxx {
         console_stream<stream_type>&
         operator<<<detail::endl_type>(const detail::endl_type& end)
         {
-            if constexpr (std::is_same<stream_type, default_console_stream>())
+            if constexpr (std::is_same<stream_type, console::normal>())
                 c74::max::object_post(m_owner, m_buffer.str().c_str());
-            else if (std::is_same<stream_type, warning_console_stream>())
+            else if (std::is_same<stream_type, console::warning>())
                 c74::max::object_warn(m_owner, m_buffer.str().c_str());
             else
                 c74::max::object_error(m_owner, m_buffer.str().c_str());

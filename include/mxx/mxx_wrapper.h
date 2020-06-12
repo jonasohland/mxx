@@ -67,6 +67,7 @@ namespace mxx {
                                          c74::max::method bangh,
                                          c74::max::method floath,
                                          c74::max::method listh,
+                                         c74::max::method anyh,
                                          c74::max::method assisth,
                                          c74::max::method inletinfoh,
                                          c74::max::method inputchangedh,
@@ -105,6 +106,11 @@ namespace mxx {
                       || type_traits::has_raw_list_handler<user_class>()) {
             c74::max::class_addmethod(
                 class_ptr, listh, "list", c74::max::A_GIMME, 0);
+        }
+
+        if constexpr (type_traits::has_any_msg_handler<user_class>()) {
+            c74::max::class_addmethod(
+                class_ptr, anyh, "anything", c74::max::A_GIMME, 0);
         }
 
         if constexpr (type_traits::has_dsp_handler<user_class>()) {

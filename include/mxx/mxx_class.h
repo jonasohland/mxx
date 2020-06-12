@@ -291,9 +291,9 @@ namespace mxx {
         }
 
       protected:
-        console_stream<default_console_stream> console;
-        console_stream<warning_console_stream> console_warn;
-        console_stream<error_console_stream> console_error;
+        console_stream<console::normal> console;
+        console_stream<console::warning> console_warn;
+        console_stream<console::error> console_error;
 
       private:
         template <typename PortArr>

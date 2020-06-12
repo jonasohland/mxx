@@ -68,13 +68,34 @@ namespace mxx {
 
 #ifdef MXX_REQUIRE_LIST_HANDLER
         static_assert(type_traits::has_list_handler<user_class>(),
-                      "Missing required handle_list(atom_vector) function on "
+                      "Missing required handle_list(atom::vector) function on "
                       "external class");
 #endif
 #ifdef MXX_REQUIRE_RAW_LIST_HANDLER
         static_assert(type_traits::has_raw_list_handler<user_class>(),
                       "Missing required handle_list(t_atom_span) function on "
                       "external class");
+#endif
+    }
+
+    template <typename user_class>
+    MXX_ALWAYS_INLINE void wrapper_handle_any_msg_impl(c74::max::t_object* obj,
+                                                       c74::max::t_symbol* s,
+                                                       long ac,
+                                                       c74::max::t_atom* av)
+    {
+        if constexpr (type_traits::has_any_msg_handler<user_class>()) {
+
+            get_wrapper<user_class>(obj)->object.handle_any_msg(
+                s,
+                detail::to_atom_vector(av, ac),
+                c74::max::proxy_getinlet(obj));
+        }
+
+#ifdef MXX_REQUIRE_ANY_MSG_HANDLER
+        static_assert(type_traits::has_any_msg_handler<user_class>(),
+                      "Missing required handle_any_msg(symbol, atom::vector) "
+                      "on external class");
 #endif
     }
 

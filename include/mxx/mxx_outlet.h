@@ -12,12 +12,21 @@ namespace mxx {
             if (output[0].type() == atom::types::LONG
                 || output[0].type() == atom::types::FLOAT)
 
-                c74::max::outlet_list(
-                    outlet,
-                    nullptr,
-                    static_cast<short>(output.size()),
-                    static_cast<const c74::max::t_atom*>(&output[0]));
-
+                if (output.size() == 1) {
+                    if (output[0].type() == atom::types::LONG)
+                        c74::max::outlet_int(
+                            outlet, static_cast<long>(output[0]));
+                    else
+                        c74::max::outlet_float(
+                            outlet, static_cast<long>(output[0]));
+                }
+                else {
+                    c74::max::outlet_list(
+                        outlet,
+                        nullptr,
+                        static_cast<short>(output.size()),
+                        static_cast<const c74::max::t_atom*>(&output[0]));
+                }
             else {
 
                 if (output.size() > 1)
@@ -160,7 +169,7 @@ namespace mxx {
         {
             send(static_cast<c74::max::t_atom*>(&atom));
         }
-        
+
         void bang()
         {
             send(sym::bang);

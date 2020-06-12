@@ -88,6 +88,17 @@ MXX_PREPROCESSOR_CAT_3(Hello, World, Blub) // will expand to: HelloWorldBlub
     template <typename user_class>                                             \
     std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 
+#define MMX_CREATE_MEMBER_VARIABLE_CHECK(sname, mname)                         \
+    template <typename T, typename = void>                                     \
+    struct sname##_impl: std::false_type {                                     \
+    };                                                                         \
+                                                                               \
+    template <typename T>                                                      \
+    struct sname##_impl<T, decltype((void) T::mname, void())>                  \
+        : std::true_type {                                                     \
+    };                                                                         \
+    template <typename user_class>                                             \
+    std::integral_constant<bool, sname##_impl<user_class>::value> sname;
 /* -------------------------------------------------------------------------- */
 /*                      PRINT WARNINGS AT COMPILE TIME                        */
 /*                              taken from:                                   */
@@ -138,12 +149,18 @@ namespace mxx::detail {
 #    define MXX_CTTI_DEBUG_SECTION(user_class)                                 \
         MXX_STATIC_WARNING(!mxx::type_traits::has_bang_handler<user_class>(),  \
                            MXX_DEBUG_MSG_PREFIX "bang handler enabled");       \
+        MXX_STATIC_WARNING(                                                    \
+            !mxx::type_traits::has_construct_function<user_class>(),           \
+            MXX_DEBUG_MSG_PREFIX "construct function enabled");                \
         MXX_STATIC_WARNING(!mxx::type_traits::has_int_handler<user_class>(),   \
                            MXX_DEBUG_MSG_PREFIX "int handler enabled");        \
         MXX_STATIC_WARNING(!mxx::type_traits::has_float_handler<user_class>(), \
                            MXX_DEBUG_MSG_PREFIX "float handler enabled");      \
         MXX_STATIC_WARNING(!mxx::type_traits::has_list_handler<user_class>(),  \
                            MXX_DEBUG_MSG_PREFIX "list handler enabled");       \
+        MXX_STATIC_WARNING(                                                    \
+            !mxx::type_traits::has_any_msg_handler<user_class>(),              \
+            MXX_DEBUG_MSG_PREFIX "any message handler enabled");               \
         MXX_STATIC_WARNING(                                                    \
             !mxx::type_traits::has_raw_list_handler<user_class>(),             \
             MXX_DEBUG_MSG_PREFIX "raw list handler enabled");                  \
@@ -217,6 +234,9 @@ namespace mxx::detail {
 #define MXX_WRAPPER_FUNCTION_LIST(identifier)                                  \
     MXX_WRAPPER_FUNCTION(_list, identifier)
 
+#define MXX_WRAPPER_FUNCTION_ANY_MSG(identifier)                               \
+    MXX_WRAPPER_FUNCTION(_any, identifier)
+
 #define MXX_WRAPPER_FUNCTION_NAMED_METHOD(identifier)                          \
     MXX_WRAPPER_FUNCTION(_named_method, identifier)
 
@@ -254,6 +274,15 @@ namespace mxx::detail {
                                                c74::max::t_atom* argv)         \
     {                                                                          \
         mxx::wrapper_handle_list_impl<classname>(obj, s, argc, argv);          \
+    }
+
+#define MXX_CREATE_ANY_MSG_HANDLER_FUNCTION(identifier, classname)             \
+    void MXX_WRAPPER_FUNCTION_ANY_MSG(identifier)(c74::max::t_object * obj,    \
+                                                  c74::max::t_symbol * s,      \
+                                                  long argc,                   \
+                                                  c74::max::t_atom* argv)      \
+    {                                                                          \
+        mxx::wrapper_handle_any_msg_impl<classname>(obj, s, argc, argv);       \
     }
 
 #define MXX_CREATE_ASSIST_FUNCTION(identifier, classname)                      \
@@ -353,6 +382,7 @@ namespace mxx::detail {
     MXX_CREATE_INT_HANDLER_FUNCTION(identifier, classname)                     \
     MXX_CREATE_FLOAT_HANDLER_FUNCTION(identifier, classname)                   \
     MXX_CREATE_LIST_HANDLER_FUNCTION(identifier, classname)                    \
+    MXX_CREATE_ANY_MSG_HANDLER_FUNCTION(identifier, classname)                 \
     MXX_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                     \
     MXX_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                      \
     MXX_CREATE_ASSIST_FUNCTION(identifier, classname)                          \
@@ -410,6 +440,7 @@ namespace mxx::detail {
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_BANG(ident)),                      \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_FLOAT(ident)),                     \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_LIST(ident)),                      \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_ANY_MSG(ident)),                   \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_ASSIST(ident)),                    \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INLETINFO(ident)),                 \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INPUTCHANGED(ident)),              \

@@ -24,6 +24,12 @@ namespace mxx::type_traits {
                                      std::declval<::mxx::atom::span>(),
                                      long());
 
+    MXX_CREATE_ADVANCED_MEMBER_CHECK(has_any_msg_handler,
+                                     handle_any_msg,
+                                     std::declval<::mxx::symbol>(),
+                                     std::declval<::mxx::atom::vector>(),
+                                     long());
+
     MXX_CREATE_ADVANCED_MEMBER_CHECK(has_dsp_handler,
                                      process,
                                      std::declval<double**>(),
@@ -51,8 +57,14 @@ namespace mxx::type_traits {
                                      inputchanged,
                                      long());
 
+    MMX_CREATE_MEMBER_VARIABLE_CHECK(has_mxx_class_flags_variable,
+                                     mxx_class_flags);
+
     template <typename user_class>
-    std::integral_constant<bool, has_dsp_handler_impl<user_class>::value>
+    std::integral_constant<
+        bool,
+        has_dsp_handler_impl<user_class>::value
+            || has_setup_dsp_function_impl<user_class>::value>
         is_dsp_class;
 
 }    // namespace mxx::type_traits
