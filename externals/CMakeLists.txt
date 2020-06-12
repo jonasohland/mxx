@@ -5,7 +5,8 @@ macro(mxx_test_external mxx_xt_name)
 endmacro()
 
 
-mxx_test_external(mxx_test_floath)
+mxx_test_external(mxx_test_bangh)
 mxx_test_external(mxx_test_inth)
+mxx_test_external(mxx_test_floath)
 mxx_test_external(mxx_test_siginout)
 mxx_test_external(mxx_test_basicmc)

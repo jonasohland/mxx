@@ -160,6 +160,11 @@ namespace mxx {
         {
             send(static_cast<c74::max::t_atom*>(&atom));
         }
+        
+        void bang()
+        {
+            send(sym::bang);
+        }
 
         c74::max::t_outlet* native_handle() const
         {

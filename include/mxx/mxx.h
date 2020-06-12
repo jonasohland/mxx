@@ -78,6 +78,9 @@ namespace mxx::sym {
     /// Symbol "signal". Used to create signal outlets.
     inline symbol signal              = c74::max::gensym("signal");
     
+    /// Symbol "bang". Used to send bangs
+    inline symbol bang                = c74::max::gensym("bang");
+    
     /// Symbol "multichannelsignal". Used to create multichannelsignal outlets.
     inline symbol multichannelsignal  = c74::max::gensym("multichannelsignal");
     
