@@ -1,5 +1,5 @@
-#include <mxx/mxx.h>
 #include <iostream>
+#include <mxx/mxx.h>
 
 class mxx_test_siginout: public mxx::max_class<mxx_test_siginout> {
   public:
@@ -21,4 +21,4 @@ class mxx_test_siginout: public mxx::max_class<mxx_test_siginout> {
     }
 };
 
-MXX_EXTERNAL(mxx_test_siginout, mxx_test_siginout);
+MXX_EXTERNAL(mxx_test_siginout, mxx_test_siginout, "mxx_test_siginout");

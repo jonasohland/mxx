@@ -1,7 +1,7 @@
 #include <mxx/mxx.h>
 
-class mxxx : public mxx::max_class<mxxx> {
-public:
+class mxxx: public mxx::max_class<mxxx> {
+  public:
     mxxx(mxx::construction_type cty)
     {
         switch (cty) {
@@ -18,4 +18,4 @@ public:
     }
 };
 
-MXX_EXTERNAL(mxxx, mxxx);
+MXX_EXTERNAL(mxxx, mxxx, "mxxx");

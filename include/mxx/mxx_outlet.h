@@ -83,7 +83,16 @@ namespace mxx {
                                         short* count,
                                         double srate,
                                         long vsize,
-                                        long flags);
+                                        long flags,
+                                        c74::max::t_perfroutine64 r);
+
+        template <typename user_class>
+        friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
+                                             c74::max::t_object* dspman,
+                                             short* count,
+                                             double srate,
+                                             long vsize,
+                                             long flags);
 
       public:
         outlet(const char* msg_description)
@@ -95,6 +104,11 @@ namespace mxx {
         {
             description(msg_description);
             signal_count(signals);
+        }
+
+        long connections()
+        {
+            return m_connections;
         }
 
         ~outlet()
@@ -199,6 +213,7 @@ namespace mxx {
 
         void mxx_internal_create(max_class_base* obj, long index, std::size_t);
 
+        long m_connections = 0;
         atom::vector m_buffer;
         c74::max::t_outlet* m_outlet = nullptr;
     };

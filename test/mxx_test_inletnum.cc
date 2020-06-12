@@ -45,4 +45,4 @@ class mxx_test_inletnum: public mxx::max_class<mxx_test_inletnum> {
     mxx::outlet_ptr outlet;
 };
 
-MXX_EXTERNAL(mxx_test_inletnum, mxx_test_inletnum);
+MXX_EXTERNAL(mxx_test_inletnum, mxx_test_inletnum, "mxx_test_inletnum");

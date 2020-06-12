@@ -28,4 +28,4 @@ class mxx_test_basicmc: public mxx::max_class<mxx_test_basicmc> {
     mxx::outlet_ptr outlet;
 };
 
-MXX_EXTERNAL(mxx_test_basicmc, mxx_test_basicmc)
+MXX_EXTERNAL(mxx_test_basicmc, mxx_test_basicmc, "mxx_test_basicmc")

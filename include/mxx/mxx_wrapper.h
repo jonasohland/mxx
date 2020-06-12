@@ -228,7 +228,7 @@ namespace mxx {
         // dspsetup if dsp class
         if constexpr (type_traits::is_dsp_class<user_class>()) {
             c74::max::dsp_setup(static_cast<c74::max::t_pxobject*>(obj),
-                                wrapper->object.streams());
+                                wrapper->object.input_flows());
         }
 
         wrapper->mxx_internal_finish();

@@ -441,11 +441,11 @@ namespace mxx::detail {
         mxx::wrapper_object_free<user_class>(ext_obj);                         \
     }
 
-#define MXX_MAXCLASS_DEF_IMPL(ident, class)                                    \
+#define MXX_MAXCLASS_DEF_IMPL(ident, class, extname)                           \
                                                                                \
     MXX_USER_CLASS_MAXCLASS_SYMBOL(ident) = mxx::wrapper_class_new<class>(     \
         MXX_USER_CLASS_MAXCLASS_SYMBOL(ident),                                 \
-        #ident,                                                                \
+        extname,                                                               \
         MXX_MAX_METHOD(MXX_NEW_INSTANCE_FUNCTION_NAME(ident)),                 \
         MXX_MAX_METHOD(MXX_FREE_INSTANCE_FUNCTION_NAME(ident)),                \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_NAMED_METHOD(ident)),              \
@@ -469,7 +469,7 @@ namespace mxx::detail {
 //                            THE MAGIC WRAPPER
 /* -------------------------------------------------------------------------- */
 
-#define MXX_EXTERNAL(class, identifier)                                        \
+#define MXX_EXTERNAL(class, identifier, extname)                               \
     MXX_USER_CLASS_MAXCLASS_DECL(identifier)                                   \
     MXX_NEW_INSTANCE_FUNCTION(identifier, class)                               \
     MXX_FREE_INSTANCE_FUNCTION(identifier, class)                              \
@@ -477,5 +477,5 @@ namespace mxx::detail {
     MXX_CTTI_DEBUG_SECTION(class)                                              \
     void mxx_external_main(void*)                                              \
     {                                                                          \
-        MXX_MAXCLASS_DEF_IMPL(identifier, class)                               \
+        MXX_MAXCLASS_DEF_IMPL(identifier, class, extname)                      \
     }

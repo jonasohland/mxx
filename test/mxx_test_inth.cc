@@ -18,4 +18,4 @@ class mxx_test_inth: public mxx::max_class<mxx_test_inth> {
     mxx::outlet_ptr outlet;
 };
 
-MXX_EXTERNAL(mxx_test_inth, mxx_test_inth);
+MXX_EXTERNAL(mxx_test_inth, mxx_test_inth, "mxx_test_inth");

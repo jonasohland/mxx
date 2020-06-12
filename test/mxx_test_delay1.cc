@@ -1,12 +1,4 @@
-#include <iostream>
 #include <mxx/mxx.h>
-
-template <typename user_class>
-void test(mxx::console_stream<mxx::console::normal>& stream)
-{
-    if constexpr (mxx::type_traits::has_mxx_class_flags_variable<user_class>())
-        stream << "hi" << user_class::mxx_class_flags << mxx::endl;
-}
 
 class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
   public:
@@ -14,8 +6,6 @@ class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
     {
         inlet  = make_inlet("Data in");
         outlet = make_outlet("Data out");
-
-        test<mxx_test_delay1>(console);
     }
 
     void
@@ -33,4 +23,4 @@ class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
 };
 
 
-MXX_EXTERNAL(mxx_test_delay1, mxx_test_delay1);
+MXX_EXTERNAL(mxx_test_delay1, mxx_test_delay1, "mxx_test_delay1");

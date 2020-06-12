@@ -16,4 +16,4 @@ class mxx_test_floath: public mxx::max_class<mxx_test_floath> {
     mxx::outlet_ptr outlet;
 };
 
-MXX_EXTERNAL(mxx_test_floath, mxx_test_floath);
+MXX_EXTERNAL(mxx_test_floath, mxx_test_floath, "mxx_test_floath");

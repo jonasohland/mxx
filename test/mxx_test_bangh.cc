@@ -16,4 +16,4 @@ class mxx_test_bangh: public mxx::max_class<mxx_test_bangh> {
     mxx::outlet_ptr outlet;
 };
 
-MXX_EXTERNAL(mxx_test_bangh, mxx_test_bangh);
+MXX_EXTERNAL(mxx_test_bangh, mxx_test_bangh, "mxx_test_bangh");

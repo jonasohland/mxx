@@ -94,15 +94,30 @@ namespace mxx {
             return false;
         }
 
-        std::size_t streams() const
+        std::size_t input_flows() const
         {
-            std::size_t acc = 0;
+            return std::accumulate(
+                m_inlets.begin(),
+                m_inlets.end(),
+                0,
+                [](int count, const auto& inlet) {
+                    return count
+                           + (inlet->type() == sym::signal
+                              || inlet->type() == sym::multichannelsignal);
+                });
+        }
 
-            for (const auto& inlet : m_inlets)
-                acc += (inlet->type() == sym::signal
-                        || inlet->type() == sym::multichannelsignal);
-
-            return acc;
+        std::size_t output_flows() const
+        {
+            return std::accumulate(
+                m_outlets.begin(),
+                m_outlets.end(),
+                0,
+                [](int count, const auto& outlet) {
+                    return count
+                           + (outlet->type() == sym::signal
+                              || outlet->type() == sym::multichannelsignal);
+                });
         }
 
         atom::vector call(const char* name,
@@ -120,7 +135,7 @@ namespace mxx {
 
         inline c74::max::t_object* native_handle() const noexcept
         {
-            if(t_obj_instance_ptr)
+            if (t_obj_instance_ptr)
                 return t_obj_instance_ptr;
             else
                 return nullptr;

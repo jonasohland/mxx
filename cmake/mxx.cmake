@@ -1,3 +1,9 @@
+function(_mxx_get_external_name _name _out_var)
+    string(REGEX REPLACE "^([A-z._]+)_tilde$" "\\1~" _out ${_name})
+    string(REGEX REPLACE "^([A-z._]+)_tld$" "\\1~" _out ${_out})
+    set(${_out_var} ${_out} PARENT_SCOPE)
+endfunction()
+
 macro(_mxx_setup_macos_bundle)
 
     if(NOT DEFINED _mxx_BUNDLE_IDENTIFIER)
@@ -34,7 +40,7 @@ macro(_mxx_setup_macos_bundle)
     list(GET _mxx_temp_version_list 1 GIT_VERSION_MIN)
     list(GET _mxx_temp_version_list 2 GIT_VERSION_SUB)
 
-    message(STATUS "Setting up External: ${_mxx_target_name} version: ${_mxx_VERSION}")
+    message(STATUS "Setting up External: ${_mxx_external_name} version: ${_mxx_VERSION}")
 
     configure_file(${mxx_info_plist_template} ${_mxx_macos_bundle_plist_file} @ONLY)
 
@@ -47,6 +53,8 @@ macro(_mxx_setup_macos_bundle)
         MACOSX_BUNDLE_INFO_PLIST            ${_mxx_macos_bundle_plist_file}
         LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_NAME_DEBUG           ${_mxx_external_name}
+        LIBRARY_OUTPUT_NAME_RELEASE         ${_mxx_external_name}
     )
 
 endmacro(_mxx_setup_macos_bundle)
@@ -58,6 +66,8 @@ macro(_mxx_setup_win_dll)
         SUFFIX                              ".mxe64"
         LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_NAME_DEBUG           ${_mxx_external_name}
+        LIBRARY_OUTPUT_NAME_RELEASE         ${_mxx_external_name}
     )
 
     target_compile_definitions(
@@ -102,6 +112,8 @@ function(mxx_setup_external _mxx_target_name)
     if(NOT DEFINED _mxx_EXTERNAL_OUTPUT_DIR)
         set(_mxx_EXTERNAL_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/externals)
     endif()
+
+    _mxx_get_external_name(${_mxx_target_name} _mxx_external_name)
 
     if(APPLE)
         _mxx_setup_macos_bundle()
