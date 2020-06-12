@@ -56,7 +56,8 @@ macro(_mxx_setup_win_dll)
     set_target_properties(
         ${_mxx_target_name}                 PROPERTIES
         SUFFIX                              ".mxe64"
-        LIBRARY_OUTPUT_DIRECTORY            ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
     )
 
     target_compile_definitions(

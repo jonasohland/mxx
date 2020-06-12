@@ -26,7 +26,7 @@ namespace mxx {
                                              long flags);
 
         template <typename user_class>
-        friend void wrapper_inputchanged_impl(c74::max::t_object*, long, long);
+        friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
       public:
         inlet() {}
