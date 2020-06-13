@@ -170,8 +170,7 @@ namespace mxx {
 
         bool is_mc = wrapper->object.mc();
 
-        long i = 0;
-
+        long i            = 0;
         long input_flows  = wrapper->object.input_flows();
         long output_flows = wrapper->object.output_flows();
 
@@ -236,7 +235,11 @@ namespace mxx {
             auto* wrapper = get_wrapper<user_class>(x);
             bool is_mc    = wrapper->object.mc();
 
-            for (long i = 0; i < wrapper->object.streams(); ++i) {
+            long i            = 0;
+            long input_flows  = wrapper->object.input_flows();
+            long output_flows = wrapper->object.output_flows();
+
+            for (; i < input_flows; ++i) {
                 wrapper->object.m_inlets[i]->m_connections = *(count + i);
 
                 if (is_mc)
@@ -248,6 +251,10 @@ namespace mxx {
                             MXX_MSVC_IGNORE_POINTER_TRUNCATION(
                                 reinterpret_cast<void*>(i)))));
             }
+
+            for (; i < input_flows + output_flows; ++i)
+                wrapper->object.m_outlets[i - input_flows]->m_connections
+                    = *(count + i);
 
             c74::max::dsp_add64(
                 dspman, x, wrapper->object.setup_dsp(srate, vsize), 0, nullptr);
