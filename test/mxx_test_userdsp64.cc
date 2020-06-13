@@ -21,10 +21,13 @@ class mxx_test_userdsp64: public mxx::max_class<mxx_test_userdsp64> {
 
     c74::max::t_perfroutine64 setup_dsp(double, long)
     {
-        if (inlet2->connections())
-            return &perform_signal;
-        else
-            return &perform_scalar;
+        if (inlet2->connections())    // Something is connected to our 2nd inlet.
+            return &perform_signal;    // Choose the perform implementation that
+                                       // uses the second signal.
+
+        else                           // Nothing connected to the 2nd inlet.
+            return &perform_scalar;    // Choose the perorm implementation that
+                                       // uses a scalar value
     }
 
     double scalar = 0.;
@@ -45,8 +48,7 @@ void perform_signal(c74::max::t_object*,
     double* in2 = ins[1];
     double* out = *outs;
 
-    for (int i = 0; i < frames; ++i)
-        out[i] = in1[i] * in2[i];
+    for (int i = 0; i < frames; ++i) out[i] = in1[i] * in2[i];
 }
 
 void perform_scalar(c74::max::t_object* x,
@@ -64,8 +66,7 @@ void perform_scalar(c74::max::t_object* x,
     double* out = *outs;
 
     for (int i = 0; i < frames; ++i)
-        out[i] = in1[i]
-                 * mxx::find_self<mxx_test_userdsp64>(x)->scalar;
+        out[i] = in1[i] * mxx::find_self<mxx_test_userdsp64>(x)->scalar;
 }
 
 MXX_EXTERNAL(mxx_test_userdsp64, mxx_test_userdsp64, "mxx_test_userdsp64");
