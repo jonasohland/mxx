@@ -22,4 +22,4 @@ class mxx_test_siginout: public mxx::max_class<mxx_test_siginout> {
     }
 };
 
-MXX_EXTERNAL(mxx_test_siginout, mxx_test_siginout, "mxx_test_siginout");
+MXX_EXTERNAL(mxx_test_siginout, mxx_test_siginout, "mxx_test_siginout~");

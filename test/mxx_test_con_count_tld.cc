@@ -41,4 +41,4 @@ class mxx_test_con_count: public mxx::max_class<mxx_test_con_count> {
     mxx::outlet_ptr info_out;
 };
 
-MXX_EXTERNAL(mxx_test_con_count, mxx_test_con_count, "mxx_test_con_count");
+MXX_EXTERNAL(mxx_test_con_count, mxx_test_con_count, "mxx_test_con_count~");

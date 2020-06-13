@@ -87,4 +87,4 @@ void perform_scalar(c74::max::t_object* x, c74::max::t_object*, double** ins,
         out[i] = in1[i] * obj->scalar;
 }
 
-MXX_EXTERNAL(mxx_test_userdsp64, mxx_test_userdsp64, "mxx_test_userdsp64");
+MXX_EXTERNAL(mxx_test_userdsp64, mxx_test_userdsp64, "mxx_test_userdsp64~");
