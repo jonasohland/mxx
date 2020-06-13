@@ -261,4 +261,10 @@ namespace mxx {
             std::make_shared<atom::vector>(args.begin(), args.end()));
     }
 
+    template <typename user_class>
+    MXX_ALWAYS_INLINE user_class* find_self(c74::max::t_object* x)
+    {
+        return &reinterpret_cast<object_wrapper<user_class>*>(x)->object;
+    }
+
 }    // namespace mxx
