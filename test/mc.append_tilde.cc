@@ -26,9 +26,7 @@ class mc_append_t: public mxx::max_class<mc_append_t> {
 #ifdef APPEND_MC_VERSION
         mcoutlet->signal_count(
             mcinlet->signal_count()
-            + std::accumulate(mc_inlets.begin(),
-                              mc_inlets.end(),
-                              0,
+            + std::accumulate(mc_inlets.begin(), mc_inlets.end(), 0,
                               [](int num, const auto inlet) {
                                   return num + inlet->signal_count();
                               }));
@@ -37,8 +35,8 @@ class mc_append_t: public mxx::max_class<mc_append_t> {
 #endif
     }
 
-    void
-    process(double** ins, double** outs, long inchs, long outchs, long vect)
+    void process(double** ins, double** outs, long inchs, long outchs,
+                 long vect)
     {
         if (inchs != outchs)
             return;

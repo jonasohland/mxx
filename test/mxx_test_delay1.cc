@@ -8,8 +8,8 @@ class mxx_test_delay1: public mxx::max_class<mxx_test_delay1> {
         outlet = make_outlet("Data out");
     }
 
-    void
-    handle_any_msg(const mxx::symbol& msg, const mxx::atom::vector& args, long)
+    void handle_any_msg(const mxx::symbol& msg, const mxx::atom::vector& args,
+                        long)
     {
         post(msg);
     }

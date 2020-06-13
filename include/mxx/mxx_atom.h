@@ -289,11 +289,6 @@ namespace mxx {
             return static_cast<long long>(c74::max::atom_getlong(this));
         }
 
-        inline operator size_t() const noexcept
-        {
-            return static_cast<size_t>(c74::max::atom_getlong(this));
-        }
-
         inline operator bool() const noexcept
         {
             return c74::max::atom_getlong(this) != 0;

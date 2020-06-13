@@ -22,20 +22,16 @@ namespace mxx {
                 }
                 else {
                     c74::max::outlet_list(
-                        outlet,
-                        nullptr,
-                        static_cast<short>(output.size()),
+                        outlet, nullptr, static_cast<short>(output.size()),
                         static_cast<const c74::max::t_atom*>(&output[0]));
                 }
             else {
 
                 if (output.size() > 1)
                     c74::max::outlet_anything(
-                        outlet,
-                        output[0],
+                        outlet, output[0],
                         static_cast<short>(output.size() - 1),
                         static_cast<const c74::max::t_atom*>(&output[1]));
-
                 else
                     c74::max::outlet_anything(outlet, output[0], 0, nullptr);
             }
@@ -78,21 +74,16 @@ namespace mxx {
         friend class max_class_base;
 
         template <typename user_class>
-        friend void wrapper_dsp64_setup(c74::max::t_object* x,
-                                        c74::max::t_object* dspman,
-                                        short* count,
-                                        double srate,
-                                        long vsize,
-                                        long flags,
-                                        c74::max::t_perfroutine64 r);
+        friend void
+        wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
+                            short* count, double srate, long vsize, long flags,
+                            c74::max::t_perfroutine64 r);
 
         template <typename user_class>
         friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
                                              c74::max::t_object* dspman,
-                                             short* count,
-                                             double srate,
-                                             long vsize,
-                                             long flags);
+                                             short* count, double srate,
+                                             long vsize, long flags);
 
       public:
         outlet(const char* msg_description)
@@ -139,22 +130,19 @@ namespace mxx {
         template <>
         void send<mxx::t_atom_span>(t_atom_span&& span)
         {
-            if (MXX_UNLIKELY(!span.size()))
+            if (MXX_UNLIKELY(span.empty()))
                 return;
 
             if (span[0].a_type == c74::max::A_LONG
                 || span[0].a_type == c74::max::A_LONG)
-                c74::max::outlet_list(m_outlet,
-                                      nullptr,
+                c74::max::outlet_list(m_outlet, nullptr,
                                       static_cast<short>(span.size()),
                                       span.data());
             else {
                 if (span.size() > 1)
                     c74::max::outlet_anything(
-                        m_outlet,
-                        span[0].a_w.w_sym,
-                        static_cast<short>(span.size() - 1),
-                        span.data() + 1);
+                        m_outlet, span[0].a_w.w_sym,
+                        static_cast<short>(span.size() - 1), span.data() + 1);
                 else
                     c74::max::outlet_anything(
                         m_outlet, span[0].a_w.w_sym, 0, nullptr);

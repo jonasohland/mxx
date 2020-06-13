@@ -189,6 +189,10 @@ namespace mxx::detail {
 #define MXX_MAX_METHOD(methodname)                                             \
     reinterpret_cast<c74::max::method>(&methodname)
 
+#define MXX_DECLARE_PERFROUTINE(name)                                          \
+    void name(c74::max::t_object*, c74::max::t_object*, double**, long,        \
+              double**, long, long, long, void*);
+
 /* -------------------------------------------------------------------------- */
 /*               MESSAGE HANDLER FUNCTION NAME GENERATORS                     */
 /*                                                                            */
@@ -274,19 +278,17 @@ namespace mxx::detail {
     }
 
 #define MXX_CREATE_LIST_HANDLER_FUNCTION(identifier, classname)                \
-    void MXX_WRAPPER_FUNCTION_LIST(identifier)(c74::max::t_object * obj,       \
-                                               c74::max::t_symbol * s,         \
-                                               long argc,                      \
-                                               c74::max::t_atom* argv)         \
+    void MXX_WRAPPER_FUNCTION_LIST(identifier)(                                \
+        c74::max::t_object * obj, c74::max::t_symbol * s, long argc,           \
+        c74::max::t_atom* argv)                                                \
     {                                                                          \
         mxx::wrapper_handle_list_impl<classname>(obj, s, argc, argv);          \
     }
 
 #define MXX_CREATE_ANY_MSG_HANDLER_FUNCTION(identifier, classname)             \
-    void MXX_WRAPPER_FUNCTION_ANY_MSG(identifier)(c74::max::t_object * obj,    \
-                                                  c74::max::t_symbol * s,      \
-                                                  long argc,                   \
-                                                  c74::max::t_atom* argv)      \
+    void MXX_WRAPPER_FUNCTION_ANY_MSG(identifier)(                             \
+        c74::max::t_object * obj, c74::max::t_symbol * s, long argc,           \
+        c74::max::t_atom* argv)                                                \
     {                                                                          \
         mxx::wrapper_handle_any_msg_impl<classname>(obj, s, argc, argv);       \
     }
@@ -327,64 +329,38 @@ namespace mxx::detail {
 
 #define MXX_CREATE_DSP_PERFORM_FUNCTION(identifier, classname)                 \
     void MXX_WRAPPER_FUNCTION_DSP64_PERFORM(identifier)(                       \
-        c74::max::t_object * x,                                                \
-        c74::max::t_object * dsp64,                                            \
-        double** ins,                                                          \
-        long numins,                                                           \
-        double** outs,                                                         \
-        long numouts,                                                          \
-        long sampleframes,                                                     \
-        long flags,                                                            \
-        void* userparam)                                                       \
+        c74::max::t_object * x, c74::max::t_object * dsp64, double** ins,      \
+        long numins, double** outs, long numouts, long sampleframes,           \
+        long flags, void* userparam)                                           \
     {                                                                          \
-        mxx::wrapper_dsp64_perform_impl<classname>(x,                          \
-                                                   dsp64,                      \
-                                                   ins,                        \
-                                                   numins,                     \
-                                                   outs,                       \
-                                                   numouts,                    \
-                                                   sampleframes,               \
-                                                   flags,                      \
-                                                   userparam);                 \
+        mxx::wrapper_dsp64_perform_impl<classname>(                            \
+            x, dsp64, ins, numins, outs, numouts, sampleframes, flags,         \
+            userparam);                                                        \
     }
 
 #define MXX_CREATE_DSP_METHOD_FUNCTION(identifier, classname)                  \
     void MXX_WRAPPER_FUNCTION_DSP64_METHOD(identifier)(                        \
-        c74::max::t_object * x,                                                \
-        c74::max::t_object * dsp64,                                            \
-        short* count,                                                          \
-        double samplerate,                                                     \
-        long maxvectorsize,                                                    \
-        long flags)                                                            \
+        c74::max::t_object * x, c74::max::t_object * dsp64, short* count,      \
+        double samplerate, long maxvectorsize, long flags)                     \
     {                                                                          \
         mxx::wrapper_dsp64_setup<classname>(                                   \
-            x,                                                                 \
-            dsp64,                                                             \
-            count,                                                             \
-            samplerate,                                                        \
-            maxvectorsize,                                                     \
-            flags,                                                             \
+            x, dsp64, count, samplerate, maxvectorsize, flags,                 \
             MXX_WRAPPER_FUNCTION_DSP64_PERFORM(identifier));                   \
     }
 
 #define MXX_CREATE_DSP_USER_METHOD_FUNCTION(identifier, classname)             \
     void MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(identifier)(                   \
-        c74::max::t_object * x,                                                \
-        c74::max::t_object * dsp64,                                            \
-        short* count,                                                          \
-        double samplerate,                                                     \
-        long maxvectorsize,                                                    \
-        long flags)                                                            \
+        c74::max::t_object * x, c74::max::t_object * dsp64, short* count,      \
+        double samplerate, long maxvectorsize, long flags)                     \
     {                                                                          \
         mxx::wrapper_dsp64_user_setup<classname>(                              \
             x, dsp64, count, samplerate, maxvectorsize, flags);                \
     }
 
 #define MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                \
-    void MXX_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(c74::max::t_object * o, \
-                                                       c74::max::t_symbol * s, \
-                                                       long ac,                \
-                                                       c74::max::t_atom* av)   \
+    void MXX_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(                        \
+        c74::max::t_object * o, c74::max::t_symbol * s, long ac,               \
+        c74::max::t_atom* av)                                                  \
     {                                                                          \
         mxx::wrapper_msg_call<classname>(o, s, ac, av);                        \
     }
@@ -444,8 +420,7 @@ namespace mxx::detail {
 #define MXX_MAXCLASS_DEF_IMPL(ident, class, extname)                           \
                                                                                \
     MXX_USER_CLASS_MAXCLASS_SYMBOL(ident) = mxx::wrapper_class_new<class>(     \
-        MXX_USER_CLASS_MAXCLASS_SYMBOL(ident),                                 \
-        extname,                                                               \
+        MXX_USER_CLASS_MAXCLASS_SYMBOL(ident), extname,                        \
         MXX_MAX_METHOD(MXX_NEW_INSTANCE_FUNCTION_NAME(ident)),                 \
         MXX_MAX_METHOD(MXX_FREE_INSTANCE_FUNCTION_NAME(ident)),                \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_NAMED_METHOD(ident)),              \

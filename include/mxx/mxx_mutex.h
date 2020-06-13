@@ -52,9 +52,8 @@ namespace mxx {
         recursive_mutex()
         {
             c74::max::systhread_mutex_new(
-                &m_mtx,
-                c74::max::e_max_systhread_mutex_flags::
-                    SYSTHREAD_MUTEX_RECURSIVE);
+                &m_mtx, c74::max::e_max_systhread_mutex_flags::
+                            SYSTHREAD_MUTEX_RECURSIVE);
         }
 
         recursive_mutex(recursive_mutex&& other)
@@ -98,7 +97,7 @@ namespace mxx {
 
         ~global_critical_region()
         {
-            /// c74::max::critical_exit(0);
+            // c74::max::critical_exit(0);
         }
     };
 }    // namespace mxx

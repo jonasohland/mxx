@@ -31,8 +31,8 @@ class mxx_test_inletnum: public mxx::max_class<mxx_test_inletnum> {
         send(inletn);
     }
 
-    void
-    handle_any_msg(const mxx::symbol&, const mxx::atom::vector&, long inletn)
+    void handle_any_msg(const mxx::symbol&, const mxx::atom::vector&,
+                        long inletn)
     {
         send(inletn);
     }

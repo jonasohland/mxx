@@ -1,7 +1,6 @@
 #pragma once
 
-inline mxx::message::message(max_class_base* owner,
-                             const symbol& name,
+inline mxx::message::message(max_class_base* owner, const symbol& name,
                              const method& handler)
     : m_name(name)
     , m_type("anything")
@@ -9,20 +8,16 @@ inline mxx::message::message(max_class_base* owner,
     mxx_internal_init(owner, handler);
 }
 
-inline mxx::message::message(max_class_base* owner,
-                             const symbol& name,
-                             const symbol& type,
-                             const method& handler)
+inline mxx::message::message(max_class_base* owner, const symbol& name,
+                             const symbol& type, const method& handler)
     : m_name(name)
     , m_type(type)
 {
     mxx_internal_init(owner, handler);
 }
 
-inline mxx::message::message(max_class_base* owner,
-                             const symbol& name,
-                             const symbol& type,
-                             const std::string& description,
+inline mxx::message::message(max_class_base* owner, const symbol& name,
+                             const symbol& type, const std::string& description,
                              const method& handler)
     : m_name(name)
     , m_type(type)
@@ -37,8 +32,7 @@ inline void mxx::message::mxx_internal_init(max_class_base* owner, method m)
     executor.set_handler(m);
 }
 
-inline void mxx::outlet::mxx_internal_create(max_class_base* obj,
-                                             long index,
+inline void mxx::outlet::mxx_internal_create(max_class_base* obj, long index,
                                              std::size_t total)
 {
     mxx_internal_set_owner(obj->native_handle());
@@ -47,8 +41,7 @@ inline void mxx::outlet::mxx_internal_create(max_class_base* obj,
         owner(), any() ? nullptr : static_cast<const char*>(type())));
 }
 
-inline void mxx::inlet::mxx_internal_create(max_class_base* obj,
-                                            long index,
+inline void mxx::inlet::mxx_internal_create(max_class_base* obj, long index,
                                             std::size_t total)
 {
     mxx_internal_set_owner(obj->native_handle());

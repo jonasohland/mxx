@@ -9,7 +9,9 @@ namespace mxx {
         friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
       public:
-        virtual ~port() {}
+        virtual ~port()
+        {
+        }
 
         c74::max::t_object* owner()
         {
@@ -68,8 +70,8 @@ namespace mxx {
         }
 
       protected:
-        virtual void
-        mxx_internal_create(max_class_base*, long index, std::size_t)
+        virtual void mxx_internal_create(max_class_base*, long index,
+                                         std::size_t)
             = 0;
 
         void mxx_internal_set_owner(c74::max::t_object* owner)

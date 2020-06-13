@@ -11,25 +11,22 @@ namespace mxx {
         template <typename user_class>
         friend void wrapper_dsp64_setup(c74::max::t_object* x,
                                         c74::max::t_object* dspman,
-                                        short* count,
-                                        double srate,
-                                        long vsize,
-                                        long flags,
-                                        c74::max::t_perfroutine64);
+                                        short* count, double srate, long vsize,
+                                        long flags, c74::max::t_perfroutine64);
 
         template <typename user_class>
         friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
                                              c74::max::t_object* dspman,
-                                             short* count,
-                                             double srate,
-                                             long vsize,
-                                             long flags);
+                                             short* count, double srate,
+                                             long vsize, long flags);
 
         template <typename user_class>
         friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
 
       public:
-        inlet() {}
+        inlet()
+        {
+        }
 
         inlet(symbol d)
         {

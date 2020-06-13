@@ -13,8 +13,8 @@ class mxx_test_basicmc: public mxx::max_class<mxx_test_basicmc> {
         outlet->signal_count(inlet->signal_count());
     }
 
-    void
-    process(double** ins, double** outs, long inchs, long outchs, long vect)
+    void process(double** ins, double** outs, long inchs, long outchs,
+                 long vect)
     {
         if (inchs != outchs)
             return;

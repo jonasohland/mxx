@@ -13,35 +13,20 @@ namespace mxx {
         friend void wrapper_handle_int_impl(c74::max::t_object* obj, long n);
 
         template <typename user_class>
-        friend void* wrapper_object_new(c74::max::t_class*,
-                                        c74::max::t_symbol*,
-                                        long,
-                                        c74::max::t_atom*);
+        friend void* wrapper_object_new(c74::max::t_class*, c74::max::t_symbol*,
+                                        long, c74::max::t_atom*);
 
         template <typename user_class>
         friend void wrapper_dsp64_setup(c74::max::t_object* x,
                                         c74::max::t_object* dspman,
-                                        short* count,
-                                        double srate,
-                                        long vsize,
-                                        long flags,
-                                        c74::max::t_perfroutine64);
+                                        short* count, double srate, long vsize,
+                                        long flags, c74::max::t_perfroutine64);
 
         template <typename user_class>
         friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
                                              c74::max::t_object* dspman,
-                                             short* count,
-                                             double srate,
-                                             long vsize,
-                                             long flags);
-
-        template <typename user_class>
-        friend void wrapper_dsp64_user_setup(c74::max::t_object* x,
-                                             c74::max::t_object* dspman,
-                                             short* count,
-                                             double srate,
-                                             long vsize,
-                                             long flags);
+                                             short* count, double srate,
+                                             long vsize, long flags);
 
         template <typename user_class>
         friend long wrapper_inputchanged_impl(c74::max::t_object*, long, long);
@@ -49,7 +34,9 @@ namespace mxx {
         template <typename user_class>
         friend long wrapper_multichanneloutputs_impl(c74::max::t_object*, long);
 
-        virtual ~max_class_base() {}
+        virtual ~max_class_base()
+        {
+        }
 
         std::unordered_map<std::string, message*>& messages()
         {
@@ -97,9 +84,7 @@ namespace mxx {
         std::size_t input_flows() const
         {
             return std::accumulate(
-                m_inlets.begin(),
-                m_inlets.end(),
-                0,
+                m_inlets.begin(), m_inlets.end(), 0,
                 [](int count, const auto& inlet) {
                     return count
                            + (inlet->type() == sym::signal
@@ -110,9 +95,7 @@ namespace mxx {
         std::size_t output_flows() const
         {
             return std::accumulate(
-                m_outlets.begin(),
-                m_outlets.end(),
-                0,
+                m_outlets.begin(), m_outlets.end(), 0,
                 [](int count, const auto& outlet) {
                     return count
                            + (outlet->type() == sym::signal
@@ -295,7 +278,9 @@ namespace mxx {
             c74::max::object_warn(native_handle(), msg, args...);
         }
 
-        virtual void prepare(double srate, long max_vsize) {}
+        virtual void prepare(double srate, long max_vsize)
+        {
+        }
 
         void clear_mspflags() noexcept
         {
@@ -371,7 +356,9 @@ namespace mxx {
     template <typename user_class>
     class max_class: public max_class_base {
       public:
-        virtual ~max_class() {}
+        virtual ~max_class()
+        {
+        }
 
       private:
     };

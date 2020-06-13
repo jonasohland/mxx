@@ -107,31 +107,19 @@ namespace mxx {
 
     // all there args should be replaced with a struct
     template <typename user_class>
-    c74::max::t_class* wrapper_class_new(c74::max::t_class* class_ptr,
-                                         const char* external_name,
-                                         c74::max::method new_instance,
-                                         c74::max::method free_instance,
-                                         c74::max::method named_meth_wrapper,
-                                         c74::max::method inth,
-                                         c74::max::method bangh,
-                                         c74::max::method floath,
-                                         c74::max::method listh,
-                                         c74::max::method anyh,
-                                         c74::max::method assisth,
-                                         c74::max::method inletinfoh,
-                                         c74::max::method dblclickh,
-                                         c74::max::method inputchangedh,
-                                         c74::max::method multichanneloutputsh,
-                                         c74::max::method dsp64h,
-                                         c74::max::method dsp64h_user)
+    c74::max::t_class* wrapper_class_new(
+        c74::max::t_class* class_ptr, const char* external_name,
+        c74::max::method new_instance, c74::max::method free_instance,
+        c74::max::method named_meth_wrapper, c74::max::method inth,
+        c74::max::method bangh, c74::max::method floath, c74::max::method listh,
+        c74::max::method anyh, c74::max::method assisth,
+        c74::max::method inletinfoh, c74::max::method dblclickh,
+        c74::max::method inputchangedh, c74::max::method multichanneloutputsh,
+        c74::max::method dsp64h, c74::max::method dsp64h_user)
     {
-        class_ptr = c74::max::class_new(external_name,
-                                        new_instance,
-                                        free_instance,
-                                        sizeof(object_wrapper<user_class>),
-                                        0L,
-                                        c74::max::A_GIMME,
-                                        0);
+        class_ptr = c74::max::class_new(
+            external_name, new_instance, free_instance,
+            sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
 
         if constexpr (type_traits::is_dsp_class<user_class>())
             c74::max::class_dspinit(class_ptr);
@@ -172,11 +160,8 @@ namespace mxx {
         c74::max::class_addmethod(
             class_ptr, inletinfoh, "inletinfo", c74::max::A_CANT, 0);
 
-        c74::max::class_addmethod(class_ptr,
-                                  multichanneloutputsh,
-                                  "multichanneloutputs",
-                                  c74::max::A_CANT,
-                                  0);
+        c74::max::class_addmethod(class_ptr, multichanneloutputsh,
+                                  "multichanneloutputs", c74::max::A_CANT, 0);
 
         c74::max::class_addmethod(
             class_ptr, inputchangedh, "inputchanged", c74::max::A_CANT, 0);
@@ -188,11 +173,8 @@ namespace mxx {
 
             auto [name, handler] = msg;
 
-            c74::max::class_addmethod(class_ptr,
-                                      named_meth_wrapper,
-                                      name.c_str(),
-                                      handler->type(),
-                                      0);
+            c74::max::class_addmethod(class_ptr, named_meth_wrapper,
+                                      name.c_str(), handler->type(), 0);
         }
 
         return class_ptr;
@@ -200,8 +182,7 @@ namespace mxx {
 
     template <typename user_class>
     void* wrapper_object_new(c74::max::t_class* class_ptr,
-                             c74::max::t_symbol* name,
-                             long ac,
+                             c74::max::t_symbol* name, long ac,
                              c74::max::t_atom* av)
     {
         // create new maxobject instance
@@ -250,8 +231,7 @@ namespace mxx {
 
     template <typename user_class>
     MXX_ALWAYS_INLINE void wrapper_msg_call(c74::max::t_object* o,
-                                            c74::max::t_symbol* s,
-                                            long ac,
+                                            c74::max::t_symbol* s, long ac,
                                             c74::max::t_atom* av)
     {
         auto args = t_atom_span(av, ac);

@@ -14,20 +14,14 @@ namespace mxx {
     class message {
 
       public:
-        message(max_class_base* owner,
-                const symbol& name,
+        message(max_class_base* owner, const symbol& name,
                 const method& handler);
 
-        message(max_class_base* owner,
-                const symbol& name,
-                const symbol& type,
+        message(max_class_base* owner, const symbol& name, const symbol& type,
                 const method& handler);
 
-        message(max_class_base* owner,
-                const symbol& name,
-                const symbol& type,
-                const std::string& description,
-                const method& hander);
+        message(max_class_base* owner, const symbol& name, const symbol& type,
+                const std::string& description, const method& hander);
 
         void call(std::shared_ptr<atom::vector> args, long inlet)
         {
