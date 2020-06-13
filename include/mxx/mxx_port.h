@@ -1,7 +1,7 @@
 #pragma once
 
 namespace mxx {
-    class port {
+    class port: public std::enable_shared_from_this<port> {
 
         friend class max_class_base;
 

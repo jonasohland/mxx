@@ -67,7 +67,7 @@ void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins,
 {
     const double* in1 = ins[0];
     const double* in2 = ins[1];
-    double* out = *outs;
+    double* out       = *outs;
 
     for (int i = 0; i < frames; ++i)
         out[i] = in1[i] * in2[i];
@@ -78,7 +78,7 @@ void perform_scalar(c74::max::t_object* x, c74::max::t_object*, double** ins,
                     void*)
 {
     const double* in1 = ins[0];
-    double* out = *outs;
+    double* out       = *outs;
 
     // complete type needed here
     auto* obj = mxx::find_self<mxx_test_userdsp64>(x);

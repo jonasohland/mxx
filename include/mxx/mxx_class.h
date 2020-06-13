@@ -219,6 +219,26 @@ namespace mxx {
         {
             return m_inlets;
         }
+        
+        inlet_ptr inlets(std::size_t idx)
+        {
+            return m_inlets.at(idx);
+        }
+        
+        const inlet_ptr inlets(std::size_t idx) const
+        {
+            return m_inlets.at(idx);
+        }
+        
+        outlet_ptr outlets(std::size_t idx)
+        {
+            return m_outlets.at(idx);
+        }
+        
+        const outlet_ptr outlets(std::size_t idx) const
+        {
+            return m_outlets.at(idx);
+        }
 
         const std::vector<outlet_ptr>& outlets() const noexcept
         {

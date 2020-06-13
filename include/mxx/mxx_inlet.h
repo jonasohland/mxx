@@ -45,9 +45,10 @@ namespace mxx {
                 c74::max::object_free(m_inlet_proxy);
         }
 
-        void hot(bool is_hot) noexcept
+        std::shared_ptr<inlet> hot(bool is_hot) noexcept
         {
             m_hot_inlet = is_hot;
+            return std::dynamic_pointer_cast<inlet>(this->shared_from_this());
         }
 
         bool hot() const noexcept
