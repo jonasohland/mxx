@@ -2,7 +2,7 @@
     This essentially implements the behaviour of the *~ object
     and shows how to provide your own perform-routine to the msp
     compiler.
- 
+
     The signal to the left inlet is multiplied either with the signal
     from the second inlet, or with a scalar value if nothing is connected
     to the second inlet.
@@ -10,12 +10,9 @@
 
 #include <mxx/mxx.h>
 
-class mxx_test_userdsp64;
-
-// clang-format off
+// forward declare perform routines, so we can use them in our setup_dsp method
 MXX_DECLARE_PERFROUTINE(perform_scalar);
 MXX_DECLARE_PERFROUTINE(perform_signal);
-// clang-format on
 
 class mxx_test_userdsp64: public mxx::max_class<mxx_test_userdsp64> {
   public:
@@ -50,10 +47,10 @@ class mxx_test_userdsp64: public mxx::max_class<mxx_test_userdsp64> {
             // uses a scalar value
             return &perform_scalar;
     }
-    
+
     void handle_float(double sc, long inlet)
     {
-        if(inlet)
+        if (inlet)
             scalar = sc;
     }
 
@@ -61,6 +58,9 @@ class mxx_test_userdsp64: public mxx::max_class<mxx_test_userdsp64> {
     mxx::inlet_ptr signal_in;
 };
 
+
+// Can implement perform routines now because mxx_test_userdsp64 is a complete
+// type at this point.
 void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins,
                     long numins, double** outs, long numouts, long frames, long,
                     void*)
@@ -69,19 +69,23 @@ void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins,
     double* in2 = ins[1];
     double* out = *outs;
 
-    for (int i = 0; i < frames; ++i) out[i] = in1[i] * in2[i];
+    for (int i = 0; i < frames; ++i)
+        out[i] = in1[i] * in2[i];
 }
 
-void perform_scalar(c74::max::t_object* x, c74::max::t_object* dsp64,
-                    double** ins, long numins, double** outs, long numouts,
-                    long frames, long, void*)
+void perform_scalar(c74::max::t_object* x, c74::max::t_object*, double** ins,
+                    long numins, double** outs, long numouts, long frames, long,
+                    void*)
 {
     double* in1 = ins[0];
     double* in2 = ins[1];
     double* out = *outs;
-    auto* obj   = mxx::find_self<mxx_test_userdsp64>(x);
 
-    for (int i = 0; i < frames; ++i) out[i] = in1[i] * obj->scalar;
+    // complete type needed here
+    auto* obj = mxx::find_self<mxx_test_userdsp64>(x);
+
+    for (int i = 0; i < frames; ++i)
+        out[i] = in1[i] * obj->scalar;
 }
 
 MXX_EXTERNAL(mxx_test_userdsp64, mxx_test_userdsp64, "mxx_test_userdsp64");

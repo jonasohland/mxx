@@ -29,7 +29,8 @@ class mxx_test_con_count: public mxx::max_class<mxx_test_con_count> {
             return;
 
         for (int chi = 0; chi < inchs; ++chi) {
-            for (int vi = 0; vi < vect; ++vi) outs[chi][vi] = ins[chi][vi];
+            for (int vi = 0; vi < vect; ++vi)
+                outs[chi][vi] = ins[chi][vi];
         }
     }
 
