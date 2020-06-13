@@ -255,6 +255,8 @@ namespace mxx {
                 mspflag(c74::max::Z_MC_INLETS);
                 mspflag(c74::max::Z_NO_INPLACE);
             }
+            
+            m_contructed = true;
         }
 
         template <typename... Args>
@@ -295,6 +297,11 @@ namespace mxx {
         short mspflags() const noexcept
         {
             return m_mspflags;
+        }
+        
+        bool constructed() const noexcept
+        {
+            return m_contructed;
         }
 
       protected:
@@ -346,6 +353,7 @@ namespace mxx {
             return ch;
         }
 
+        bool m_contructed                      = false;
         short m_mspflags                       = 0;
         c74::max::t_object* t_obj_instance_ptr = nullptr;
         std::unordered_map<std::string, message*> m_messages;
