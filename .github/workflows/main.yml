@@ -34,7 +34,7 @@ jobs:
 
     # Runs a set of commands using the runners shell
     - name: Configure with cmake
-      run: cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
+      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
     
     - name: Build all externals
-      run: cmake --build .
+      run: cmake --build . --config $BUILD_TYPE
