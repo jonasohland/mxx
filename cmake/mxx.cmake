@@ -51,10 +51,7 @@ macro(_mxx_setup_macos_bundle)
         XCODE_ATTRIBUTE_WRAPPER_EXTENSION   "mxo"
         MACOSX_BUNDLE_BUNDLE_VERSION        ${_mxx_VERSION}
         MACOSX_BUNDLE_INFO_PLIST            ${_mxx_macos_bundle_plist_file}
-        LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_DEBUG           ${_mxx_external_name}
-        LIBRARY_OUTPUT_NAME_RELEASE         ${_mxx_external_name}
+
     )
 
 endmacro(_mxx_setup_macos_bundle)
@@ -64,10 +61,6 @@ macro(_mxx_setup_win_dll)
     set_target_properties(
         ${_mxx_target_name}                 PROPERTIES
         SUFFIX                              ".mxe64"
-        LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_DEBUG           ${_mxx_external_name}
-        LIBRARY_OUTPUT_NAME_RELEASE         ${_mxx_external_name}
     )
 
     target_compile_definitions(
@@ -79,8 +72,6 @@ macro(_mxx_setup_win_dll)
     )
     
 endmacro(_mxx_setup_win_dll)
-
-
 
 function(mxx_setup_external _mxx_target_name)
 
@@ -120,5 +111,19 @@ function(mxx_setup_external _mxx_target_name)
     else()
         _mxx_setup_win_dll()
     endif()
+
+    set_target_properties(
+        ${_mxx_target_name}                 PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY_DEBUG      ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE    ${_mxx_EXTERNAL_OUTPUT_DIR}
+        LIBRARY_OUTPUT_NAME_DEBUG           ${_mxx_external_name}
+        LIBRARY_OUTPUT_NAME_RELEASE         ${_mxx_external_name}
+    )
+
+    target_compile_definitions(
+        ${_mxx_target_name}                 
+        PRIVATE
+        MXX_UNIVERSAL_HELPER_NAME=__mxx_${_mxx_target_name}_helper
+    )
     
 endfunction()

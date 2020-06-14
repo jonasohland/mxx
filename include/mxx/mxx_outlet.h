@@ -190,7 +190,7 @@ namespace mxx {
 
         void bang()
         {
-            send(sym::bang);
+            c74::max::outlet_bang(m_outlet);
         }
 
         c74::max::t_outlet* native_handle() const

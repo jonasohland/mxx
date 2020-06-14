@@ -48,6 +48,9 @@
 
 #endif
 
+#define MXX_STRING_LITERAL_IMPL(x) #x
+#define MXX_STRING_LITERAL(x)      MXX_STRING_LITERAL_IMPL(x)
+
 #include <cstring>
 #include <functional>
 #include <algorithm>

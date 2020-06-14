@@ -452,14 +452,17 @@ namespace mxx::detail {
     MXX_EXT_HANDLER_FUNCTIONS(identifier, class)                               \
     MXX_CTTI_DEBUG_SECTION(class)
 
+#define MXX_UNIVERSAL_HELPER_STR MXX_STRING_LITERAL(MXX_UNIVERSAL_HELPER_NAME)
+
 #define MXX_EXTERNAL(class, identifier, extname)                               \
-    MXX_ADD_EXTERNAL(mxx::detail::mxx_universal_helper, mxx_universal_helper,  \
-                     "__mxx_universal_helper")                                 \
+    MXX_ADD_EXTERNAL(                                                          \
+        mxx::detail::mxx_universal_helper, mxx_universal_helper,               \
+        MXX_FORCE_EXPAND(MXX_STRING_LITERAL(MXX_UNIVERSAL_HELPER_NAME)))       \
     MXX_ADD_EXTERNAL(class, identifier, extname)                               \
     void mxx_external_main(void*)                                              \
     {                                                                          \
         MXX_MAXCLASS_DEF_IMPL(mxx_universal_helper,                            \
                               mxx::detail::mxx_universal_helper,               \
-                              "__mxx_universal_helper")                        \
+                              MXX_UNIVERSAL_HELPER_STR)                        \
         MXX_MAXCLASS_DEF_IMPL(identifier, class, extname)                      \
     }
