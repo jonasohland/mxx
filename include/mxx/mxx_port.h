@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 
 namespace mxx {
     class port: public std::enable_shared_from_this<port> {
