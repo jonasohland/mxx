@@ -10,7 +10,7 @@ class mxx_test_inth: public mxx::max_class<mxx_test_inth> {
 
     void handle_int(long value, long inlet)
     {
-        outlet->send(value);
+        outlet->send_one(value);
     }
 
     mxx::outlet_ptr outlet;

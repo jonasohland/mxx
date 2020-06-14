@@ -39,6 +39,8 @@ inline void mxx::outlet::mxx_internal_create(max_class_base* obj, long index,
 
     m_outlet = static_cast<c74::max::t_outlet*>(c74::max::outlet_new(
         owner(), any() ? nullptr : static_cast<const char*>(type())));
+
+    m_valid.store(true);
 }
 
 inline void mxx::inlet::mxx_internal_create(max_class_base* obj, long index,
@@ -54,4 +56,6 @@ inline void mxx::inlet::mxx_internal_create(max_class_base* obj, long index,
         m_inlet_proxy = c74::max::proxy_new(
             owner(), static_cast<long>(total - index) - 1, nullptr);
     }
+
+    m_valid.store(true);
 }

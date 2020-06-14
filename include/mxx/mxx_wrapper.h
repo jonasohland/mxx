@@ -129,8 +129,11 @@ namespace mxx {
 
         if constexpr (type_traits::has_int_handler<user_class>())
             c74::max::class_addmethod(
-                class_ptr, inth, "int", c74::max::A_LONG, 0);
-
+                                      class_ptr, inth, "int", c74::max::A_LONG, 0);
+        else if constexpr (type_traits::has_mxx_int_handler<user_class>())
+            c74::max::class_addmethod(
+                                      class_ptr, inth, "int", c74::max::A_LONG, 0);
+        
         if constexpr (type_traits::has_float_handler<user_class>())
             c74::max::class_addmethod(
                 class_ptr, floath, "float", c74::max::A_FLOAT, 0);

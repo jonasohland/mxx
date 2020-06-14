@@ -108,6 +108,18 @@ namespace mxx {
         {
             return std::string(m_sym->s_name);
         }
+        
+        c74::max::t_object* thing() const
+        {
+            return m_sym->s_thing;
+        }
+        
+        c74::max::t_object* thing(c74::max::t_object* newthing)
+        {
+            auto* oldthing = m_sym->s_thing;
+            m_sym->s_thing = newthing;
+            return oldthing;
+        }
 
         /**
           Comparison operator. This will compare the underlying `t_symbol*`.
@@ -157,6 +169,13 @@ namespace mxx {
         static inline symbol make_unique() noexcept
         {
             return c74::max::symbol_unique();
+        }
+        
+        static inline symbol make_unique(c74::max::t_object* thing) noexcept
+        {
+            auto* s = c74::max::symbol_unique();
+            s->s_thing = thing;
+            return s;
         }
 
       private:

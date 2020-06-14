@@ -7,6 +7,9 @@ namespace mxx::type_traits {
     MXX_CREATE_ADVANCED_MEMBER_CHECK(has_int_handler, handle_int, long(),
                                      long());
 
+    MXX_CREATE_ADVANCED_MEMBER_CHECK(has_mxx_int_handler, mxx_handle_int,
+                                     long(), long());
+
     MXX_CREATE_ADVANCED_MEMBER_CHECK(has_float_handler, handle_float, double(),
                                      long());
 

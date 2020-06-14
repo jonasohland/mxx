@@ -219,22 +219,22 @@ namespace mxx {
         {
             return m_inlets;
         }
-        
+
         inlet_ptr inlets(std::size_t idx)
         {
             return m_inlets.at(idx);
         }
-        
+
         const inlet_ptr inlets(std::size_t idx) const
         {
             return m_inlets.at(idx);
         }
-        
+
         outlet_ptr outlets(std::size_t idx)
         {
             return m_outlets.at(idx);
         }
-        
+
         const outlet_ptr outlets(std::size_t idx) const
         {
             return m_outlets.at(idx);
@@ -275,7 +275,7 @@ namespace mxx {
                 mspflag(c74::max::Z_MC_INLETS);
                 mspflag(c74::max::Z_NO_INPLACE);
             }
-            
+
             m_contructed = true;
         }
 
@@ -318,7 +318,7 @@ namespace mxx {
         {
             return m_mspflags;
         }
-        
+
         bool constructed() const noexcept
         {
             return m_contructed;

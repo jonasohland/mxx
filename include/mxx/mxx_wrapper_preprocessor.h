@@ -182,6 +182,7 @@ namespace mxx::detail {
 
 #endif
 
+
 /* -------------------------------------------------------------------------- */
 /*                         NAME DECORATORS AND STUFF                          */
 /* -------------------------------------------------------------------------- */
@@ -444,13 +445,21 @@ namespace mxx::detail {
 //                            THE MAGIC WRAPPER
 /* -------------------------------------------------------------------------- */
 
-#define MXX_EXTERNAL(class, identifier, extname)                               \
+#define MXX_ADD_EXTERNAL(class, identifier, extname)                           \
     MXX_USER_CLASS_MAXCLASS_DECL(identifier)                                   \
     MXX_NEW_INSTANCE_FUNCTION(identifier, class)                               \
     MXX_FREE_INSTANCE_FUNCTION(identifier, class)                              \
     MXX_EXT_HANDLER_FUNCTIONS(identifier, class)                               \
-    MXX_CTTI_DEBUG_SECTION(class)                                              \
+    MXX_CTTI_DEBUG_SECTION(class)
+
+#define MXX_EXTERNAL(class, identifier, extname)                               \
+    MXX_ADD_EXTERNAL(mxx::detail::mxx_universal_helper, mxx_universal_helper,  \
+                     "__mxx_universal_helper")                                 \
+    MXX_ADD_EXTERNAL(class, identifier, extname)                               \
     void mxx_external_main(void*)                                              \
     {                                                                          \
+        MXX_MAXCLASS_DEF_IMPL(mxx_universal_helper,                            \
+                              mxx::detail::mxx_universal_helper,               \
+                              "__mxx_universal_helper")                        \
         MXX_MAXCLASS_DEF_IMPL(identifier, class, extname)                      \
     }

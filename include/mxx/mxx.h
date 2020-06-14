@@ -118,5 +118,6 @@ namespace mxx {
 #include <mxx/mxx_inlet_outlet_impl.h>
 #include <mxx/mxx_wrapper.h>
 #include <mxx/mxx_wrapper_functions.h>
+#include <mxx/mxx_universal_helper.h>
 
 // clang-format on

@@ -30,6 +30,9 @@ namespace mxx {
         if constexpr (type_traits::has_int_handler<user_class>())
             get_wrapper<user_class>(obj)->object.handle_int(
                 n, c74::max::proxy_getinlet(obj));
+        else if constexpr (type_traits::has_mxx_int_handler<user_class>())
+            find_self<user_class>(obj)->mxx_handle_int(
+                n, c74::max::proxy_getinlet(obj));
 
 #ifdef MXX_REQUIRE_INT_HANDLER
         static_assert(mxx::type_traits::has_int_handler<user_class>(),

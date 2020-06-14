@@ -69,6 +69,11 @@ namespace mxx {
             return m_type == any || m_type == anything;
         }
 
+        [[nodiscard]] bool valid() const
+        {
+            return m_valid.load();
+        }
+
       protected:
         virtual void mxx_internal_create(max_class_base*, long index,
                                          std::size_t)
@@ -80,6 +85,7 @@ namespace mxx {
         }
 
         c74::max::t_object* m_owner;
+        std::atomic_bool m_valid = false;
 
       private:
         bool mxx_internal_sigcount_changed()
@@ -87,6 +93,11 @@ namespace mxx {
             bool s         = m_sigc_changed;
             m_sigc_changed = false;
             return s;
+        }
+
+        void mxx_invalidate()
+        {
+            m_valid.store(false);
         }
 
         bool m_sigc_changed = false;

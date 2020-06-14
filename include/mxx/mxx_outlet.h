@@ -5,9 +5,17 @@ namespace mxx {
 
     namespace detail {
 
+        template <typename>
+        struct is_std_vector: std::false_type {
+        };
+
+        template <typename T, typename A>
+        struct is_std_vector<std::vector<T, A>>: std::true_type {
+        };
+
         template <typename OutputType>
         MXX_ALWAYS_INLINE void outlet_send_impl(c74::max::t_outlet* outlet,
-                                                const OutputType& output)
+                                                OutputType&& output)
         {
             if (output[0].type() == atom::types::LONG
                 || output[0].type() == atom::types::FLOAT)
@@ -37,36 +45,35 @@ namespace mxx {
             }
         }
 
-        template <>
-        MXX_ALWAYS_INLINE void outlet_send_impl<c74::max::t_atom_long>(
-            c74::max::t_outlet* maxoutlet, const c74::max::t_atom_long& value)
-        {
-            c74::max::outlet_int(maxoutlet, value);
-        }
-
-        template <>
-        MXX_ALWAYS_INLINE void
-        outlet_send_impl<double>(c74::max::t_outlet* maxoutlet,
-                                 const double& value)
-        {
-            c74::max::outlet_float(maxoutlet, value);
-        }
-
         template <typename OutputType>
         MXX_ALWAYS_INLINE void outlet_output_accm(atom::vector& output,
-                                                  const OutputType& noutput)
+                                                  OutputType&& noutput)
         {
-            output.emplace_back(noutput);
+            if constexpr (is_std_vector<OutputType>::value)
+                std::copy(
+                    noutput.begin(), noutput.end(), std::back_inserter(output));
+            else
+                output.emplace_back(noutput);
         }
 
         template <>
         MXX_ALWAYS_INLINE void
-        outlet_output_accm<std::vector<atom>>(atom::vector& output,
-                                              const std::vector<atom>& noutput)
+        outlet_output_accm<atom::vector>(atom::vector& output,
+                                         atom::vector&& noutput)
         {
             std::copy(
                 noutput.begin(), noutput.end(), std::back_inserter(output));
         }
+
+        template <>
+        MXX_ALWAYS_INLINE void
+        outlet_output_accm<atom::span>(atom::vector& output,
+                                       atom::span&& noutput)
+        {
+            std::copy(
+                noutput.begin(), noutput.end(), std::back_inserter(output));
+        }
+
     }    // namespace detail
 
     class outlet: public port {
@@ -108,22 +115,17 @@ namespace mxx {
                 c74::max::outlet_delete(m_outlet);
         }
 
-        template <typename T>
-        void send_typed(T&& value)
-        {
-        }
-
         template <typename... Args, typename Arg>
         void send(Arg&& arg, Args... args)
         {
-            append_to_output(arg);
-            send(args...);
+            append_to_output(std::forward<Arg>(arg));
+            send(std::forward<Args>(args)...);
         }
 
         template <typename Arg>
         void send(Arg&& arg)
         {
-            append_to_output(arg);
+            append_to_output(std::forward<Arg>(arg));
             send_buffer();
         }
 
@@ -172,6 +174,20 @@ namespace mxx {
             send(static_cast<c74::max::t_atom*>(&atom));
         }
 
+        template <typename T>
+        void send_one(const T& value)
+        {
+            if constexpr (std::is_integral_v<T>)
+                c74::max::outlet_int(m_outlet, value);
+            else if constexpr (std::is_floating_point_v<T>)
+                c74::max::outlet_float(m_outlet, value);
+            else if constexpr (std::is_convertible_v<T, symbol>)
+                c74::max::outlet_anything(m_outlet, symbol(value), 0, NULL);
+            else
+                detail::outlet_send_impl(m_outlet, value);
+        }
+
+
         void bang()
         {
             send(sym::bang);
@@ -184,9 +200,9 @@ namespace mxx {
 
       private:
         template <typename Arg>
-        void append_to_output(const Arg& arg)
+        void append_to_output(Arg&& arg)
         {
-            detail::outlet_output_accm(m_buffer, arg);
+            detail::outlet_output_accm(m_buffer, std::forward<Arg>(arg));
         }
 
         void send_buffer()
