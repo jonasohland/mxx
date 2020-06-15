@@ -50,6 +50,7 @@
 
 #define MXX_STRING_LITERAL_IMPL(x) #x
 #define MXX_STRING_LITERAL(x)      MXX_STRING_LITERAL_IMPL(x)
+#define MXX_UNIVERSAL_HELPER       MXX_STRING_LITERAL(MXX_UNIVERSAL_HELPER_NAME)
 
 #include <cstring>
 #include <functional>
@@ -107,6 +108,7 @@ namespace mxx {
     };
 }
 
+#include <mxx/mxx_numeric.h>
 #include <mxx/mxx_wrapper_preprocessor.h>
 #include <mxx/mxx_type_traits.h>
 #include <mxx/mxx_mutex.h>
@@ -122,5 +124,6 @@ namespace mxx {
 #include <mxx/mxx_wrapper.h>
 #include <mxx/mxx_wrapper_functions.h>
 #include <mxx/mxx_universal_helper.h>
+#include <mxx/mxx_texteditor.h>
 
 // clang-format on

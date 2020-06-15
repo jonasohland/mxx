@@ -23,7 +23,7 @@ macro(_mxx_setup_macos_bundle)
     endif()
 
     set(_mxx_macos_bundle_plist_file ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
-        
+
     if(${_mxx_EXCLUDE_FROM_COLLECTIVES})
         set(EXCLUDE_FROM_COLLECTIVES yes)
     else()
@@ -45,7 +45,7 @@ macro(_mxx_setup_macos_bundle)
     configure_file(${mxx_info_plist_template} ${_mxx_macos_bundle_plist_file} @ONLY)
 
     set_target_properties(
-        ${_mxx_target_name}                 PROPERTIES 
+        ${_mxx_target_name}                 PROPERTIES
         BUNDLE                              True
         BUNDLE_EXTENSION                    "mxo"
         XCODE_ATTRIBUTE_WRAPPER_EXTENSION   "mxo"
@@ -64,13 +64,13 @@ macro(_mxx_setup_win_dll)
     )
 
     target_compile_definitions(
-        ${_mxx_target_name}                 
+        ${_mxx_target_name}
         PUBLIC
         MAXAPI_USE_MSCRT
         WIN_VERSION
         _USE_MATH_DEFINES
     )
-    
+
 endmacro(_mxx_setup_win_dll)
 
 function(mxx_setup_external _mxx_target_name)
@@ -121,9 +121,15 @@ function(mxx_setup_external _mxx_target_name)
     )
 
     target_compile_definitions(
-        ${_mxx_target_name}                 
+        ${_mxx_target_name}
         PRIVATE
         MXX_UNIVERSAL_HELPER_NAME=__mxx_${_mxx_target_name}_helper
     )
-    
+    if(APPLE)
+        target_compile_options(
+            ${_mxx_target_name}
+            PRIVATE
+            -Wall -Wextra -pedantic)
+    endif()
+
 endfunction()

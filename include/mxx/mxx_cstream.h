@@ -35,7 +35,7 @@ namespace mxx {
 
         template <>
         console_stream<stream_type>&
-        operator<<<detail::endl_type>(const detail::endl_type& end)
+        operator<<<detail::endl_type>(const detail::endl_type&)
         {
             if constexpr (std::is_same<stream_type, console::normal>())
                 c74::max::object_post(m_owner, m_buffer.str().c_str());

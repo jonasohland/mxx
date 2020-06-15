@@ -452,7 +452,6 @@ namespace mxx::detail {
     MXX_EXT_HANDLER_FUNCTIONS(identifier, class)                               \
     MXX_CTTI_DEBUG_SECTION(class)
 
-#define MXX_UNIVERSAL_HELPER_STR MXX_STRING_LITERAL(MXX_UNIVERSAL_HELPER_NAME)
 
 #define MXX_EXTERNAL(class, identifier, extname)                               \
     MXX_ADD_EXTERNAL(                                                          \
@@ -463,6 +462,6 @@ namespace mxx::detail {
     {                                                                          \
         MXX_MAXCLASS_DEF_IMPL(mxx_universal_helper,                            \
                               mxx::detail::mxx_universal_helper,               \
-                              MXX_UNIVERSAL_HELPER_STR)                        \
+                              MXX_UNIVERSAL_HELPER)                            \
         MXX_MAXCLASS_DEF_IMPL(identifier, class, extname)                      \
     }

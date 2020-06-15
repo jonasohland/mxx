@@ -3,7 +3,7 @@
 namespace mxx::detail {
     class mxx_universal_helper: public mxx::max_class<mxx_universal_helper> {
       public:
-        void construct(const atom::vector& args)
+        void construct(const atom::vector&)
         {
             m_mysym = symbol::make_unique(native_handle());
         }
@@ -11,6 +11,11 @@ namespace mxx::detail {
         void mxx_handle_int(long val, long)
         {
             m_last_int = val;
+        }
+
+        void handle_any_msg(const symbol& msg, const atom::vector&, long)
+        {
+            post(msg);
         }
 
         bool proxy_call(symbol target, symbol methname)
@@ -21,7 +26,7 @@ namespace mxx::detail {
             c74::max::object_method(target.thing(), methname, m_mysym);
             return true;
         }
-        
+
         bool proxy_call(c74::max::t_object* target, symbol methname)
         {
             c74::max::object_method(target, methname, m_mysym);
@@ -60,34 +65,55 @@ namespace mxx::detail {
         c74::max::object_free(obj);
     }
 
+    struct maxobj_deleter {
+        void operator()(c74::max::t_object* x)
+        {
+            c74::max::object_free(x);
+        }
+    };
+
+    template <typename user_class>
+    struct mxxobject_deleter {
+        void operator()(user_class* x)
+        {
+            c74::max::object_free(x->native_handle());
+        }
+    };
+
 }    // namespace mxx::detail
 namespace mxx {
 
+    using unique_t_object
+        = std::unique_ptr<c74::max::t_object, detail::maxobj_deleter>;
+
     template <typename user_class>
-    std::unique_ptr<user_class, decltype(&detail::mxxobj_free<user_class>)>
-    mxxobj_new(symbol nspace, symbol classn)
+    using unique_mxxobj
+        = std::unique_ptr<user_class, detail::mxxobject_deleter<user_class>>;
+
+
+    template <typename user_class, typename... Args>
+    std::unique_ptr<user_class, detail::mxxobject_deleter<user_class>>
+    mxxobj_new(symbol nspace, symbol classn, Args&&... args)
     {
-        auto* obj = c74::max::object_new(nspace, classn);
-
-        if (!obj)
-            throw std::runtime_error("Object creation failed");
-
-        return std::unique_ptr<user_class,
-                               decltype(&detail::mxxobj_free<user_class>)>(
-            find_self<user_class>(obj), detail::mxxobj_free);
+        if (auto* obj
+            = c74::max::object_new(nspace, classn, std::forward<Args>(args)...))
+            return std::unique_ptr<user_class,
+                                   detail::mxxobject_deleter<user_class>>(
+                find_self<user_class>(obj));
+        else
+            throw std::runtime_error(classn.str().append(" creation failed"));
     }
 
-    std::unique_ptr<c74::max::t_object, decltype(&detail::maxobj_free)>
-    maxobj_new(symbol nspace, symbol classn)
+    template <typename... Args>
+    std::unique_ptr<c74::max::t_object, detail::maxobj_deleter>
+    maxobj_new(symbol nspace, symbol classn, Args&&... args)
     {
-        auto* obj = c74::max::object_new(nspace, classn);
-
-        if (!obj)
-            throw std::runtime_error("Object creation failed");
-
-        return std::unique_ptr<c74::max::t_object,
-                               decltype(&detail::maxobj_free)>(
-            obj, detail::maxobj_free);
+        if (auto* obj
+            = c74::max::object_new(nspace, classn, std::forward<Args>(args)...))
+            return std::unique_ptr<c74::max::t_object, detail::maxobj_deleter>(
+                obj);
+        else
+            throw std::runtime_error(classn.str().append(" creation failed"));
     }
 
     namespace detail {

@@ -25,7 +25,7 @@ namespace mxx {
         {
             // clang-format off
             
-            assert(args.size() >= attr_offset);
+            assert(args.size() >= safe_size_t(attr_offset));
 
             if constexpr(type_traits::has_construct_function<user_class>()){
                 try {
@@ -184,9 +184,8 @@ namespace mxx {
     }
 
     template <typename user_class>
-    void* wrapper_object_new(c74::max::t_class* class_ptr,
-                             c74::max::t_symbol* name, long ac,
-                             c74::max::t_atom* av)
+    void* wrapper_object_new(c74::max::t_class* class_ptr, c74::max::t_symbol*,
+                             long ac, c74::max::t_atom* av)
     {
         // create new maxobject instance
         auto* obj     = c74::max::object_alloc(class_ptr);

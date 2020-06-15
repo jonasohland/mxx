@@ -8,7 +8,7 @@ class mxx_test_floath: public mxx::max_class<mxx_test_floath> {
         outlet = make_outlet("float out");
     }
 
-    void handle_float(double value, long inlet)
+    void handle_float(double value, long)
     {
         outlet->send(value);
     }

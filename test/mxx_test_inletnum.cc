@@ -21,12 +21,12 @@ class mxx_test_inletnum: public mxx::max_class<mxx_test_inletnum> {
         send(inletn);
     }
 
-    void handle_int(long n, long inletn)
+    void handle_int(long, long inletn)
     {
         send(inletn);
     }
 
-    void handle_float(double d, long inletn)
+    void handle_float(double, long inletn)
     {
         send(inletn);
     }

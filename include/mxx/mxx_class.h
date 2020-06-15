@@ -60,10 +60,11 @@ namespace mxx {
 
         bool inlet_is_hot(long inlet_idx)
         {
-            if (MXX_UNLIKELY(inlet_idx >= m_inlets.size()))
+            std::size_t u_idx = static_cast<std::size_t>(inlet_idx);
+            if (MXX_UNLIKELY(u_idx >= m_inlets.size()))
                 return false;
 
-            return m_inlets[inlet_idx]->hot();
+            return m_inlets[u_idx]->hot();
         }
 
         bool mc() const
@@ -300,7 +301,7 @@ namespace mxx {
             c74::max::object_warn(native_handle(), msg, args...);
         }
 
-        virtual void prepare(double srate, long max_vsize)
+        virtual void prepare(double, long)
         {
         }
 
@@ -333,7 +334,7 @@ namespace mxx {
         template <typename PortArr>
         const char* get_port_description(const PortArr& p, long index)
         {
-            if (MXX_UNLIKELY(index >= p.size()))
+            if (MXX_UNLIKELY(safe_size_t(index) >= p.size()))
                 return "unknown";
 
             return p[index]->description();

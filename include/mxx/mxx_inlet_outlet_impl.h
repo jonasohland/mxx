@@ -32,8 +32,8 @@ inline void mxx::message::mxx_internal_init(max_class_base* owner, method m)
     executor.set_handler(m);
 }
 
-inline void mxx::outlet::mxx_internal_create(max_class_base* obj, long index,
-                                             std::size_t total)
+inline void mxx::outlet::mxx_internal_create(max_class_base* obj, long,
+                                             std::size_t)
 {
     mxx_internal_set_owner(obj->native_handle());
 
@@ -50,7 +50,7 @@ inline void mxx::inlet::mxx_internal_create(max_class_base* obj, long index,
 
     if (!(type() == sym::signal) && !(type() == sym::multichannelsignal)) {
 
-        if (index == total - 1)
+        if (safe_size_t(index) == total - 1)
             return;
 
         m_inlet_proxy = c74::max::proxy_new(

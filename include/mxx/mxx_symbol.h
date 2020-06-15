@@ -160,7 +160,17 @@ namespace mxx {
         }
 
         /// Support implicit conversion to `t_symbol*`
-        inline operator c74::max::t_symbol *()
+        inline operator c74::max::t_symbol *() const
+        {
+            return m_sym;
+        }
+
+        inline operator bool() const
+        {
+            return m_sym != NULL;
+        }
+
+        inline operator void*() const
         {
             return m_sym;
         }

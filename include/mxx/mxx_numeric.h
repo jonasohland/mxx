@@ -1,6 +1,8 @@
 #pragma once
+#include <exception>
 
 namespace mxx {
+
     template <typename Operator>
     struct add: public std::binary_function<mxx::atom, mxx::atom, mxx::atom> {
 
@@ -22,5 +24,15 @@ namespace mxx {
     atom reduce(InputIt first, InputIt last)
     {
         return std::reduce(first, last, 0, add<std::plus<T>>());
+    }
+
+    template <typename T>
+    inline std::size_t safe_size_t(const T& value)
+    {
+        if (value > -1)
+            return static_cast<std::size_t>(value);
+        else
+            throw std::range_error(
+                "Could not convert signed to unsigend size type");
     }
 }    // namespace mxx

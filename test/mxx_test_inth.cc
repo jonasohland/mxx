@@ -8,7 +8,7 @@ class mxx_test_inth: public mxx::max_class<mxx_test_inth> {
         outlet = make_outlet("int out");
     }
 
-    void handle_int(long value, long inlet)
+    void handle_int(long value, long)
     {
         outlet->send_one(value);
     }

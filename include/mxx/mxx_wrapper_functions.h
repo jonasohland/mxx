@@ -57,7 +57,7 @@ namespace mxx {
 
     template <typename user_class>
     MXX_ALWAYS_INLINE void
-    wrapper_handle_list_impl(c74::max::t_object* obj, c74::max::t_symbol* s,
+    wrapper_handle_list_impl(c74::max::t_object* obj, c74::max::t_symbol*,
                              long ac, c74::max::t_atom* av)
     {
         if constexpr (type_traits::has_list_handler<user_class>())
@@ -100,7 +100,7 @@ namespace mxx {
     }
 
     template <typename user_class>
-    MXX_ALWAYS_INLINE void wrapper_assist_impl(c74::max::t_object* x, void* b,
+    MXX_ALWAYS_INLINE void wrapper_assist_impl(c74::max::t_object* x, void*,
                                                long io, long index, char* s)
     {
         auto wrapper = get_wrapper<user_class>(x);
@@ -112,8 +112,8 @@ namespace mxx {
     }
 
     template <typename user_class>
-    MXX_ALWAYS_INLINE void wrapper_inletinfo_impl(c74::max::t_object* x,
-                                                  void* b, long index, char* t)
+    MXX_ALWAYS_INLINE void wrapper_inletinfo_impl(c74::max::t_object* x, void*,
+                                                  long index, char* t)
     {
         auto wrapper = get_wrapper<user_class>(x);
 
@@ -134,7 +134,7 @@ namespace mxx {
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
-        if (MXX_UNLIKELY(index >= wrapper->object.m_inlets.size()))
+        if (MXX_UNLIKELY(safe_size_t(index) >= wrapper->object.m_inlets.size()))
             return 0;
 
         wrapper->object.m_inlets[index]->signal_count(chans);
@@ -151,7 +151,7 @@ namespace mxx {
     {
         auto* wrapper = get_wrapper<user_class>(x);
 
-        if (MXX_UNLIKELY(idx >= wrapper->object.m_outlets.size()))
+        if (MXX_UNLIKELY(safe_size_t(idx) >= wrapper->object.m_outlets.size()))
             return 1;
 
         return wrapper->object.m_outlets[idx]->signal_count();
@@ -160,7 +160,7 @@ namespace mxx {
     template <typename user_class>
     MXX_ALWAYS_INLINE void
     wrapper_dsp64_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                        short* count, double srate, long vsize, long flags,
+                        short* count, double srate, long vsize, long,
                         c74::max::t_perfroutine64 r)
     {
         auto* wrapper = get_wrapper<user_class>(x);
@@ -193,10 +193,9 @@ namespace mxx {
 
     template <typename user_class>
     MXX_ALWAYS_INLINE void
-    wrapper_dsp64_perform_impl(c74::max::t_object* x, c74::max::t_object* dsp64,
+    wrapper_dsp64_perform_impl(c74::max::t_object* x, c74::max::t_object*,
                                double** ins, long numins, double** outs,
-                               long numouts, long frames, long flags,
-                               void* userparam)
+                               long numouts, long frames, long, void*)
     {
         if constexpr (mxx::type_traits::has_dsp_handler<user_class>()) {
             get_wrapper<user_class>(x)->object.process(
@@ -216,7 +215,7 @@ namespace mxx {
     template <typename user_class>
     MXX_ALWAYS_INLINE void
     wrapper_dsp64_user_setup(c74::max::t_object* x, c74::max::t_object* dspman,
-                             short* count, double srate, long vsize, long flags)
+                             short* count, double srate, long vsize, long)
     {
         if constexpr (mxx::type_traits::has_setup_dsp_function<user_class>()) {
 

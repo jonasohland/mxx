@@ -18,7 +18,7 @@ class mxx_test_bangh: public mxx::max_class<mxx_test_bangh> {
     // The mxx::wrapper will find this function using C++ template magic
     // and resolve any calls from max to the wrappers int-handler to this
     // function at -> compile-time <-
-    void handle_bang(long inlet)
+    void handle_bang(long)
     {
         outlet->bang();
     }
