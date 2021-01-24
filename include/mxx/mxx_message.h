@@ -2,52 +2,69 @@
 
 namespace mxx {
 
-    class max_class_base;
+class max_class_base;
 
-    template <typename ExtMember, typename user_class>
-    decltype(auto) bind(ExtMember func, user_class* obj)
+template <typename ExtMember, typename user_class>
+decltype(auto) bind(ExtMember func, user_class* obj)
+{
+    return std::bind(func, obj, std::placeholders::_1, std::placeholders::_2);
+}
+
+class message {
+
+  public:
+    template <typename HandlerType>
+    message(max_class_base* owner, const symbol& name, HandlerType&& handler)
+        : m_name(name)
+        , m_type("anything")
     {
-        return std::bind(
-            func, obj, std::placeholders::_1, std::placeholders::_2);
+        mxx_internal_init(owner, std::forward<HandlerType>(handler));
     }
 
-    class message {
+    template <typename HandlerType>
+    message(max_class_base* owner, const symbol& name, const symbol& type, HandlerType&& handler)
+        : m_name(name)
+        , m_type(type)
+    {
+        mxx_internal_init(owner, std::forward<HandlerType>(handler));
+    }
 
-      public:
-        message(max_class_base* owner, const symbol& name,
-                const method& handler);
+    template <typename HandlerType>
+    message(max_class_base* owner, const symbol& name, const symbol& type, const std::string& description,
+            HandlerType&& handler)
+        : m_name(name)
+        , m_type(type)
+        , m_description(description)
+    {
+        mxx_internal_init(owner, std::forward<HandlerType>(handler));
+    }
 
-        message(max_class_base* owner, const symbol& name, const symbol& type,
-                const method& handler);
 
-        message(max_class_base* owner, const symbol& name, const symbol& type,
-                const std::string& description, const method& hander);
+    void call(t_atom_span args, long inlet)
+    {
+        executor.post(args, inlet);
+    }
 
-        void call(std::shared_ptr<atom::vector> args, long inlet)
-        {
-            executor.post(
-                std::forward<std::shared_ptr<atom::vector>>(args), inlet);
-        }
+    const char* name()
+    {
+        return m_name;
+    }
 
-        const char* name()
-        {
-            return m_name;
-        }
+    c74::max::e_max_atomtypes type()
+    {
+        return c74::max::A_GIMME;
+    }
 
-        c74::max::e_max_atomtypes type()
-        {
-            return c74::max::A_GIMME;
-        }
+    friend class max_class_base;
+    friend struct std::hash<message*>;
 
-        friend class max_class_base;
-        friend struct std::hash<message*>;
+  private:
+    template <typename HandlerType>
+    void mxx_internal_init(max_class_base* owner, HandlerType&& m);
 
-      private:
-        void mxx_internal_init(max_class_base* owner, method m);
-
-        symbol m_name;
-        symbol m_type;
-        std::string m_description;
-        default_executor executor;
-    };
+    symbol m_name;
+    symbol m_type;
+    std::string m_description;
+    default_executor executor;
+};
 }    // namespace mxx
