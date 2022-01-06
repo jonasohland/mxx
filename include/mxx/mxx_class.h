@@ -52,7 +52,7 @@ class max_class_base {
         if (!emplaced)
             throw std::runtime_error("Msg already exists");
     }
-    
+
     const char* description_for_inlet(long inlet_idx)
     {
         return get_port_description(m_inlets, inlet_idx);
@@ -111,12 +111,18 @@ class max_class_base {
         return {};
     }
 
+    bool notify_dispatch(symbol s, symbol msg, void* sender, void* data)
+    {
+        bool notified_one = false;
+        for (auto* t : m_notification_targets) {
+            notified_one = t->notify_dispatch(s, msg, sender, data) || notified_one;
+        }
+        return notified_one;
+    }
+
     inline c74::max::t_object* native_handle() const noexcept
     {
-        if (t_obj_instance_ptr)
-            return t_obj_instance_ptr;
-        else
-            return nullptr;
+        return t_obj_instance_ptr;
     }
 
     template <typename... Args>
@@ -171,9 +177,7 @@ class max_class_base {
     outlet_ptr make_mc_outlet(long channelcount, Args... args)
     {
         auto p = make_port<outlet>(sym::multichannelsignal, std::forward<Args>(args)...);
-
         p->signale_count(channelcount);
-
         return p;
     }
 
@@ -181,9 +185,7 @@ class max_class_base {
     inlet_ptr make_mc_inlet(long channelcount, Args... args)
     {
         auto p = make_port<inlet>(sym::multichannelsignal, std::forward<Args>(args)...);
-
         p->signal_count(channelcount);
-
         return p;
     }
 
@@ -191,11 +193,8 @@ class max_class_base {
     std::shared_ptr<port_type> make_port(symbol ty, Args... args)
     {
         auto port = std::make_shared<port_type>(std::forward<Args>(args)...);
-
         port->type(ty);
-
         mxx_assign(port);
-
         return port;
     }
 
@@ -305,6 +304,22 @@ class max_class_base {
         return m_contructed;
     }
 
+    void attach(notify_target* target)
+    {
+        if (std::find(m_notification_targets.begin(), m_notification_targets.end(), target)
+            == m_notification_targets.end()) {
+            m_notification_targets.push_back(target);
+        }
+    }
+
+    void detach(notify_target* target)
+    {
+        if (auto it = std::find(m_notification_targets.begin(), m_notification_targets.end(), target);
+            it != m_notification_targets.end()) {
+            m_notification_targets.erase(it);
+        }
+    }
+
   protected:
     console_stream<console::normal> console;
     console_stream<console::warning> console_warn;
@@ -360,6 +375,7 @@ class max_class_base {
     std::unordered_map<std::string, message*> m_messages;
     std::vector<std::shared_ptr<inlet>> m_inlets;
     std::vector<std::shared_ptr<outlet>> m_outlets;
+    std::vector<notify_target*> m_notification_targets;
 };
 
 template <typename user_class>
@@ -368,7 +384,7 @@ class max_class: public max_class_base {
     virtual ~max_class()
     {
     }
-    
+
     template <typename Func>
     void bind_method(const symbol& name, Func&& f)
     {

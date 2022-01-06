@@ -16,6 +16,8 @@ mxx_test_external(mxx_test_dblclick)
 mxx_test_external(mxx_test_con_count_tld)
 mxx_test_external(mxx_test_userdsp64_tld)
 mxx_test_external(mxx_test_hotcold_inlet)
+mxx_test_external(mxx_test_notify)
+mxx_test_external(mxx_test_buffer)
 mxx_test_external(mxxx)
 
 # _tld and _tilde will be replaced with ~ in the output name

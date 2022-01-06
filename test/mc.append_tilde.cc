@@ -12,11 +12,9 @@ class mc_append_t: public mxx::max_class<mc_append_t> {
 
         for (int i = 0; i < sigcount; ++i) {
 #ifdef APPEND_MC_VERSION
-            mc_inlets.push_back(make_mc_inlet(
-                std::string("(mc) signals #").append(std::to_string(i))));
+            mc_inlets.push_back(make_mc_inlet(std::string("(mc) signals #").append(std::to_string(i))));
 #else
-            make_signal_inlet(
-                std::string("(signal) signal #").append(std::to_string(i)));
+            make_signal_inlet(std::string("(signal) signal #").append(std::to_string(i)));
 #endif
         }
     }
@@ -24,19 +22,16 @@ class mc_append_t: public mxx::max_class<mc_append_t> {
     void inputchanged(long)
     {
 #ifdef APPEND_MC_VERSION
-        mcoutlet->signal_count(
-            mcinlet->signal_count()
-            + std::accumulate(mc_inlets.begin(), mc_inlets.end(), 0,
-                              [](int num, const auto inlet) {
-                                  return num + inlet->signal_count();
-                              }));
+        mcoutlet->signal_count(mcinlet->signal_count()
+                               + std::accumulate(mc_inlets.begin(), mc_inlets.end(), 0, [](int num, const auto inlet) {
+                                     return num + inlet->signal_count();
+                                 }));
 #else
         mcoutlet->signal_count(mcinlet->signal_count() + sigcount);
 #endif
     }
 
-    void process(double** ins, double** outs, long inchs, long outchs,
-                 long vect)
+    void process(double** ins, double** outs, long inchs, long outchs, long vect)
     {
         if (inchs != outchs)
             return;

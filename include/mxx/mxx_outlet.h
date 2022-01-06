@@ -127,7 +127,7 @@ class outlet: public port {
         }
     }
 
-    template <>
+    /*  template <>
     void send<c74::max::t_atom*>(c74::max::t_atom*&& atom)
     {
         switch (atom->a_type) {
@@ -142,7 +142,7 @@ class outlet: public port {
     void send<atom>(atom&& atom)
     {
         send(static_cast<c74::max::t_atom*>(&atom));
-    }
+    } */
 
     template <typename T>
     void send_one(const T& value)
@@ -157,6 +157,11 @@ class outlet: public port {
             detail::outlet_send_impl(m_outlet, value);
     }
 
+    template <typename... Args>
+    void list(Args&&... args)
+    {
+        send("list", std::forward<Args>(args)...);
+    }
 
     void bang()
     {

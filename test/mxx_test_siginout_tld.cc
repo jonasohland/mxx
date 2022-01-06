@@ -9,8 +9,7 @@ class mxx_test_siginout: public mxx::max_class<mxx_test_siginout> {
         make_signal_outlet("signal out");
     }
 
-    void process(double** ins, double** outs, long inchs, long outchs,
-                 long vect)
+    void process(double** ins, double** outs, long inchs, long outchs, long vect)
     {
         if (inchs != outchs)
             return;

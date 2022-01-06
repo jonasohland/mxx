@@ -77,7 +77,7 @@ user_class* construct_user_class(user_class* placement)
                 new (placement) user_class(cty);
                 return placement;
             }
-            catch (std::exception ex) {
+            catch (const std::exception& ex) {
                 c74::max::object_error(nullptr, "Could not create object: %s", ex.what());
                 return nullptr;
             };
@@ -109,7 +109,7 @@ c74::max::t_class* wrapper_class_new(c74::max::t_class* class_ptr, const char* e
                                      c74::max::method floath, c74::max::method listh, c74::max::method anyh,
                                      c74::max::method assisth, c74::max::method inletinfoh, c74::max::method dblclickh,
                                      c74::max::method inputchangedh, c74::max::method multichanneloutputsh,
-                                     c74::max::method dsp64h, c74::max::method dsp64h_user)
+                                     c74::max::method dsp64h, c74::max::method dsp64h_user, c74::max::method notifyh)
 {
     class_ptr = c74::max::class_new(
         external_name, new_instance, free_instance, sizeof(object_wrapper<user_class>), 0L, c74::max::A_GIMME, 0);
@@ -142,6 +142,7 @@ c74::max::t_class* wrapper_class_new(c74::max::t_class* class_ptr, const char* e
     if constexpr (type_traits::has_dblclick_handler<user_class>())
         c74::max::class_addmethod(class_ptr, dblclickh, "dblclick", c74::max::A_CANT, 0);
 
+    c74::max::class_addmethod(class_ptr, notifyh, "notify", c74::max::A_CANT, 0);
     c74::max::class_addmethod(class_ptr, assisth, "assist", c74::max::A_CANT, 0);
     c74::max::class_addmethod(class_ptr, inletinfoh, "inletinfo", c74::max::A_CANT, 0);
 

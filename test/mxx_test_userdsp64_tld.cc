@@ -61,9 +61,8 @@ class mxx_test_userdsp64: public mxx::max_class<mxx_test_userdsp64> {
 
 // Can implement perform routines now because mxx_test_userdsp64 is a complete
 // type at this point.
-void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins,
-                    long, double** outs, long, long frames, long,
-                    void*)
+void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins, long, double** outs, long, long frames,
+                    long, void*)
 {
     const double* in1 = ins[0];
     const double* in2 = ins[1];
@@ -73,9 +72,8 @@ void perform_signal(c74::max::t_object*, c74::max::t_object*, double** ins,
         out[i] = in1[i] * in2[i];
 }
 
-void perform_scalar(c74::max::t_object* x, c74::max::t_object*, double** ins,
-                    long, double** outs, long, long frames, long,
-                    void*)
+void perform_scalar(c74::max::t_object* x, c74::max::t_object*, double** ins, long, double** outs, long, long frames,
+                    long, void*)
 {
     const double* in1 = ins[0];
     double* out       = *outs;

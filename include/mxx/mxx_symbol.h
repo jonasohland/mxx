@@ -192,3 +192,13 @@ class symbol {
     c74::max::t_symbol* m_sym = nullptr;
 };
 }    // namespace mxx
+
+namespace std {
+template <>
+struct hash<mxx::symbol> {
+    size_t operator()(const mxx::symbol& x) const
+    {
+        return std::hash<c74::max::t_symbol*>()(x);
+    }
+};
+}    // namespace std

@@ -10,8 +10,7 @@ class mxx_test_inletnum: public mxx::max_class<mxx_test_inletnum> {
             count = args[0];
 
         for (int i = 0; i < count; ++i)
-            make_inlet(std::string("inlet #").append(std::to_string(i + 1)))
-                ->hot(true);
+            make_inlet(std::string("inlet #").append(std::to_string(i + 1)))->hot(true);
 
         outlet = make_typed_outlet("int", "inlet number");
     }
@@ -31,8 +30,7 @@ class mxx_test_inletnum: public mxx::max_class<mxx_test_inletnum> {
         send(inletn);
     }
 
-    void handle_any_msg(const mxx::symbol&, const mxx::atom::vector&,
-                        long inletn)
+    void handle_any_msg(const mxx::symbol&, const mxx::atom::vector&, long inletn)
     {
         send(inletn);
     }

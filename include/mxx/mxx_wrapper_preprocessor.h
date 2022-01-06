@@ -197,6 +197,8 @@ struct converter<0>: public false_type {
 
 #define MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(identifier) MXX_WRAPPER_FUNCTION(_dsp64_user_method, identifier)
 
+#define MXX_WRAPPER_FUNCTION_NOTIFY_METHOD(identifier) MXX_WRAPPER_FUNCTION(_notify_user_method, identifier)
+
 #define MXX_WRAPPER_FUNCTION_DSP64_PERFORM(identifier) MXX_WRAPPER_FUNCTION(_dsp64_perform, identifier)
 
 #define MXX_WRAPPER_FUNCTION_ASSIST(identifier) MXX_WRAPPER_FUNCTION(_assist, identifier)
@@ -315,6 +317,13 @@ struct converter<0>: public false_type {
         mxx::wrapper_dsp64_user_setup<classname>(x, dsp64, count, samplerate, maxvectorsize, flags);                   \
     }
 
+#define MXX_CREATE_NOTIFY_METHOD_FUNCTION(identifier, classname)                                                       \
+    void MXX_WRAPPER_FUNCTION_NOTIFY_METHOD(identifier)(                                                               \
+        c74::max::t_object * x, c74::max::t_symbol * s, c74::max::t_symbol * msg, void* sender, void* data)            \
+    {                                                                                                                  \
+        mxx::wrapper_notify<classname>(x, s, msg, sender, data);                                                       \
+    }
+
 #define MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                                                        \
     void MXX_WRAPPER_FUNCTION_NAMED_METHOD(identifier)(                                                                \
         c74::max::t_object * o, c74::max::t_symbol * s, long ac, c74::max::t_atom* av)                                 \
@@ -336,7 +345,8 @@ struct converter<0>: public false_type {
     MXX_CREATE_INPUTCHANGED_FUNCTION(identifier, classname)                                                            \
     MXX_CREATE_MULTICHANNELOUTPUTS_FUNCTION(identifier, classname)                                                     \
     MXX_CREATE_NAMED_METHOD_FUNCTION(identifier, classname)                                                            \
-    MXX_CREATE_DSP_USER_METHOD_FUNCTION(identifier, classname)
+    MXX_CREATE_DSP_USER_METHOD_FUNCTION(identifier, classname)                                                         \
+    MXX_CREATE_NOTIFY_METHOD_FUNCTION(identifier, classname)
 
 /* -------------------------------------------------------------------------- */
 
@@ -369,7 +379,6 @@ struct converter<0>: public false_type {
     }
 
 #define MXX_MAXCLASS_DEF_IMPL(ident, class, extname)                                                                   \
-                                                                                                                       \
     MXX_USER_CLASS_MAXCLASS_SYMBOL(ident) = mxx::wrapper_class_new<class>(                                             \
         MXX_USER_CLASS_MAXCLASS_SYMBOL(ident), extname, MXX_MAX_METHOD(MXX_NEW_INSTANCE_FUNCTION_NAME(ident)),         \
         MXX_MAX_METHOD(MXX_FREE_INSTANCE_FUNCTION_NAME(ident)),                                                        \
@@ -381,7 +390,8 @@ struct converter<0>: public false_type {
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_INPUTCHANGED(ident)),                                                      \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_MULTICHANNELOUTPUTS(ident)),                                               \
         MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_METHOD(ident)),                                                      \
-        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(ident)));                                                \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_DSP64_USER_METHOD(ident)),                                                 \
+        MXX_MAX_METHOD(MXX_WRAPPER_FUNCTION_NOTIFY_METHOD(ident)));                                                    \
                                                                                                                        \
     c74::max::class_register(c74::max::CLASS_BOX, MXX_USER_CLASS_MAXCLASS_SYMBOL(ident));
 

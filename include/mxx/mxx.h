@@ -52,15 +52,15 @@
 #define MXX_STRING_LITERAL(x)      MXX_STRING_LITERAL_IMPL(x)
 #define MXX_UNIVERSAL_HELPER       MXX_STRING_LITERAL(MXX_UNIVERSAL_HELPER_NAME)
 
-#include <cstring>
-#include <functional>
 #include <algorithm>
 #include <array>
+#include <cstring>
+#include <functional>
 #include <numeric>
 #include <sstream>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include <c74_max.h>
 #include <c74_msp.h>
@@ -96,6 +96,12 @@ namespace mxx::sym {
     
     /// Empty Symbol
     inline symbol empty = c74::max::gensym("");
+
+    /// Message that is sent to object to notify them of a buffer modification
+    inline symbol buffer_modified = c74::max::gensym("buffer_modified");
+
+    /// Object method name "getname"
+    inline symbol getname = c74::max::gensym("getname");
 }
 
 namespace mxx {
@@ -119,11 +125,14 @@ namespace mxx {
 #include <mxx/mxx_outlet.h>
 #include <mxx/mxx_inlet.h>
 #include <mxx/mxx_cstream.h>
+#include <mxx/mxx_notify_target.h>
 #include <mxx/mxx_class.h>
 #include <mxx/mxx_inlet_outlet_impl.h>
 #include <mxx/mxx_wrapper.h>
 #include <mxx/mxx_wrapper_functions.h>
 #include <mxx/mxx_universal_helper.h>
 #include <mxx/mxx_texteditor.h>
+#include <mxx/mxx_buffer_lock.h>
+#include <mxx/mxx_buffer_reference.h>
 
 // clang-format on

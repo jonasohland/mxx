@@ -24,5 +24,4 @@ class mxx_test_hotcold_inlet: public mxx::max_class<mxx_test_hotcold_inlet> {
     mxx::inlet_ptr inlet;
 };
 
-MXX_EXTERNAL(mxx_test_hotcold_inlet, mxx_test_hotcold_inlet,
-             "mxx_test_hotcold_inlet");
+MXX_EXTERNAL(mxx_test_hotcold_inlet, mxx_test_hotcold_inlet, "mxx_test_hotcold_inlet");

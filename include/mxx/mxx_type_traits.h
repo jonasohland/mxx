@@ -28,6 +28,9 @@ MXX_CREATE_ADVANCED_MEMBER_CHECK(has_construct_function, construct, std::declval
 
 MXX_CREATE_ADVANCED_MEMBER_CHECK(has_input_changed_function, inputchanged, long());
 
+MXX_CREATE_ADVANCED_MEMBER_CHECK(has_notify_function, notify, std::declval<symbol>(), std::declval<symbol>(),
+                                 std::declval<void*>(), std::declval<void*>());
+
 MXX_CREATE_BASIC_MEMBER_CHECK(has_dblclick_handler, handle_dblclick);
 
 MMX_CREATE_MEMBER_VARIABLE_CHECK(has_mxx_class_flags_variable, mxx_class_flags);

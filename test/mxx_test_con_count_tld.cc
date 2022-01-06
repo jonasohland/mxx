@@ -17,13 +17,11 @@ class mxx_test_con_count: public mxx::max_class<mxx_test_con_count> {
 
     void prepare(double, long)
     {
-        info_out->send("in", sig_in_1->connections(), sig_in_2->connections(),
-                       "out", sig_out_1->connections(),
+        info_out->send("in", sig_in_1->connections(), sig_in_2->connections(), "out", sig_out_1->connections(),
                        sig_out_2->connections());
     }
 
-    void process(double** ins, double** outs, long inchs, long outchs,
-                 long vect)
+    void process(double** ins, double** outs, long inchs, long outchs, long vect)
     {
         if (inchs != outchs)
             return;

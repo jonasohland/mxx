@@ -220,4 +220,21 @@ MXX_ALWAYS_INLINE void wrapper_dsp64_user_setup(c74::max::t_object* x, c74::max:
         type_traits::has_setup_dsp_function<user_class>(), "Missing required setup_dsp function on external class");
 #endif
 }
+
+template <typename user_class>
+MXX_ALWAYS_INLINE void wrapper_notify(c74::max::t_object* x, c74::max::t_symbol* s, c74::max::t_symbol* msg,
+                                      void* sender, void* data)
+{
+    auto& obj = get_wrapper<user_class>(x)->object;
+    if (!obj.notify_dispatch(s, msg, sender, data)) {
+        if constexpr (mxx::type_traits::has_notify_function<user_class>()) {
+            obj.notify(s, msg, sender, data);
+        }
+    }
+
+#ifdef MXX_REQUIRE_NOTIFY_FUNCTION
+    static_assert(
+        mxx::type_traits::has_notify_function<user_class>(), "Missing required notify() function on external class");
+#endif
+}
 }    // namespace mxx
