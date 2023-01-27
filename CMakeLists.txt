@@ -10,6 +10,7 @@ set(mxx_version_major           0)
 set(mxx_version_minor           0)
 set(mxx_version_patch           1)
 
+
 set(mxx_version                 ${mxx_version_major}.${mxx_version_minor}.${mxx_version_patch})
 
 set(mxx_wrapper_target_name     mxx)
